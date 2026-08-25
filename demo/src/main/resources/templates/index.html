@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BackHome | Red de Recuperación Animal</title>
+
+    <!-- Google Fonts: Playwrite NZ Basic (wordmark) + Plus Jakarta Sans (texto general) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@300;400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Hoja de estilos externa -->
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+
+    <!-- FONDO DECORATIVO GLOBAL -->
+    <div class="site-background" aria-hidden="true">
+        <span class="blob blob-one"></span>
+        <span class="blob blob-two"></span>
+        <span class="blob blob-three"></span>
+        <span class="paw paw-one">🐾</span>
+        <span class="paw paw-two">🐾</span>
+        <span class="paw paw-three">🐾</span>
+        <span class="paw paw-four">🐾</span>
+    </div>
+
+    <!-- HEADER SUPERIOR CON LOGO Y NAVEGACIÓN -->
+    <header class="site-header">
+        <div class="header-container">
+            <a th:href="@{/}" class="header-brand-group">
+                <img th:src="@{/images/logo-backhome.png}" src="logo.png" alt="Logo BackHome" class="header-logo-img">
+                <span class="header-brand-title">BackHome</span>
+            </a>
+
+            <nav class="header-nav-menu">
+                <a href="#inicio">Inicio</a>
+                <a href="#proceso-seguimiento">Cómo Funciona</a>
+                <a href="#localidades-mapa">Localidades</a>
+                <a href="#apoyo-donaciones">Apóyanos</a>
+            </nav>
+
+            <div class="header-actions-group">
+                <a th:href="@{/login}" class="auth-link-login">Iniciar sesión</a>
+                <a th:href="@{/registro}" class="auth-btn-register">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="site-main-content">
+
+        <!-- SECCIÓN DE BIENVENIDA (HERO) -->
+        <section class="hero-welcome-section" id="inicio">
+            <div class="hero-content-wrapper">
+                <div class="hero-text-block">
+                    <h1>Cada mascota merece un camino seguro de <span class="accent-text">regreso a casa.</span></h1>
+                    <p>Haz seguimiento a mascotas perdidas o encontradas en Bogotá, desde el primer reporte hasta el reencuentro.</p>
+                    <div class="hero-buttons-container">
+                        <a th:href="@{/registro}" class="btn-primary-action">Iniciar seguimiento</a>
+                    </div>
+                </div>
+
+                <div class="hero-logo-container">
+                    <img th:src="@{/images/logo-backhome.png}" src="logo.png" alt="Logo BackHome" class="hero-central-logo">
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN UNIFICADA: PROCESO DE SEGUIMIENTO Y EJEMPLO -->
+        <section class="workflow-section" id="proceso-seguimiento">
+            <div class="section-heading-block">
+                <h2>¿Cómo funciona el proceso de seguimiento?</h2>
+                <p>Conoce la metodología del flujo de validación y observa un ejemplo real de cómo se visualiza un expediente en la plataforma.</p>
+            </div>
+
+            <div class="workflow-grid-layout">
+                <!-- Pasos del proceso -->
+                <div class="workflow-steps-list">
+                    <div class="workflow-step-card">
+                        <div class="step-number-badge">1</div>
+                        <div class="step-text-content">
+                            <h3>Registro del Reporte</h3>
+                            <p>El usuario ingresa los datos clave de la mascota, ubicación y fotografías recientes.</p>
+                        </div>
+                    </div>
+
+                    <div class="workflow-step-card">
+                        <div class="step-number-badge">2</div>
+                        <div class="step-text-content">
+                            <h3>Validación Administrativa</h3>
+                            <p>El equipo o sistema verifica los datos y activa el estatus oficial (Perdido o En Resguardo).</p>
+                        </div>
+                    </div>
+
+                    <div class="workflow-step-card">
+                        <div class="step-number-badge">3</div>
+                        <div class="step-text-content">
+                            <h3>Monitoreo y Reencuentro</h3>
+                            <p>La comunidad visualiza el estado del expediente verificado para agilizar la recuperación.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de ejemplo integrado del seguimiento -->
+                <div class="workflow-example-wrapper">
+                    <span class="example-tag-label">Ejemplo de Seguimiento en Vivo</span>
+
+                    <div class="example-preview-card">
+                        <div class="example-card-media-area">
+                            <span class="status-badge-pill lost">Perdido</span>
+                            <span class="status-badge-verified">✓ Verificado Admin</span>
+                        </div>
+                        <div class="example-card-body-area">
+                            <h3 th:text="${caso1 != null ? caso1.titulo : 'Canela (Cachorra Mestiza)'}">Canela (Cachorra Mestiza)</h3>
+                            <p class="example-location-text"><strong>Zona:</strong> Usaquén</p>
+                            <p class="example-date-text">Actualizado: 05 Ago 2026</p>
+
+                            <!-- Botón simulado (estético / no interactivo) -->
+                            <div class="btn-mock-action">Ver expediente completo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE MÓDULOS INTERACTIVOS (MAPA Y APOYO) -->
+        <section class="interactive-modules-section">
+            <div class="modules-grid-layout">
+
+                <!-- Módulo Mapa Interactivo -->
+                <div class="module-card-box" id="localidades-mapa">
+                    <div class="module-card-header">
+                        <span class="module-icon-emoji">🗺️</span>
+                        <h3>Mapa Interactivo Distrital</h3>
+                    </div>
+                    <p>Un mapa pensado para que ubiques, de un vistazo, qué está pasando cerca de ti.</p>
+                    <ul class="module-feature-list">
+                        <li>Filtra reportes por localidad y barrio</li>
+                        <li>Distingue casos perdidos y encontrados por color</li>
+                        <li>Encuentra rápido el reporte más cercano a tu zona</li>
+                    </ul>
+
+                    <div class="module-preview-stub">
+                        <div class="map-illustration" aria-hidden="true">
+                            <span class="map-pin pin-lost"></span>
+                            <span class="map-pin pin-found"></span>
+                            <span class="map-pin pin-ghost"></span>
+                        </div>
+                        <span class="stub-badge soon">Próximamente</span>
+                        <p>Módulo de mapas interactivos en desarrollo activo</p>
+                    </div>
+                </div>
+
+                <!-- Módulo de Apoyo / Donaciones -->
+                <div class="module-card-box" id="apoyo-donaciones">
+                    <div class="module-card-header">
+                        <span class="module-icon-emoji">💖</span>
+                        <h3>Apóyanos y Sostenibilidad</h3>
+                    </div>
+                    <p>Tu aporte mantiene la plataforma activa y respalda a los hogares de paso que cuidan mascotas mientras encuentran su camino de regreso.</p>
+
+                    <div class="module-preview-stub">
+                        <span class="support-illustration" aria-hidden="true">💞</span>
+                        <span class="stub-badge active">Aportes Abiertos</span>
+                        <p>Cada aporte ayuda a un hogar de paso</p>
+                        <a th:href="@{/donaciones}" class="btn-stub-action">Ver formas de ayudar <span aria-hidden="true">→</span></a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column-brand">
+                <div class="footer-brand-row">
+                    <span class="footer-brand-name">BackHome</span>
+                </div>
+                <p>Infraestructura tecnológica comunitaria orientada a la protección, registro y reencuentro de mascotas.</p>
+            </div>
+
+            <div class="footer-column-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#proceso-seguimiento">Cómo Funciona</a></li>
+                    <li><a href="#localidades-mapa">Localidades</a></li>
+                    <li><a href="#apoyo-donaciones">Apóyanos</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column-links">
+                <h4>Plataforma</h4>
+                <ul>
+                    <li><a th:href="@{/login}">Iniciar Sesión</a></li>
+                    <li><a th:href="@{/registro}">Registrarse</a></li>
+                    <li><a th:href="@{/donaciones}">Centro de Donaciones</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom-bar">
+            <p>© 2026 BackHome - Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
