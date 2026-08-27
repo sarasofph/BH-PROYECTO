@@ -57,10 +57,18 @@
         <section class="hero-welcome-section" id="inicio">
             <div class="hero-content-wrapper">
                 <div class="hero-text-block">
-                    <h1>Cada mascota merece un camino seguro de <span class="accent-text">regreso a casa</span></h1>
+                    <span class="hero-eyebrow">🐾 Red comunitaria de rescate en Bogotá</span>
+                    <h1>Cada mascota merece un camino seguro de
+                        <span class="accent-text">
+                            regreso a casa
+                            <svg class="accent-swash" viewBox="0 0 220 20" preserveAspectRatio="none" aria-hidden="true">
+                                <path d="M2 14C40 4 90 2 110 10C130 18 180 6 218 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                    </h1>
                     <p>Haz seguimiento a mascotas perdidas o encontradas en Bogotá, desde el primer reporte hasta el reencuentro.</p>
                     <div class="hero-buttons-container">
-                        <a th:href="@{/registro}" class="btn-primary-action">Iniciar</a>
+                        <a th:href="@{/registro}" class="btn-primary-action">Publicar un caso</a>
                     </div>
                 </div>
 
@@ -111,7 +119,7 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Crear seguimiento <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/registro}" class="primary-action-cta">Publicar aviso de pérdida <span aria-hidden="true">→</span></a>
                 </div>
 
                 <div class="primary-action-card tone-hope">
@@ -142,70 +150,123 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Iniciar seguimiento <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/registro}" class="primary-action-cta">Publicar aviso de hallazgo <span aria-hidden="true">→</span></a>
                 </div>
             </div>
 
-            <!-- Localidades interactivo + ejemplo real de seguimiento -->
+            <!-- Mapa ilustrado + expediente de ejemplo -->
             <div class="secondary-grid">
 
-                <div class="locality-explorer" id="localidades-mapa">
-                    <div class="locality-explorer-header">
-                        <span class="primary-action-icon tone-explore" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="9" />
-                                <polygon points="14.5 9.5 12.8 12.8 9.5 14.5 11.2 11.2" />
-                            </svg>
-                        </span>
-                        <div>
-                            <h3>Explorá por localidad</h3>
-                            <p>Así vas a poder filtrar los seguimientos activos cuando el mapa esté disponible.</p>
+                <!-- Mapa: ilustración real con pines, leyenda y explicación -->
+                <div class="map-showcase" id="localidades-mapa">
+                    <span class="map-ribbon">Próximamente</span>
+
+                    <div class="map-illustration-frame" aria-hidden="true">
+                        <div class="map-illustration-grid"></div>
+                        <span class="map-district d-1"></span>
+                        <span class="map-district d-2"></span>
+                        <span class="map-district d-3"></span>
+                        <span class="map-pin-lg pin-alert" style="top:22%; left:60%;"></span>
+                        <span class="map-pin-lg pin-hope" style="top:52%; left:34%;"></span>
+                        <span class="map-pin-lg pin-resolved" style="top:38%; left:78%;"></span>
+                        <span class="map-pin-lg pin-alert" style="top:66%; left:70%;"></span>
+                        <span class="map-locality-tag" style="top:16%; left:56%;">Usaquén</span>
+                        <span class="map-locality-tag" style="top:60%; left:16%;">Kennedy</span>
+                        <span class="map-locality-tag" style="top:70%; left:64%;">Suba</span>
+                    </div>
+
+                    <div class="map-legend">
+                        <span class="map-legend-item"><span class="legend-dot pin-alert"></span> Perdido</span>
+                        <span class="map-legend-item"><span class="legend-dot pin-hope"></span> Encontrado</span>
+                        <span class="map-legend-item"><span class="legend-dot pin-resolved"></span> Resuelto</span>
+                    </div>
+
+                    <div class="map-showcase-body">
+                        <h3>Explorá por localidad</h3>
+                        <p>Cuando el mapa esté disponible, así vas a poder ver y filtrar los seguimientos activos de Bogotá.</p>
+
+                        <ul class="locality-feature-list">
+                            <li>Cada seguimiento aparece ubicado en el mapa</li>
+                            <li>Los pines distinguen perdido, encontrado y resuelto</li>
+                            <li>Filtrás por localidad para ver solo lo que te interesa</li>
+                        </ul>
+
+                        <div class="locality-chip-row" aria-hidden="true">
+                            <span class="locality-chip">Usaquén</span>
+                            <span class="locality-chip">Chapinero</span>
+                            <span class="locality-chip">Suba</span>
+                            <span class="locality-chip">Kennedy</span>
+                            <span class="locality-chip">Engativá</span>
+                            <span class="locality-chip">Teusaquillo</span>
                         </div>
-                    </div>
 
-                    <div class="locality-chip-row" aria-hidden="true">
-                        <span class="locality-chip">Usaquén</span>
-                        <span class="locality-chip">Chapinero</span>
-                        <span class="locality-chip">Suba</span>
-                        <span class="locality-chip">Kennedy</span>
-                        <span class="locality-chip">Engativá</span>
-                        <span class="locality-chip">Teusaquillo</span>
-                        <span class="locality-chip">Usme</span>
-                        <span class="locality-chip">Bosa</span>
-                    </div>
-
-                    <ul class="locality-feature-list">
-                        <li>Vas a ver cada seguimiento ubicado en el mapa de Bogotá</li>
-                        <li>Los pines van a distinguir por color: perdido, encontrado o resuelto</li>
-                        <li>Vas a poder filtrar por localidad para ver solo lo que te interesa</li>
-                    </ul>
-
-                    <div class="locality-map-footer">
-                        <span class="stub-badge soon">Próximamente</span>
-                        <div class="btn-mock-action">Ver mapa</div>
+                        <div class="map-cta">Ver mapa completo</div>
                     </div>
                 </div>
 
-                <div class="workflow-example-wrapper">
+                <!-- Expediente de ejemplo, con más información real -->
+                <div class="case-file-wrapper">
                     <span class="example-tag-label">Ejemplo de Seguimiento en Vivo</span>
 
-                    <div class="example-preview-card">
-                        <div class="example-card-media-area">
+                    <div class="case-file-card">
+                        <div class="case-file-banner">
                             <span class="status-badge-pill lost">Perdido</span>
                             <span class="status-badge-verified">✓ Verificado Admin</span>
                         </div>
-                        <div class="example-card-body-area">
-                            <div class="example-card-identity">
+
+                        <div class="case-file-body">
+                            <div class="case-file-identity">
                                 <span class="example-avatar" aria-hidden="true">🐾</span>
                                 <div>
                                     <h3 th:text="${caso1 != null ? caso1.titulo : 'Canela (Cachorra Mestiza)'}">Canela (Cachorra Mestiza)</h3>
                                     <p class="example-location-text"><strong>Zona:</strong> Usaquén</p>
                                 </div>
                             </div>
-                            <p class="example-date-text">Actualizado: 05 Ago 2026</p>
 
-                            <!-- Botón simulado (estético / no interactivo) -->
-                            <div class="btn-mock-action">Ver expediente completo</div>
+                            <div class="case-file-info-grid">
+                                <div class="case-file-info-item">
+                                    <span class="info-label">Raza</span>
+                                    <span class="info-value">Mestiza</span>
+                                </div>
+                                <div class="case-file-info-item">
+                                    <span class="info-label">Tamaño</span>
+                                    <span class="info-value">Pequeño</span>
+                                </div>
+                                <div class="case-file-info-item">
+                                    <span class="info-label">Color</span>
+                                    <span class="info-value">Canela</span>
+                                </div>
+                                <div class="case-file-info-item">
+                                    <span class="info-label">Estado</span>
+                                    <span class="info-value">Activo</span>
+                                </div>
+                            </div>
+
+                            <div class="case-file-timeline">
+                                <div class="timeline-item">
+                                    <span class="timeline-dot"></span>
+                                    <div>
+                                        <span class="timeline-date">03 Ago</span>
+                                        <span class="timeline-label">Seguimiento registrado</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <span class="timeline-dot"></span>
+                                    <div>
+                                        <span class="timeline-date">04 Ago</span>
+                                        <span class="timeline-label">Validado por el equipo</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <span class="timeline-dot active"></span>
+                                    <div>
+                                        <span class="timeline-date">05 Ago</span>
+                                        <span class="timeline-label">Vista por última vez en Usaquén</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="case-file-cta">Ver expediente completo</div>
                         </div>
                     </div>
                 </div>
@@ -245,7 +306,7 @@
             </div>
 
             <div class="footer-column-links">
-                <h4>Navegación</h4>
+                <h4><span aria-hidden="true">🐾</span> Navegación</h4>
                 <ul>
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#proceso-seguimiento">Cómo Funciona</a></li>
@@ -255,7 +316,7 @@
             </div>
 
             <div class="footer-column-links">
-                <h4>Plataforma</h4>
+                <h4><span aria-hidden="true">🐾</span> Plataforma</h4>
                 <ul>
                     <li><a th:href="@{/login}">Iniciar Sesión</a></li>
                     <li><a th:href="@{/registro}">Registrarse</a></li>
