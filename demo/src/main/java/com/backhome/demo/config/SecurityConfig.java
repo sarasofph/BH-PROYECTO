@@ -112,9 +112,7 @@ public class SecurityConfig {
 
                         } else {
 
-                            response.sendRedirect(
-                                "/cliente/dashboard"
-                            );
+                           response.sendRedirect("/");
                         }
                     }
                 )
