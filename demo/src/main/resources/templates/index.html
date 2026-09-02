@@ -45,7 +45,7 @@
 
             <div class="header-actions-group">
                 <a th:href="@{/login}" class="auth-link-login">Iniciar sesión</a>
-                <a th:href="@{/registro}" class="auth-btn-register">Registrarse</a>
+                <a th:href="@{/registro}" class="auth-btn-register">Crear cuenta gratis</a>
             </div>
         </div>
     </header>
@@ -61,14 +61,11 @@
                     <h1>Cada mascota merece un camino seguro de
                         <span class="accent-text">
                             regreso a casa
-                            <svg class="accent-swash" viewBox="0 0 220 20" preserveAspectRatio="none" aria-hidden="true">
-                                <path d="M2 14C40 4 90 2 110 10C130 18 180 6 218 12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-                            </svg>
                         </span>
                     </h1>
                     <p>Haz seguimiento a mascotas perdidas o encontradas en Bogotá, desde el primer reporte hasta el reencuentro.</p>
                     <div class="hero-buttons-container">
-                        <a th:href="@{/registro}" class="btn-primary-action">Publicar un caso</a>
+                        <a th:href="@{/registro}" class="btn-primary-action">Reportar mi mascota</a>
                     </div>
                 </div>
 
@@ -100,9 +97,15 @@
                         </span>
                         <div>
                             <h3>Perdiste una mascota</h3>
-                            <p>Publicá los datos y una foto para que la comunidad te ayude a encontrarla.</p>
+                            <p>Publicá una foto reciente y el lugar donde la viste por última vez para activar la búsqueda comunitaria en minutos.</p>
                         </div>
                     </div>
+
+                    <ul class="primary-action-checklist">
+                        <li>Foto reciente de tu mascota</li>
+                        <li>Última ubicación donde la viste</li>
+                        <li>Tus datos de contacto</li>
+                    </ul>
 
                     <div class="mini-tracker">
                         <div class="mini-step">
@@ -119,7 +122,7 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Publicar aviso de pérdida <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/registro}" class="primary-action-cta">Reportar pérdida ahora <span aria-hidden="true">→</span></a>
                 </div>
 
                 <div class="primary-action-card tone-hope">
@@ -131,9 +134,15 @@
                         </span>
                         <div>
                             <h3>Encontraste una mascota</h3>
-                            <p>Informá el hallazgo para ayudar a que regrese con su familia.</p>
+                            <p>Subí una foto y contanos dónde la encontraste para ayudarnos a identificar a su familia lo antes posible.</p>
                         </div>
                     </div>
+
+                    <ul class="primary-action-checklist">
+                        <li>Foto del animal encontrado</li>
+                        <li>Lugar exacto del hallazgo</li>
+                        <li>Estado en que se encuentra</li>
+                    </ul>
 
                     <div class="mini-tracker">
                         <div class="mini-step">
@@ -150,7 +159,7 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Publicar aviso de hallazgo <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/registro}" class="primary-action-cta">Reportar hallazgo ahora <span aria-hidden="true">→</span></a>
                 </div>
             </div>
 
@@ -165,14 +174,11 @@
                         <div class="map-illustration-grid"></div>
                         <span class="map-district d-1"></span>
                         <span class="map-district d-2"></span>
-                        <span class="map-district d-3"></span>
-                        <span class="map-pin-lg pin-alert" style="top:22%; left:60%;"></span>
-                        <span class="map-pin-lg pin-hope" style="top:52%; left:34%;"></span>
-                        <span class="map-pin-lg pin-resolved" style="top:38%; left:78%;"></span>
-                        <span class="map-pin-lg pin-alert" style="top:66%; left:70%;"></span>
-                        <span class="map-locality-tag" style="top:16%; left:56%;">Usaquén</span>
-                        <span class="map-locality-tag" style="top:60%; left:16%;">Kennedy</span>
-                        <span class="map-locality-tag" style="top:70%; left:64%;">Suba</span>
+                        <span class="map-pin-lg pin-alert" style="top:26%; left:58%;"></span>
+                        <span class="map-pin-lg pin-hope" style="top:56%; left:32%;"></span>
+                        <span class="map-pin-lg pin-resolved" style="top:42%; left:76%;"></span>
+                        <span class="map-locality-tag" style="top:20%; left:54%;">Usaquén</span>
+                        <span class="map-locality-tag" style="top:64%; left:16%;">Kennedy</span>
                     </div>
 
                     <div class="map-legend">
@@ -187,20 +193,10 @@
 
                         <ul class="locality-feature-list">
                             <li>Cada seguimiento aparece ubicado en el mapa</li>
-                            <li>Los pines distinguen perdido, encontrado y resuelto</li>
                             <li>Filtrás por localidad para ver solo lo que te interesa</li>
                         </ul>
 
-                        <div class="locality-chip-row" aria-hidden="true">
-                            <span class="locality-chip">Usaquén</span>
-                            <span class="locality-chip">Chapinero</span>
-                            <span class="locality-chip">Suba</span>
-                            <span class="locality-chip">Kennedy</span>
-                            <span class="locality-chip">Engativá</span>
-                            <span class="locality-chip">Teusaquillo</span>
-                        </div>
-
-                        <div class="map-cta">Ver mapa completo</div>
+                        <div class="map-cta">Mapa disponible pronto</div>
                     </div>
                 </div>
 
@@ -266,7 +262,7 @@
                                 </div>
                             </div>
 
-                            <div class="case-file-cta">Ver expediente completo</div>
+                            <div class="case-file-cta">Seguir este caso <span aria-hidden="true">→</span></div>
                         </div>
                     </div>
                 </div>
@@ -288,7 +284,7 @@
                     <h3>Apóyanos y Sostenibilidad</h3>
                     <p>Tu aporte mantiene la plataforma activa y respalda a los hogares de paso que cuidan mascotas mientras encuentran su camino de regreso.</p>
                     <p class="support-microcopy">Cada aporte ayuda a un hogar de paso.</p>
-                    <a th:href="@{/donaciones}" class="btn-stub-action">Ver formas de ayudar <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/donaciones}" class="btn-stub-action">Quiero ayudar <span aria-hidden="true">→</span></a>
                 </div>
             </div>
         </section>

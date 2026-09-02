@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "personas")
@@ -47,7 +48,8 @@ public class Persona {
     @Column(name = "numero_tel", nullable = false)
     private String numeroTel;
 
-    @Column(name = "estrato")
+
+    @Transient
     private Integer estrato;
 
     @Column(name = "password", nullable = false)
@@ -150,14 +152,6 @@ public class Persona {
 
     public void setNumeroTel(String numeroTel) {
         this.numeroTel = numeroTel;
-    }
-
-    public Integer getEstrato() {
-        return estrato;
-    }
-
-    public void setEstrato(Integer estrato) {
-        this.estrato = estrato;
     }
 
     public String getPassword() {
