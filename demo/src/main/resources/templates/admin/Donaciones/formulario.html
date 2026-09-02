@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Nueva donación | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
+
+</head>
+
+<body>
+<div class="admin-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🐾</div>
+    <div><h2>BackHome</h2><span>Panel administrativo</span></div>
+  </div>
+  <nav class="menu">
+    <p class="menu-title">PRINCIPAL</p>
+    <a th:href="@{/admin/dashboard}"><span>🏠</span> Dashboard</a>
+    <p class="menu-title">ADMINISTRACIÓN</p>
+    <a th:href="@{/admin/usuarios}"><span>👥</span> Usuarios</a>
+    <a th:href="@{/admin/animales}"><span>🐶</span> Animales</a>
+    <a th:href="@{/admin/seguimientos}"><span>🔎</span> Seguimientos</a>
+    <a th:href="@{/admin/refugios}"><span>🏠</span> Refugios</a>
+    <a th:href="@{/admin/donaciones}"><span>💗</span> Donaciones</a>
+    <a th:href="@{/admin/soporte}"><span>💬</span> Soporte</a>
+    <p class="menu-title">HERRAMIENTAS</p>
+    <a th:href="@{/admin/coincidencias}"><span>🔗</span> Coincidencias</a>
+    <a th:href="@{/admin/ingresos-refugio}"><span>🐾</span> Ingresos a refugio</a>
+    <a th:href="@{/admin/prioridades}"><span>⭐</span> Prioridades</a>
+    <a th:href="@{/admin/lugares}"><span>📍</span> Lugares</a>
+    <a th:href="@{/admin/consejos}"><span>💡</span> Consejos</a>
+  </nav>
+  <div class="sidebar-footer"><div class="admin-info"><div class="admin-avatar">A</div><div><strong>Administrador</strong><span>Panel BackHome</span></div></div></div>
+</aside>
+
+
+<div class="contenedor">
+
+<main class="contenido">
+
+    <div class="encabezado">
+
+        <div>
+            <h2>💗 Nueva donación</h2>
+        </div>
+
+        <a th:href="@{/admin/donaciones}"
+           class="boton boton-secundario">
+            Volver
+        </a>
+
+    </div>
+
+    <form th:action="@{/admin/donaciones/guardar}"
+          th:object="${donacion}"
+          method="post"
+          class="tarjeta formulario">
+
+        <div>
+
+            <label>Cliente</label>
+
+            <select name="clienteId"
+                    required>
+
+                <option value="">
+                    Selecciona un cliente
+                </option>
+
+                <option th:each="cliente : ${clientes}"
+                        th:value="${cliente.idCliente}"
+                        th:text="${cliente.persona.primerNombre + ' ' + cliente.persona.primerApellido}">
+                </option>
+
+            </select>
+
+        </div>
+
+        <div>
+
+            <label>Refugio</label>
+
+            <select name="refugioId">
+
+                <option value="">
+                    Donación general
+                </option>
+
+                <option th:each="refugio : ${refugios}"
+                        th:value="${refugio.idRefugio}"
+                        th:text="${refugio.nombre}">
+                </option>
+
+            </select>
+
+        </div>
+
+        <div>
+
+            <label>Monto</label>
+
+            <input type="number"
+                   step="0.01"
+                   min="0"
+                   th:field="*{monto}"
+                   required>
+
+        </div>
+
+        <div>
+
+            <label>Estado</label>
+
+            <select th:field="*{estado}">
+
+                <option value="pendiente">
+                    Pendiente
+                </option>
+
+                <option value="confirmada">
+                    Confirmada
+                </option>
+
+                <option value="cancelada">
+                    Cancelada
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="completo">
+
+            <label>Fecha de donación</label>
+
+            <input type="datetime-local"
+                   th:field="*{fechaDonacion}">
+
+        </div>
+
+        <div class="completo">
+
+            <label>Mensaje</label>
+
+            <textarea th:field="*{mensaje}">
+            </textarea>
+
+        </div>
+
+        <div class="completo">
+
+            <button type="submit">
+                Guardar donación
+            </button>
+
+        </div>
+
+    </form>
+
+</main>
+
+</div>
+</div>
+</body>
+</html>

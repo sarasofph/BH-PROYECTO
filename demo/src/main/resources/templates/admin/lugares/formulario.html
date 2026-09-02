@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Nuevo lugar | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
+
+</head>
+
+<body>
+<div class="admin-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🐾</div>
+    <div><h2>BackHome</h2><span>Panel administrativo</span></div>
+  </div>
+  <nav class="menu">
+    <p class="menu-title">PRINCIPAL</p>
+    <a th:href="@{/admin/dashboard}"><span>🏠</span> Dashboard</a>
+    <p class="menu-title">ADMINISTRACIÓN</p>
+    <a th:href="@{/admin/usuarios}"><span>👥</span> Usuarios</a>
+    <a th:href="@{/admin/animales}"><span>🐶</span> Animales</a>
+    <a th:href="@{/admin/seguimientos}"><span>🔎</span> Seguimientos</a>
+    <a th:href="@{/admin/refugios}"><span>🏠</span> Refugios</a>
+    <a th:href="@{/admin/donaciones}"><span>💗</span> Donaciones</a>
+    <a th:href="@{/admin/soporte}"><span>💬</span> Soporte</a>
+    <p class="menu-title">HERRAMIENTAS</p>
+    <a th:href="@{/admin/coincidencias}"><span>🔗</span> Coincidencias</a>
+    <a th:href="@{/admin/ingresos-refugio}"><span>🐾</span> Ingresos a refugio</a>
+    <a th:href="@{/admin/prioridades}"><span>⭐</span> Prioridades</a>
+    <a th:href="@{/admin/lugares}"><span>📍</span> Lugares</a>
+    <a th:href="@{/admin/consejos}"><span>💡</span> Consejos</a>
+  </nav>
+  <div class="sidebar-footer"><div class="admin-info"><div class="admin-avatar">A</div><div><strong>Administrador</strong><span>Panel BackHome</span></div></div></div>
+</aside>
+
+
+<div class="contenedor">
+
+<main class="contenido">
+
+    <div class="encabezado">
+
+        <h2>📍 Nuevo lugar</h2>
+
+        <a th:href="@{/admin/lugares}"
+           class="boton boton-secundario">
+            Volver
+        </a>
+
+    </div>
+
+    <form th:action="@{/admin/lugares/guardar}"
+          th:object="${lugar}"
+          method="post"
+          class="tarjeta formulario">
+
+        <div class="completo">
+
+            <label>Dirección</label>
+
+            <input type="text"
+                   th:field="*{direccion}"
+                   required>
+
+        </div>
+
+        <div>
+
+            <label>Localidad</label>
+
+            <select name="localidadId"
+                    required>
+
+                <option value="">
+                    Selecciona una localidad
+                </option>
+
+                <option th:each="localidad : ${localidades}"
+                        th:value="${localidad.idLocalidad}"
+                        th:text="${localidad.nombre}">
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="completo">
+
+            <button type="submit">
+                Guardar lugar
+            </button>
+
+        </div>
+
+    </form>
+
+</main>
+
+</div>
+</div>
+</body>
+</html>

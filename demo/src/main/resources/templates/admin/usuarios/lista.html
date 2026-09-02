@@ -12,7 +12,7 @@
     <title>Gestionar usuarios | BackHome</title>
 
     <link rel="stylesheet"
-          th:href="@{/css/admin/admin.css}">
+          th:href="@{/css/admin/admin-crud.css}">
 
     <style>
 
@@ -379,25 +379,13 @@
 
                 </a>
 
-                <a href="#">
-                    <span class="nav-icon">🐾</span>
-                    <span>Gestionar seguimientos</span>
-                </a>
+                <a th:href="@{/admin/seguimientos}"></a>
 
-                <a href="#">
-                    <span class="nav-icon">💗</span>
-                    <span>Gestionar donaciones</span>
-                </a>
+                <a th:href="@{/admin/donaciones}"></a>
 
-                <a href="#">
-                    <span class="nav-icon">💬</span>
-                    <span>Soporte</span>
-                </a>
+                <a th:href="@{/admin/soporte}"></a>
 
-                <a href="#">
-                    <span class="nav-icon">🏠</span>
-                    <span>Gestionar refugios</span>
-                </a>
+                <a th:href="@{/admin/refugios}"></a>
 
                 <a href="#">
                     <span class="nav-icon">📊</span>

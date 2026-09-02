@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Seguimientos | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
+</head>
+
+<body>
+<div class="admin-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🐾</div>
+    <div><h2>BackHome</h2><span>Panel administrativo</span></div>
+  </div>
+  <nav class="menu">
+    <p class="menu-title">PRINCIPAL</p>
+    <a th:href="@{/admin/dashboard}"><span>🏠</span> Dashboard</a>
+    <p class="menu-title">ADMINISTRACIÓN</p>
+    <a th:href="@{/admin/usuarios}"><span>👥</span> Usuarios</a>
+    <a th:href="@{/admin/animales}"><span>🐶</span> Animales</a>
+    <a th:href="@{/admin/seguimientos}"><span>🔎</span> Seguimientos</a>
+    <a th:href="@{/admin/refugios}"><span>🏠</span> Refugios</a>
+    <a th:href="@{/admin/donaciones}"><span>💗</span> Donaciones</a>
+    <a th:href="@{/admin/soporte}"><span>💬</span> Soporte</a>
+    <p class="menu-title">HERRAMIENTAS</p>
+    <a th:href="@{/admin/coincidencias}"><span>🔗</span> Coincidencias</a>
+    <a th:href="@{/admin/ingresos-refugio}"><span>🐾</span> Ingresos a refugio</a>
+    <a th:href="@{/admin/prioridades}"><span>⭐</span> Prioridades</a>
+    <a th:href="@{/admin/lugares}"><span>📍</span> Lugares</a>
+    <a th:href="@{/admin/consejos}"><span>💡</span> Consejos</a>
+  </nav>
+  <div class="sidebar-footer"><div class="admin-info"><div class="admin-avatar">A</div><div><strong>Administrador</strong><span>Panel BackHome</span></div></div></div>
+</aside>
+
+
+<div class="contenedor">
+
+    <main class="contenido">
+
+        <div class="encabezado">
+
+            <div>
+                <h2>🔎 Seguimientos</h2>
+                <p>Gestiona los reportes y publicaciones.</p>
+            </div>
+
+            <a th:href="@{/admin/seguimientos/nuevo}"
+               class="boton">
+                + Nuevo seguimiento
+            </a>
+
+        </div>
+
+        <div th:if="${success}"
+             class="alerta-exito"
+             th:text="${success}">
+        </div>
+
+        <div th:if="${error}"
+             class="alerta-error"
+             th:text="${error}">
+        </div>
+
+        <div class="tarjeta">
+
+            <form method="get"
+                  th:action="@{/admin/seguimientos}"
+                  class="filtros">
+
+                <div>
+                    <label>Buscar</label>
+
+                    <input type="text"
+                           name="buscar"
+                           th:value="${buscar}"
+                           placeholder="Buscar por título">
+                </div>
+
+                <div>
+                    <label>Estado</label>
+
+                    <select name="estado">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option th:each="item : ${estados}"
+                                th:value="${item}"
+                                th:text="${item}"
+                                th:selected="${estado == item.name()}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label>Moderación</label>
+
+                    <select name="moderacion">
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <option th:each="item : ${estadosModeracion}"
+                                th:value="${item}"
+                                th:text="${item}"
+                                th:selected="${moderacion == item.name()}">
+                        </option>
+
+                    </select>
+                </div>
+
+                <button type="submit">
+                    Filtrar
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="tarjeta tabla-contenedor">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Animal</th>
+                        <th>Estado</th>
+                        <th>Moderación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:each="seguimiento : ${seguimientos}">
+
+                        <td th:text="${seguimiento.idSeguimiento}">
+                        </td>
+
+                        <td th:text="${seguimiento.titulo}">
+                        </td>
+
+                        <td th:text="${seguimiento.animal.nombre}">
+                        </td>
+
+                        <td>
+                            <span class="badge"
+                                  th:text="${seguimiento.estadoSeguimiento}">
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge"
+                                  th:text="${seguimiento.estadoModeracion}">
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <div class="acciones">
+
+                                <a class="boton boton-secundario"
+                                   th:href="@{/admin/seguimientos/{id}(id=${seguimiento.idSeguimiento})}">
+                                    Ver
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(seguimientos)}">
+
+                        <td colspan="6"
+                            class="vacio">
+
+                            No existen seguimientos registrados.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+</div>
+</body>
+</html>

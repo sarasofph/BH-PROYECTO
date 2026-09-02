@@ -3,1006 +3,395 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard | BackHome</title>
+    <title>BackHome | Administrador</title>
 
-    <link rel="stylesheet"
-          th:href="@{/css/admin/admin.css}">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
+        body {
+            background: #fff7fa;
+            color: #4a3740;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #f7c8d8;
+            padding: 25px 18px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h1 {
+            color: #713d55;
+            font-size: 28px;
+        }
+
+        .logo p {
+            color: #936276;
+            font-size: 13px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #603d4b;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .menu a:hover {
+            background: #ffffffaa;
+            transform: translateX(3px);
+        }
+
+        .logout {
+            margin-top: 25px;
+        }
+
+        .logout button {
+            width: 100%;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #b34f72;
+            cursor: pointer;
+        }
+
+        .content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 35px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            color: #713d55;
+            margin-bottom: 7px;
+        }
+
+        .header p {
+            color: #8c707b;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 5px 20px #d9a9ba33;
+        }
+
+        .card span {
+            display: block;
+            color: #967481;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card strong {
+            font-size: 30px;
+            color: #713d55;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px #d9a9ba33;
+            margin-bottom: 25px;
+        }
+
+        .section h3 {
+            color: #713d55;
+            margin-bottom: 20px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .quick-links a {
+            text-decoration: none;
+            background: #fff0f5;
+            color: #713d55;
+            padding: 18px;
+            border-radius: 14px;
+            text-align: center;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .quick-links a:hover {
+            transform: translateY(-3px);
+            background: #fbd9e5;
+        }
+
+        @media(max-width: 1000px) {
+            .cards,
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+            }
+
+            .layout {
+                display: block;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .cards,
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
+<body>
 
-<body class="admin-page">
+<div class="layout">
 
+    <aside class="sidebar">
 
-<div class="admin-shell">
-
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-    <aside class="admin-sidebar">
-
-
-        <!-- MARCA -->
-
-        <div>
-
-            <div class="brand">
-
-                <img
-                    th:src="@{/images/logo-backhome.png}"
-                    alt="BackHome">
-
-                <div>
-
-                    <div class="brand-title">
-                        BackHome
-                    </div>
-
-                    <span class="brand-subtitle">
-                        Panel administrativo
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <!-- TITULO MENU -->
-
-            <div class="menu-title">
-                MENÚ PRINCIPAL
-            </div>
-
-
-            <!-- MENU -->
-
-            <nav class="admin-nav">
-
-
-                <!-- DASHBOARD -->
-
-                <a
-                    th:href="@{/admin/dashboard}"
-                    class="active">
-
-                    <span class="nav-icon">
-                        🏠
-                    </span>
-
-                    <span>
-                        Dashboard
-                    </span>
-
-                </a>
-
-
-                <!-- =================================================
-                     GESTIONAR USUARIOS
-                     AHORA SÍ LLEVA A /admin/usuarios
-                ================================================== -->
-
-                <a
-                    th:href="@{/admin/usuarios}">
-
-                    <span class="nav-icon">
-                        👥
-                    </span>
-
-                    <span>
-                        Gestionar usuarios
-                    </span>
-
-                </a>
-
-
-                <!-- SEGUIMIENTOS -->
-
-                <a href="#">
-
-                    <span class="nav-icon">
-                        🐾
-                    </span>
-
-                    <span>
-                        Gestionar seguimientos
-                    </span>
-
-                </a>
-
-
-                <!-- DONACIONES -->
-
-                <a href="#">
-
-                    <span class="nav-icon">
-                        💗
-                    </span>
-
-                    <span>
-                        Gestionar donaciones
-                    </span>
-
-                </a>
-
-
-                <!-- SOPORTE -->
-
-                <a href="#">
-
-                    <span class="nav-icon">
-                        💬
-                    </span>
-
-                    <span>
-                        Soporte
-                    </span>
-
-                </a>
-
-
-                <!-- REFUGIOS -->
-
-                <a href="#">
-
-                    <span class="nav-icon">
-                        🏠
-                    </span>
-
-                    <span>
-                        Gestionar refugios
-                    </span>
-
-                </a>
-
-
-                <!-- REPORTES -->
-
-                <a href="#">
-
-                    <span class="nav-icon">
-                        📊
-                    </span>
-
-                    <span>
-                        Reportes PDF
-                    </span>
-
-                </a>
-
-
-            </nav>
-
+        <div class="logo">
+            <h1>🐾 BackHome</h1>
+            <p>Panel administrador</p>
         </div>
 
+        <nav class="menu">
 
+            <a th:href="@{/admin/dashboard}">
+                🏠 Dashboard
+            </a>
 
-        <!-- =====================================================
-             PARTE INFERIOR SIDEBAR
-        ====================================================== -->
+            <a th:href="@{/admin/usuarios}">
+                👥 Usuarios
+            </a>
 
-        <div class="sidebar-bottom">
+            <a th:href="@{/admin/animales}">
+                🐶 Animales
+            </a>
 
+            <a th:href="@{/admin/seguimientos}">
+                🔎 Seguimientos
+            </a>
 
-            <div class="admin-mini-card">
+            <a th:href="@{/admin/lugares}">
+                📍 Lugares
+            </a>
 
-                <div class="admin-mini-label">
-                    Sesión iniciada como
-                </div>
+            <a th:href="@{/admin/prioridades}">
+                ⭐ Prioridades
+            </a>
 
-                <div
-                    class="admin-mini-name"
-                    th:text="${nombreAdministrador != null ? nombreAdministrador : 'Administrador'}">
+            <a th:href="@{/admin/refugios}">
+                🏠 Refugios
+            </a>
 
-                    Administrador
+            <a th:href="@{/admin/ingresos-refugio}">
+                🐾 Ingresos a refugio
+            </a>
 
-                </div>
+            <a th:href="@{/admin/donaciones}">
+                💗 Donaciones
+            </a>
 
-            </div>
+            <a th:href="@{/admin/coincidencias}">
+                🔗 Coincidencias
+            </a>
 
+            <a th:href="@{/admin/soporte}">
+                💬 Soporte
+            </a>
 
-            <!-- CERRAR SESIÓN -->
+            <a th:href="@{/admin/consejos}">
+                💡 Consejos
+            </a>
 
-            <form
-                th:action="@{/logout}"
-                method="post">
+        </nav>
 
-                <button
-                    class="logout-btn"
-                    type="submit">
+        <form class="logout"
+              th:action="@{/logout}"
+              method="post">
 
-                    <span class="nav-icon">
-                        ↪
-                    </span>
+            <button type="submit">
+                Cerrar sesión
+            </button>
 
-                    <span>
-                        Cerrar sesión
-                    </span>
-
-                </button>
-
-            </form>
-
-
-        </div>
-
+        </form>
 
     </aside>
 
+    <main class="content">
 
+        <div class="header">
 
-    <!-- =====================================================
-         CONTENIDO PRINCIPAL
-    ====================================================== -->
+            <h2>
+                ¡Hola,
+                <span th:text="${persona != null
+                    ? persona.primerNombre
+                    : 'Administrador'}">
+                    Administrador
+                </span>! 👋
+            </h2>
 
-    <main class="admin-main">
+            <p>
+                Bienvenido al panel de administración de BackHome.
+            </p>
 
+        </div>
 
-        <!-- =================================================
-             TOPBAR
-        ================================================== -->
+        <section class="cards">
 
-        <header class="admin-topbar">
-
-
-            <div class="breadcrumb">
-
-                BackHome
-
-                <span>
-                    ›
-                </span>
-
-                <strong>
-                    Dashboard
+            <div class="card">
+                <span>Total usuarios</span>
+                <strong th:text="${totalUsuarios}">
+                    0
                 </strong>
-
             </div>
 
-
-            <div class="top-user">
-
-
-                <div class="top-user-text">
-
-                    <div
-                        class="top-user-name"
-                        th:text="${nombreAdministrador != null ? nombreAdministrador : 'Administrador'}">
-
-                        Administrador
-
-                    </div>
-
-                    <div class="top-user-role">
-                        Administrador
-                    </div>
-
-                </div>
-
-
-                <div class="avatar">
-
-                    <span
-                        th:text="${nombreAdministrador != null and !nombreAdministrador.isEmpty()
-                                  ? #strings.substring(nombreAdministrador,0,1).toUpperCase()
-                                  : 'A'}">
-
-                        A
-
-                    </span>
-
-                </div>
-
-
+            <div class="card">
+                <span>Clientes</span>
+                <strong th:text="${totalClientes}">
+                    0
+                </strong>
             </div>
 
-
-        </header>
-
-
-
-        <!-- =================================================
-             DASHBOARD
-        ================================================== -->
-
-        <section class="dashboard">
-
-
-            <!-- =================================================
-                 BIENVENIDA
-            ================================================== -->
-
-            <section class="welcome-card">
-
-
-                <div class="welcome-content">
-
-
-                    <div class="welcome-kicker">
-
-                        🐾 CENTRO DE ADMINISTRACIÓN
-
-                    </div>
-
-
-                    <h1>
-
-                        Hola,
-
-                        <span
-                            th:text="${nombreAdministrador != null ? nombreAdministrador : 'Administrador'}">
-
-                            Administrador
-
-                        </span>
-
-                        ❤️
-
-                    </h1>
-
-
-                    <p>
-
-                        Bienvenido al panel de BackHome.
-                        Desde aquí podrás supervisar usuarios,
-                        seguimientos, donaciones, refugios,
-                        soporte y los reportes del sistema.
-
-                    </p>
-
-
-                </div>
-
-
-                <div class="welcome-decoration">
-
-                    🐾
-                    🐾
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- =================================================
-                 ESTADISTICAS
-            ================================================== -->
-
-            <section class="stats-grid">
-
-
-                <!-- USUARIOS -->
-
-                <div class="stat-card">
-
-
-                    <div class="stat-card-top">
-
-                        <div class="stat-title">
-                            Usuarios registrados
-                        </div>
-
-                        <div class="stat-icon">
-                            👥
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="stat-number"
-                        th:text="${totalUsuarios}">
-
-                        0
-
-                    </div>
-
-
-                    <div class="stat-description">
-
-                        Personas registradas en BackHome
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- CLIENTES -->
-
-                <div class="stat-card">
-
-
-                    <div class="stat-card-top">
-
-                        <div class="stat-title">
-                            Clientes
-                        </div>
-
-                        <div class="stat-icon">
-                            🐾
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="stat-number"
-                        th:text="${totalClientes}">
-
-                        0
-
-                    </div>
-
-
-                    <div class="stat-description">
-
-                        Usuarios con rol cliente
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ADMINISTRADORES -->
-
-                <div class="stat-card">
-
-
-                    <div class="stat-card-top">
-
-                        <div class="stat-title">
-                            Administradores
-                        </div>
-
-                        <div class="stat-icon">
-                            🛡️
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="stat-number"
-                        th:text="${totalAdministradores}">
-
-                        0
-
-                    </div>
-
-
-                    <div class="stat-description">
-
-                        Cuentas con acceso administrativo
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ACTIVOS -->
-
-                <div class="stat-card">
-
-
-                    <div class="stat-card-top">
-
-                        <div class="stat-title">
-                            Usuarios activos
-                        </div>
-
-                        <div class="stat-icon">
-                            ✨
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="stat-number"
-                        th:text="${totalActivos}">
-
-                        0
-
-                    </div>
-
-
-                    <div class="stat-description">
-
-                        Cuentas actualmente activas
-
-                    </div>
-
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- =================================================
-                 DOS COLUMNAS
-            ================================================== -->
-
-            <div class="dashboard-columns">
-
-
-                <!-- =================================================
-                     AREAS DE BACKHOME
-                ================================================== -->
-
-                <section class="dashboard-card">
-
-
-                    <div class="section-header">
-
-                        <div>
-
-                            <h2>
-                                Áreas de BackHome
-                            </h2>
-
-                            <p>
-                                Módulos que construiremos en el panel.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="modules-list">
-
-
-                        <!-- =================================================
-                             GESTIONAR USUARIOS
-                             ESTE AHORA ES UN ENLACE
-                        ================================================== -->
-
-                        <a
-                            class="module-item"
-                            th:href="@{/admin/usuarios}"
-                            style="text-decoration: none; color: inherit; cursor: pointer;">
-
-
-                            <div class="module-icon">
-                                👥
-                            </div>
-
-
-                            <div class="module-info">
-
-
-                                <div class="module-title">
-                                    Gestionar usuarios
-                                </div>
-
-
-                                <div class="module-desc">
-
-                                    Consultar, filtrar y administrar
-                                    las cuentas de personas,
-                                    clientes y administradores.
-
-                                </div>
-
-
-                            </div>
-
-
-                            <span class="module-status">
-                                Ver usuarios →
-                            </span>
-
-
-                        </a>
-
-
-
-                        <!-- =================================================
-                             SEGUIMIENTOS
-                        ================================================== -->
-
-                        <a
-                            class="module-item"
-                            href="#"
-                            style="text-decoration: none; color: inherit;">
-
-
-                            <div class="module-icon">
-                                🐾
-                            </div>
-
-
-                            <div class="module-info">
-
-
-                                <div class="module-title">
-                                    Gestionar seguimientos
-                                </div>
-
-
-                                <div class="module-desc">
-
-                                    Supervisar reportes de mascotas
-                                    perdidas, encontradas y su
-                                    estado de moderación.
-
-                                </div>
-
-
-                            </div>
-
-
-                            <span class="module-status">
-                                Siguiente
-                            </span>
-
-
-                        </a>
-
-
-
-                        <!-- =================================================
-                             DONACIONES
-                        ================================================== -->
-
-                        <a
-                            class="module-item"
-                            href="#"
-                            style="text-decoration: none; color: inherit;">
-
-
-                            <div class="module-icon">
-                                💗
-                            </div>
-
-
-                            <div class="module-info">
-
-
-                                <div class="module-title">
-                                    Gestionar donaciones
-                                </div>
-
-
-                                <div class="module-desc">
-
-                                    Consultar donaciones, estados,
-                                    clientes, refugios y valores
-                                    recaudados.
-
-                                </div>
-
-
-                            </div>
-
-
-                            <span class="module-status">
-                                Siguiente
-                            </span>
-
-
-                        </a>
-
-
-
-                        <!-- =================================================
-                             SOPORTE
-                        ================================================== -->
-
-                        <a
-                            class="module-item"
-                            href="#"
-                            style="text-decoration: none; color: inherit;">
-
-
-                            <div class="module-icon">
-                                💬
-                            </div>
-
-
-                            <div class="module-info">
-
-
-                                <div class="module-title">
-                                    Mensajes de soporte
-                                </div>
-
-
-                                <div class="module-desc">
-
-                                    Revisar las solicitudes y mensajes
-                                    enviados por los clientes.
-
-                                </div>
-
-
-                            </div>
-
-
-                            <span class="module-status">
-                                Pendiente
-                            </span>
-
-
-                        </a>
-
-
-
-                        <!-- =================================================
-                             REFUGIOS
-                        ================================================== -->
-
-                        <a
-                            class="module-item"
-                            href="#"
-                            style="text-decoration: none; color: inherit;">
-
-
-                            <div class="module-icon">
-                                🏠
-                            </div>
-
-
-                            <div class="module-info">
-
-
-                                <div class="module-title">
-                                    Gestionar refugios
-                                </div>
-
-
-                                <div class="module-desc">
-
-                                    Administrar los refugios asociados
-                                    a BackHome.
-
-                                </div>
-
-
-                            </div>
-
-
-                            <span class="module-status">
-                                Adicional
-                            </span>
-
-
-                        </a>
-
-
-
-                    </div>
-
-
-                </section>
-
-
-
-                <!-- =================================================
-                     ESTADO DE USUARIOS
-                ================================================== -->
-
-                <section class="dashboard-card">
-
-
-                    <div class="section-header">
-
-                        <div>
-
-                            <h2>
-                                Estado de usuarios
-                            </h2>
-
-                            <p>
-                                Resumen de las cuentas registradas.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- ACTIVOS -->
-
-                    <div class="status-row">
-
-
-                        <div>
-
-                            <strong>
-                                Activos
-                            </strong>
-
-
-                            <span class="status-label active-status">
-                                ● Operativos
-                            </span>
-
-                        </div>
-
-
-                        <strong
-                            th:text="${totalActivos}">
-
-                            0
-
-                        </strong>
-
-
-                    </div>
-
-
-
-                    <!-- BLOQUEADOS -->
-
-                    <div class="status-row">
-
-
-                        <div>
-
-                            <strong>
-                                Bloqueados
-                            </strong>
-
-
-                            <span class="status-label review-status">
-                                ● Revisar
-                            </span>
-
-                        </div>
-
-
-                        <strong
-                            th:text="${totalBloqueados}">
-
-                            0
-
-                        </strong>
-
-
-                    </div>
-
-
-
-                    <!-- SUSPENDIDOS -->
-
-                    <div class="status-row">
-
-
-                        <div>
-
-                            <strong>
-                                Suspendidos
-                            </strong>
-
-
-                            <span class="status-label review-status">
-                                ● Revisar
-                            </span>
-
-                        </div>
-
-
-                        <strong
-                            th:text="${totalSuspendidos}">
-
-                            0
-
-                        </strong>
-
-
-                    </div>
-
-
-
-                    <!-- =================================================
-                         ATAJOS
-                    ================================================== -->
-
-                    <div class="quick-grid">
-
-
-                        <!-- USUARIOS -->
-
-                        <a
-                            th:href="@{/admin/usuarios}"
-                            class="quick-button"
-                            style="text-decoration: none; color: inherit;">
-
-                            👥
-
-                            <span>
-                                Usuarios
-                            </span>
-
-                        </a>
-
-
-                        <!-- SEGUIMIENTOS -->
-
-                        <a
-                            href="#"
-                            class="quick-button"
-                            style="text-decoration: none; color: inherit;">
-
-                            🐾
-
-                            <span>
-                                Seguimientos
-                            </span>
-
-                        </a>
-
-
-                        <!-- DONACIONES -->
-
-                        <a
-                            href="#"
-                            class="quick-button"
-                            style="text-decoration: none; color: inherit;">
-
-                            ❤️
-
-                            <span>
-                                Donaciones
-                            </span>
-
-                        </a>
-
-
-                        <!-- REPORTES -->
-
-                        <a
-                            href="#"
-                            class="quick-button"
-                            style="text-decoration: none; color: inherit;">
-
-                            📄
-
-                            <span>
-                                Reportes
-                            </span>
-
-                        </a>
-
-
-                    </div>
-
-
-                </section>
-
-
+            <div class="card">
+                <span>Administradores</span>
+                <strong th:text="${totalAdministradores}">
+                    0
+                </strong>
             </div>
 
+            <div class="card">
+                <span>Usuarios activos</span>
+                <strong th:text="${totalActivos}">
+                    0
+                </strong>
+            </div>
 
         </section>
 
+        <section class="cards">
+
+            <div class="card">
+                <span>Usuarios bloqueados</span>
+                <strong th:text="${totalBloqueados}">
+                    0
+                </strong>
+            </div>
+
+            <div class="card">
+                <span>Usuarios suspendidos</span>
+                <strong th:text="${totalSuspendidos}">
+                    0
+                </strong>
+            </div>
+
+            <div class="card">
+                <span>Sin estado</span>
+                <strong th:text="${usuariosSinEstado}">
+                    0
+                </strong>
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <h3>Gestiones del sistema</h3>
+
+            <div class="quick-links">
+
+                <a th:href="@{/admin/usuarios}">
+                    👥 Gestionar usuarios
+                </a>
+
+                <a th:href="@{/admin/animales}">
+                    🐶 Gestionar animales
+                </a>
+
+                <a th:href="@{/admin/seguimientos}">
+                    🔎 Gestionar seguimientos
+                </a>
+
+                <a th:href="@{/admin/refugios}">
+                    🏠 Gestionar refugios
+                </a>
+
+                <a th:href="@{/admin/donaciones}">
+                    💗 Gestionar donaciones
+                </a>
+
+                <a th:href="@{/admin/soporte}">
+                    💬 Mensajes de soporte
+                </a>
+
+                <a th:href="@{/admin/coincidencias}">
+                    🔗 Coincidencias
+                </a>
+
+                <a th:href="@{/admin/consejos}">
+                    💡 Consejos
+                </a>
+
+            </div>
+
+        </section>
 
     </main>
 
-
 </div>
 
-
 </body>
-
 </html>
