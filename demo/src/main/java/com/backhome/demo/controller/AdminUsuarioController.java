@@ -1,7 +1,6 @@
 package com.backhome.demo.controller;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.backhome.demo.model.Administrador;
+import com.backhome.demo.model.Cliente;
 import com.backhome.demo.model.EstadoPersona;
 import com.backhome.demo.model.Persona;
 import com.backhome.demo.model.TipoDocumento;
@@ -49,9 +50,9 @@ public class AdminUsuarioController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // =====================================================
+    // =========================================================
     // LISTAR USUARIOS
-    // =====================================================
+    // =========================================================
 
     @GetMapping
     public String listarUsuarios(
@@ -60,39 +61,43 @@ public class AdminUsuarioController {
             @RequestParam(required = false) String rol,
             Model model) {
 
-        List<Persona> usuarios = personaRepository.findAll();
+        List<Persona> todosLosUsuarios =
+                personaRepository.findAllByOrderByIdPersonaDesc();
 
-        Map<Integer, String> roles = construirMapaRoles();
+        Map<Integer, String> roles =
+                construirMapaRoles();
 
         String textoBusqueda =
-                buscar == null ? "" : buscar.trim().toLowerCase();
+                buscar == null
+                        ? ""
+                        : buscar.trim().toLowerCase();
 
-        List<Persona> filtrados = new ArrayList<>();
+        List<Persona> usuarios =
+                new ArrayList<>();
 
-        for (Persona persona : usuarios) {
+        for (Persona usuario : todosLosUsuarios) {
 
             String nombreCompleto =
-                    ((persona.getPrimerNombre() == null ? "" : persona.getPrimerNombre()) + " "
-                    + (persona.getSegundoNombre() == null ? "" : persona.getSegundoNombre()) + " "
-                    + (persona.getPrimerApellido() == null ? "" : persona.getPrimerApellido()) + " "
-                    + (persona.getSegundoApellido() == null ? "" : persona.getSegundoApellido()))
-                    .trim()
-                    .toLowerCase();
+                    construirNombreCompleto(usuario)
+                            .toLowerCase();
 
             String documento =
-                    persona.getNumeroDocumento() == null
+                    usuario.getNumeroDocumento() == null
                             ? ""
-                            : persona.getNumeroDocumento().toLowerCase();
+                            : usuario.getNumeroDocumento()
+                                    .toLowerCase();
 
             String email =
-                    persona.getEmail() == null
+                    usuario.getEmail() == null
                             ? ""
-                            : persona.getEmail().toLowerCase();
+                            : usuario.getEmail()
+                                    .toLowerCase();
 
             String telefono =
-                    persona.getNumeroTel() == null
+                    usuario.getNumeroTel() == null
                             ? ""
-                            : persona.getNumeroTel().toLowerCase();
+                            : usuario.getNumeroTel()
+                                    .toLowerCase();
 
             boolean coincideBusqueda =
                     textoBusqueda.isEmpty()
@@ -101,68 +106,51 @@ public class AdminUsuarioController {
                     || email.contains(textoBusqueda)
                     || telefono.contains(textoBusqueda);
 
-            boolean coincideEstado =
-                    estado == null
-                    || estado.isBlank()
-                    || persona.getEstado() == null
-                    || persona.getEstado().name().equalsIgnoreCase(estado);
+            boolean coincideEstado = true;
 
-            String rolPersona =
+            if (estado != null && !estado.isBlank()) {
+
+                coincideEstado =
+                        usuario.getEstado() != null
+                        && usuario.getEstado()
+                                .name()
+                                .equalsIgnoreCase(estado);
+            }
+
+            String rolUsuario =
                     roles.getOrDefault(
-                            persona.getIdPersona(),
+                            usuario.getIdPersona(),
                             "Sin rol"
                     );
 
-            boolean coincideRol =
-                    rol == null
-                    || rol.isBlank()
-                    || rol.equalsIgnoreCase(rolPersona);
+            boolean coincideRol = true;
+
+            if (rol != null && !rol.isBlank()) {
+
+                coincideRol =
+                        rol.equalsIgnoreCase(rolUsuario);
+            }
 
             if (coincideBusqueda
                     && coincideEstado
                     && coincideRol) {
 
-                filtrados.add(persona);
+                usuarios.add(usuario);
             }
         }
 
-        filtrados.sort(
-                Comparator.comparing(
-                        Persona::getPrimerNombre,
-                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)
-                )
-        );
-
-        model.addAttribute("usuarios", filtrados);
-        model.addAttribute("roles", roles);
+        // =====================================================
+        // DATOS PARA LA VISTA
+        // =====================================================
 
         model.addAttribute(
-                "totalUsuarios",
-                usuarios.size()
+                "usuarios",
+                usuarios
         );
 
         model.addAttribute(
-                "totalActivos",
-                usuarios.stream()
-                        .filter(p ->
-                                p.getEstado() == EstadoPersona.activo)
-                        .count()
-        );
-
-        model.addAttribute(
-                "totalBloqueados",
-                usuarios.stream()
-                        .filter(p ->
-                                p.getEstado() == EstadoPersona.bloqueado)
-                        .count()
-        );
-
-        model.addAttribute(
-                "totalSuspendidos",
-                usuarios.stream()
-                        .filter(p ->
-                                p.getEstado() == EstadoPersona.suspendido)
-                        .count()
+                "roles",
+                roles
         );
 
         model.addAttribute(
@@ -180,12 +168,60 @@ public class AdminUsuarioController {
                 rol == null ? "" : rol
         );
 
+        // =====================================================
+        // ESTADÍSTICAS
+        // =====================================================
+
+        long totalUsuarios =
+                todosLosUsuarios.size();
+
+        long totalActivos =
+                todosLosUsuarios.stream()
+                        .filter(usuario ->
+                                usuario.getEstado()
+                                        == EstadoPersona.activo)
+                        .count();
+
+        long totalBloqueados =
+                todosLosUsuarios.stream()
+                        .filter(usuario ->
+                                usuario.getEstado()
+                                        == EstadoPersona.bloqueado)
+                        .count();
+
+        long totalSuspendidos =
+                todosLosUsuarios.stream()
+                        .filter(usuario ->
+                                usuario.getEstado()
+                                        == EstadoPersona.suspendido)
+                        .count();
+
+        model.addAttribute(
+                "totalUsuarios",
+                totalUsuarios
+        );
+
+        model.addAttribute(
+                "totalActivos",
+                totalActivos
+        );
+
+        model.addAttribute(
+                "totalBloqueados",
+                totalBloqueados
+        );
+
+        model.addAttribute(
+                "totalSuspendidos",
+                totalSuspendidos
+        );
+
         return "admin/usuarios/lista";
     }
 
-    // =====================================================
+    // =========================================================
     // VER DETALLE
-    // =====================================================
+    // =========================================================
 
     @GetMapping("/{id}")
     public String verUsuario(
@@ -193,9 +229,9 @@ public class AdminUsuarioController {
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        Persona usuario = personaRepository
-                .findById(id)
-                .orElse(null);
+        Persona usuario =
+                personaRepository.findById(id)
+                        .orElse(null);
 
         if (usuario == null) {
 
@@ -207,53 +243,81 @@ public class AdminUsuarioController {
             return "redirect:/admin/usuarios";
         }
 
-        String rol = obtenerRol(usuario);
+        String rol =
+                obtenerRol(usuario);
 
-        String nombreTipoDocumento =
-                tipoDocumentoRepository
-                        .findById(usuario.getTipoDocumentoId())
-                        .map(TipoDocumento::getNDoc)
-                        .orElse(usuario.getTipoDocumentoId());
+        String tipoDocumento =
+                "No registrado";
 
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("rol", rol);
+        if (usuario.getTipoDocumentoId() != null
+                && !usuario.getTipoDocumentoId().isBlank()) {
+
+            tipoDocumento =
+                    tipoDocumentoRepository
+                            .findById(
+                                    usuario.getTipoDocumentoId()
+                            )
+                            .map(
+                                    TipoDocumento::getNDoc
+                            )
+                            .orElse(
+                                    usuario.getTipoDocumentoId()
+                            );
+        }
+
+        model.addAttribute(
+                "usuario",
+                usuario
+        );
+
+        model.addAttribute(
+                "rol",
+                rol
+        );
+
         model.addAttribute(
                 "nombreTipoDocumento",
-                nombreTipoDocumento
+                tipoDocumento
         );
 
         return "admin/usuarios/detalle";
     }
 
-    // =====================================================
+    // =========================================================
     // FORMULARIO EDITAR
-    // =====================================================
+    // =========================================================
 
     @GetMapping("/{id}/editar")
-    public String formularioEditar(
+    public String editarFormulario(
             @PathVariable Integer id,
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        Persona usuario = personaRepository
-                .findById(id)
-                .orElse(null);
+        Persona usuario =
+                personaRepository.findById(id)
+                        .orElse(null);
 
         if (usuario == null) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
-                    "El usuario no existe."
+                    "No se encontró el usuario seleccionado."
             );
 
             return "redirect:/admin/usuarios";
         }
 
-        model.addAttribute("usuario", usuario);
+        List<TipoDocumento> tiposDocumento =
+                tipoDocumentoRepository.findAll();
+
+        model.addAttribute(
+                "usuario",
+                usuario
+        );
 
         model.addAttribute(
                 "tiposDocumento",
-                tipoDocumentoRepository.findAll()
+                tiposDocumento
         );
 
         model.addAttribute(
@@ -264,27 +328,40 @@ public class AdminUsuarioController {
         return "admin/usuarios/editar";
     }
 
-    // =====================================================
-    // GUARDAR EDICIÓN
-    // =====================================================
+    // =========================================================
+    // GUARDAR CAMBIOS DEL USUARIO
+    // =========================================================
 
     @PostMapping("/{id}/editar")
-    public String editarUsuario(
+    public String guardarEdicion(
             @PathVariable Integer id,
+
             @RequestParam String tipoDocumentoId,
+
             @RequestParam String numeroDocumento,
+
             @RequestParam String primerNombre,
-            @RequestParam(required = false) String segundoNombre,
+
+            @RequestParam(required = false)
+            String segundoNombre,
+
             @RequestParam String primerApellido,
-            @RequestParam(required = false) String segundoApellido,
+
+            @RequestParam(required = false)
+            String segundoApellido,
+
             @RequestParam String email,
+
             @RequestParam String numeroTel,
-            @RequestParam(required = false) Integer estrato,
+
+            @RequestParam(required = false)
+            Integer estrato,
+
             RedirectAttributes redirectAttributes) {
 
-        Persona usuario = personaRepository
-                .findById(id)
-                .orElse(null);
+        Persona usuario =
+                personaRepository.findById(id)
+                        .orElse(null);
 
         if (usuario == null) {
 
@@ -296,13 +373,135 @@ public class AdminUsuarioController {
             return "redirect:/admin/usuarios";
         }
 
-        numeroDocumento = numeroDocumento.trim();
-        email = email.trim().toLowerCase();
+        // =====================================================
+        // LIMPIAR INFORMACIÓN
+        // =====================================================
+
+        tipoDocumentoId =
+                tipoDocumentoId == null
+                        ? ""
+                        : tipoDocumentoId.trim();
+
+        numeroDocumento =
+                numeroDocumento == null
+                        ? ""
+                        : numeroDocumento.trim();
+
+        primerNombre =
+                primerNombre == null
+                        ? ""
+                        : primerNombre.trim();
+
+        primerApellido =
+                primerApellido == null
+                        ? ""
+                        : primerApellido.trim();
+
+        email =
+                email == null
+                        ? ""
+                        : email.trim().toLowerCase();
+
+        numeroTel =
+                numeroTel == null
+                        ? ""
+                        : numeroTel.trim();
+
+        if (segundoNombre != null) {
+            segundoNombre =
+                    segundoNombre.trim();
+        }
+
+        if (segundoApellido != null) {
+            segundoApellido =
+                    segundoApellido.trim();
+        }
+
+        // =====================================================
+        // VALIDACIONES
+        // =====================================================
+
+        if (tipoDocumentoId.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Debe seleccionar un tipo de documento."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        if (numeroDocumento.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El número de documento es obligatorio."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        if (primerNombre.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El primer nombre es obligatorio."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        if (primerApellido.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El primer apellido es obligatorio."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        if (email.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El correo electrónico es obligatorio."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        if (numeroTel.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El teléfono es obligatorio."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
+        }
+
+        // =====================================================
+        // DOCUMENTO DUPLICADO
+        // =====================================================
 
         boolean documentoDuplicado =
-                personaRepository.existsByNumeroDocumento(
-                        numeroDocumento
-                )
+                personaRepository
+                        .existsByNumeroDocumento(
+                                numeroDocumento
+                        )
                 && !numeroDocumento.equals(
                         usuario.getNumeroDocumento()
                 );
@@ -311,68 +510,123 @@ public class AdminUsuarioController {
 
             redirectAttributes.addFlashAttribute(
                     "error",
-                    "Ese número de documento ya pertenece a otro usuario."
+                    "El número de documento ya pertenece a otro usuario."
             );
 
-            return "redirect:/admin/usuarios/" + id + "/editar";
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
         }
 
+        // =====================================================
+        // CORREO DUPLICADO
+        // =====================================================
+
         boolean correoDuplicado =
-                personaRepository.existsByEmailIgnoreCase(email)
-                && !email.equalsIgnoreCase(
-                        usuario.getEmail()
+                personaRepository
+                        .existsByEmailIgnoreCase(
+                                email
+                        )
+                && (
+                    usuario.getEmail() == null
+                    || !email.equalsIgnoreCase(
+                            usuario.getEmail()
+                    )
                 );
 
         if (correoDuplicado) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
-                    "Ese correo ya pertenece a otro usuario."
+                    "El correo electrónico ya pertenece a otro usuario."
             );
 
-            return "redirect:/admin/usuarios/" + id + "/editar";
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
         }
 
-        if (!tipoDocumentoRepository.existsById(tipoDocumentoId)) {
+        // =====================================================
+        // TIPO DOCUMENTO
+        // =====================================================
+
+        boolean existeTipoDocumento =
+                tipoDocumentoRepository
+                        .existsById(tipoDocumentoId);
+
+        if (!existeTipoDocumento) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
                     "El tipo de documento seleccionado no existe."
             );
 
-            return "redirect:/admin/usuarios/" + id + "/editar";
+            return "redirect:/admin/usuarios/"
+                    + id
+                    + "/editar";
         }
 
-        usuario.setTipoDocumentoId(tipoDocumentoId);
-        usuario.setNumeroDocumento(numeroDocumento);
-        usuario.setPrimerNombre(primerNombre.trim());
+        // =====================================================
+        // ACTUALIZAR
+        // =====================================================
+
+        usuario.setTipoDocumentoId(
+                tipoDocumentoId
+        );
+
+        usuario.setNumeroDocumento(
+                numeroDocumento
+        );
+
+        usuario.setPrimerNombre(
+                primerNombre
+        );
+
         usuario.setSegundoNombre(
                 segundoNombre == null
+                        || segundoNombre.isBlank()
                         ? null
-                        : segundoNombre.trim()
+                        : segundoNombre
         );
-        usuario.setPrimerApellido(primerApellido.trim());
+
+        usuario.setPrimerApellido(
+                primerApellido
+        );
+
         usuario.setSegundoApellido(
                 segundoApellido == null
+                        || segundoApellido.isBlank()
                         ? null
-                        : segundoApellido.trim()
+                        : segundoApellido
         );
-        usuario.setEmail(email);
-        usuario.setNumeroTel(numeroTel.trim());
+
+        usuario.setEmail(
+                email
+        );
+
+        usuario.setNumeroTel(
+                numeroTel
+        );
+
+        /*
+         * NO guardamos estrato porque tu entidad Persona
+         * actualmente lo tiene como @Transient y la tabla
+         * personas no tiene una columna para ese dato.
+         */
 
         personaRepository.save(usuario);
 
         redirectAttributes.addFlashAttribute(
                 "success",
-                "La información del usuario fue actualizada correctamente."
+                "Usuario actualizado correctamente."
         );
 
         return "redirect:/admin/usuarios/" + id;
     }
 
-    // =====================================================
+    // =========================================================
     // CAMBIAR ESTADO
-    // =====================================================
+    // =========================================================
 
     @PostMapping("/{id}/estado")
     public String cambiarEstado(
@@ -381,9 +635,9 @@ public class AdminUsuarioController {
             Authentication authentication,
             RedirectAttributes redirectAttributes) {
 
-        Persona usuario = personaRepository
-                .findById(id)
-                .orElse(null);
+        Persona usuario =
+                personaRepository.findById(id)
+                        .orElse(null);
 
         if (usuario == null) {
 
@@ -395,76 +649,67 @@ public class AdminUsuarioController {
             return "redirect:/admin/usuarios";
         }
 
-        // No permitir que el administrador bloquee
-        // o suspenda su propia cuenta.
-
-        if (authentication != null
-                && authentication.getName() != null
-                && usuario.getEmail() != null
-                && usuario.getEmail()
-                        .equalsIgnoreCase(authentication.getName())) {
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "No puedes bloquear o suspender la cuenta con la que estás administrando el sistema."
-            );
-
-            return "redirect:/admin/usuarios/" + id;
-        }
-
         EstadoPersona estado;
 
         try {
 
-            estado = EstadoPersona.valueOf(
-                    nuevoEstado.toLowerCase()
-            );
+            estado =
+                    EstadoPersona.valueOf(
+                            nuevoEstado.toLowerCase()
+                    );
 
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
                     "El estado seleccionado no es válido."
             );
 
-            return "redirect:/admin/usuarios/" + id;
+            return "redirect:/admin/usuarios/"
+                    + id;
+        }
+
+        // =====================================================
+        // NO BLOQUEARSE A SÍ MISMO
+        // =====================================================
+
+        if (authentication != null
+                && authentication.getName() != null
+                && usuario.getEmail() != null
+                && usuario.getEmail()
+                        .equalsIgnoreCase(
+                                authentication.getName()
+                        )
+                && (
+                    estado == EstadoPersona.bloqueado
+                    || estado == EstadoPersona.suspendido
+                )) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "No puedes bloquear o suspender tu propia cuenta."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id;
         }
 
         usuario.setEstado(estado);
 
         personaRepository.save(usuario);
 
-        String mensaje;
-
-        switch (estado) {
-
-            case activo:
-                mensaje = "El usuario fue activado correctamente.";
-                break;
-
-            case bloqueado:
-                mensaje = "El usuario fue bloqueado correctamente.";
-                break;
-
-            case suspendido:
-                mensaje = "El usuario fue suspendido correctamente.";
-                break;
-
-            default:
-                mensaje = "Estado actualizado.";
-        }
-
         redirectAttributes.addFlashAttribute(
                 "success",
-                mensaje
+                "Estado del usuario actualizado correctamente."
         );
 
-        return "redirect:/admin/usuarios/" + id;
+        return "redirect:/admin/usuarios/"
+                + id;
     }
 
-    // =====================================================
+    // =========================================================
     // CAMBIAR CONTRASEÑA
-    // =====================================================
+    // =========================================================
 
     @PostMapping("/{id}/password")
     public String cambiarPassword(
@@ -473,9 +718,9 @@ public class AdminUsuarioController {
             @RequestParam String confirmarPassword,
             RedirectAttributes redirectAttributes) {
 
-        Persona usuario = personaRepository
-                .findById(id)
-                .orElse(null);
+        Persona usuario =
+                personaRepository.findById(id)
+                        .orElse(null);
 
         if (usuario == null) {
 
@@ -488,97 +733,190 @@ public class AdminUsuarioController {
         }
 
         if (nuevaPassword == null
-                || nuevaPassword.length() < 6) {
+                || nuevaPassword.isBlank()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "La nueva contraseña es obligatoria."
+            );
+
+            return "redirect:/admin/usuarios/"
+                    + id;
+        }
+
+        if (nuevaPassword.length() < 6) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
                     "La contraseña debe tener mínimo 6 caracteres."
             );
 
-            return "redirect:/admin/usuarios/" + id;
+            return "redirect:/admin/usuarios/"
+                    + id;
         }
 
-        if (!nuevaPassword.equals(confirmarPassword)) {
+        if (confirmarPassword == null
+                || !nuevaPassword.equals(
+                        confirmarPassword
+                )) {
 
             redirectAttributes.addFlashAttribute(
                     "error",
                     "Las contraseñas no coinciden."
             );
 
-            return "redirect:/admin/usuarios/" + id;
+            return "redirect:/admin/usuarios/"
+                    + id;
         }
 
         usuario.setPassword(
-                passwordEncoder.encode(nuevaPassword)
+                passwordEncoder.encode(
+                        nuevaPassword
+                )
         );
 
         personaRepository.save(usuario);
 
         redirectAttributes.addFlashAttribute(
                 "success",
-                "La contraseña fue actualizada correctamente."
+                "Contraseña actualizada correctamente."
         );
 
-        return "redirect:/admin/usuarios/" + id;
+        return "redirect:/admin/usuarios/"
+                + id;
     }
 
-    // =====================================================
-    // MAPA DE ROLES
-    // =====================================================
+    // =========================================================
+    // ROLES
+    // =========================================================
 
     private Map<Integer, String> construirMapaRoles() {
 
-        Map<Integer, String> roles = new HashMap<>();
+        Map<Integer, String> roles =
+                new HashMap<>();
 
-        administradorRepository.findAll()
-                .forEach(admin -> {
+        List<Administrador> administradores =
+                administradorRepository.findAll();
 
-                    if (admin.getPersona() != null) {
+        for (Administrador administrador
+                : administradores) {
 
-                        roles.put(
-                                admin.getPersona().getIdPersona(),
-                                "Administrador"
-                        );
-                    }
-                });
+            if (administrador.getPersona() != null
+                    && administrador.getPersona()
+                            .getIdPersona() != null) {
 
-        clienteRepository.findAll()
-                .forEach(cliente -> {
+                roles.put(
+                        administrador.getPersona()
+                                .getIdPersona(),
+                        "Administrador"
+                );
+            }
+        }
 
-                    if (cliente.getPersona() != null
-                            && !roles.containsKey(
-                                    cliente.getPersona().getIdPersona())) {
+        List<Cliente> clientes =
+                clienteRepository.findAll();
 
-                        roles.put(
-                                cliente.getPersona().getIdPersona(),
-                                "Cliente"
-                        );
-                    }
-                });
+        for (Cliente cliente : clientes) {
+
+            if (cliente.getPersona() != null
+                    && cliente.getPersona()
+                            .getIdPersona() != null) {
+
+                Integer id =
+                        cliente.getPersona()
+                                .getIdPersona();
+
+                if (!roles.containsKey(id)) {
+
+                    roles.put(
+                            id,
+                            "Cliente"
+                    );
+                }
+            }
+        }
 
         return roles;
     }
 
-    private String obtenerRol(Persona persona) {
+    private String obtenerRol(
+            Persona usuario) {
 
-        if (persona == null) {
+        if (usuario == null
+                || usuario.getIdPersona() == null) {
+
             return "Sin rol";
         }
 
+        Integer id =
+                usuario.getIdPersona();
+
         if (administradorRepository
-                .existsByPersona_IdPersona(
-                        persona.getIdPersona())) {
+                .existsByPersona_IdPersona(id)) {
 
             return "Administrador";
         }
 
         if (clienteRepository
-                .existsByPersona_IdPersona(
-                        persona.getIdPersona())) {
+                .existsByPersona_IdPersona(id)) {
 
             return "Cliente";
         }
 
         return "Sin rol";
+    }
+
+    // =========================================================
+    // NOMBRE COMPLETO
+    // =========================================================
+
+    private String construirNombreCompleto(
+            Persona usuario) {
+
+        if (usuario == null) {
+            return "";
+        }
+
+        StringBuilder nombre =
+                new StringBuilder();
+
+        agregarNombre(
+                nombre,
+                usuario.getPrimerNombre()
+        );
+
+        agregarNombre(
+                nombre,
+                usuario.getSegundoNombre()
+        );
+
+        agregarNombre(
+                nombre,
+                usuario.getPrimerApellido()
+        );
+
+        agregarNombre(
+                nombre,
+                usuario.getSegundoApellido()
+        );
+
+        return nombre.toString().trim();
+    }
+
+    private void agregarNombre(
+            StringBuilder nombre,
+            String parte) {
+
+        if (parte != null
+                && !parte.trim().isEmpty()) {
+
+            if (nombre.length() > 0) {
+                nombre.append(" ");
+            }
+
+            nombre.append(
+                    parte.trim()
+            );
+        }
     }
 }

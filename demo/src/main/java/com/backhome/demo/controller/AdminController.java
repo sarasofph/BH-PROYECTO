@@ -28,60 +28,131 @@ public class AdminController {
         this.administradorRepository = administradorRepository;
     }
 
+    // =========================================================
+    // DASHBOARD ADMINISTRADOR
+    // =========================================================
+
     @GetMapping("/admin/dashboard")
     public String dashboard(
             Authentication authentication,
             Model model) {
 
-        String email = authentication.getName();
+        // -----------------------------------------------------
+        // INFORMACIÓN DEL ADMINISTRADOR LOGUEADO
+        // -----------------------------------------------------
 
-        Persona persona = personaRepository
-                .findByEmailIgnoreCase(email)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "No se encontró el administrador."
-                        )
+        if (authentication != null) {
+
+            String email = authentication.getName();
+
+            Persona persona = personaRepository
+                    .findByEmailIgnoreCase(email)
+                    .orElse(null);
+
+            if (persona != null) {
+                model.addAttribute("persona", persona);
+            }
+        }
+
+        // -----------------------------------------------------
+        // USUARIOS
+        // -----------------------------------------------------
+
+        long totalUsuarios =
+                personaRepository.count();
+
+        long totalClientes =
+                clienteRepository.count();
+
+        long totalAdministradores =
+                administradorRepository.count();
+
+        long totalActivos =
+                personaRepository.countByEstado(
+                        EstadoPersona.activo
                 );
 
-        // Información del administrador
-        model.addAttribute("persona", persona);
+        long totalBloqueados =
+                personaRepository.countByEstado(
+                        EstadoPersona.bloqueado
+                );
 
-        // Estadísticas generales
+        long totalSuspendidos =
+                personaRepository.countByEstado(
+                        EstadoPersona.suspendido
+                );
+
+        // -----------------------------------------------------
+        // ATRIBUTOS DEL DASHBOARD
+        // -----------------------------------------------------
+
         model.addAttribute(
                 "totalUsuarios",
-                personaRepository.count()
+                totalUsuarios
         );
 
         model.addAttribute(
                 "totalClientes",
-                clienteRepository.count()
+                totalClientes
         );
 
         model.addAttribute(
                 "totalAdministradores",
-                administradorRepository.count()
+                totalAdministradores
         );
 
-        // Estados de usuarios
+        model.addAttribute(
+                "totalActivos",
+                totalActivos
+        );
+
+        model.addAttribute(
+                "totalBloqueados",
+                totalBloqueados
+        );
+
+        model.addAttribute(
+                "totalSuspendidos",
+                totalSuspendidos
+        );
+
+        // -----------------------------------------------------
+        // TAMBIÉN DEJAMOS LOS NOMBRES ANTERIORES
+        // PARA EVITAR ERRORES EN OTRAS VISTAS
+        // -----------------------------------------------------
+
         model.addAttribute(
                 "usuariosActivos",
-                personaRepository.countByEstado(
-                        EstadoPersona.activo
-                )
+                totalActivos
         );
 
         model.addAttribute(
                 "usuariosBloqueados",
-                personaRepository.countByEstado(
-                        EstadoPersona.bloqueado
-                )
+                totalBloqueados
         );
 
         model.addAttribute(
                 "usuariosSuspendidos",
-                personaRepository.countByEstado(
-                        EstadoPersona.suspendido
-                )
+                totalSuspendidos
+        );
+
+        // -----------------------------------------------------
+        // TOTAL DE USUARIOS NO CLASIFICADOS
+        // -----------------------------------------------------
+
+        long usuariosSinEstado =
+                totalUsuarios
+                        - totalActivos
+                        - totalBloqueados
+                        - totalSuspendidos;
+
+        if (usuariosSinEstado < 0) {
+            usuariosSinEstado = 0;
+        }
+
+        model.addAttribute(
+                "usuariosSinEstado",
+                usuariosSinEstado
         );
 
         return "admin/dashboard";

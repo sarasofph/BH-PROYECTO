@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Formulario refugio | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
+
+</head>
+
+<body>
+<div class="admin-layout">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🐾</div>
+    <div><h2>BackHome</h2><span>Panel administrativo</span></div>
+  </div>
+  <nav class="menu">
+    <p class="menu-title">PRINCIPAL</p>
+    <a th:href="@{/admin/dashboard}"><span>🏠</span> Dashboard</a>
+    <p class="menu-title">ADMINISTRACIÓN</p>
+    <a th:href="@{/admin/usuarios}"><span>👥</span> Usuarios</a>
+    <a th:href="@{/admin/animales}"><span>🐶</span> Animales</a>
+    <a th:href="@{/admin/seguimientos}"><span>🔎</span> Seguimientos</a>
+    <a th:href="@{/admin/refugios}"><span>🏠</span> Refugios</a>
+    <a th:href="@{/admin/donaciones}"><span>💗</span> Donaciones</a>
+    <a th:href="@{/admin/soporte}"><span>💬</span> Soporte</a>
+    <p class="menu-title">HERRAMIENTAS</p>
+    <a th:href="@{/admin/coincidencias}"><span>🔗</span> Coincidencias</a>
+    <a th:href="@{/admin/ingresos-refugio}"><span>🐾</span> Ingresos a refugio</a>
+    <a th:href="@{/admin/prioridades}"><span>⭐</span> Prioridades</a>
+    <a th:href="@{/admin/lugares}"><span>📍</span> Lugares</a>
+    <a th:href="@{/admin/consejos}"><span>💡</span> Consejos</a>
+  </nav>
+  <div class="sidebar-footer"><div class="admin-info"><div class="admin-avatar">A</div><div><strong>Administrador</strong><span>Panel BackHome</span></div></div></div>
+</aside>
+
+
+<div class="contenedor">
+
+<main class="contenido">
+
+    <div class="encabezado">
+
+        <div>
+            <h2>🏠 Refugio</h2>
+            <p>Registra o edita un refugio.</p>
+        </div>
+
+        <a th:href="@{/admin/refugios}"
+           class="boton boton-secundario">
+            Volver
+        </a>
+
+    </div>
+
+    <form th:action="@{/admin/refugios/guardar}"
+          th:object="${refugio}"
+          method="post"
+          class="tarjeta formulario">
+
+        <input type="hidden"
+               th:field="*{idRefugio}">
+
+        <div>
+
+            <label>Nombre</label>
+
+            <input type="text"
+                   th:field="*{nombre}"
+                   required>
+
+        </div>
+
+        <div>
+
+            <label>Teléfono</label>
+
+            <input type="text"
+                   th:field="*{telefono}">
+
+        </div>
+
+        <div>
+
+            <label>Correo electrónico</label>
+
+            <input type="email"
+                   th:field="*{email}">
+
+        </div>
+
+        <div>
+
+            <label>Estado</label>
+
+            <select th:field="*{estado}">
+
+                <option value="activo">
+                    Activo
+                </option>
+
+                <option value="inactivo">
+                    Inactivo
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="completo">
+
+            <label>Dirección</label>
+
+            <input type="text"
+                   th:field="*{direccion}"
+                   required>
+
+        </div>
+
+        <div>
+
+            <label>Localidad</label>
+
+            <select name="localidadId"
+                    required>
+
+                <option value="">
+                    Selecciona una localidad
+                </option>
+
+                <option th:each="localidad : ${localidades}"
+                        th:value="${localidad.idLocalidad}"
+                        th:text="${localidad.nombre}"
+                        th:selected="${refugio.localidad != null && refugio.localidad.idLocalidad == localidad.idLocalidad}">
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="completo">
+
+            <label>Descripción</label>
+
+            <textarea th:field="*{descripcion}">
+            </textarea>
+
+        </div>
+
+        <div class="completo">
+
+            <button type="submit">
+                Guardar refugio
+            </button>
+
+            <a th:href="@{/admin/refugios}"
+               class="boton boton-secundario">
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</main>
+
+</div>
+</div>
+</body>
+</html>

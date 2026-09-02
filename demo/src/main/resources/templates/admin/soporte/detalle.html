@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Detalle soporte | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<main class="contenido">
+
+    <div class="encabezado">
+
+        <div>
+            <h2>💬 Mensaje de soporte</h2>
+        </div>
+
+        <a th:href="@{/admin/soporte}"
+           class="boton boton-secundario">
+            Volver
+        </a>
+
+    </div>
+
+    <div class="tarjeta">
+
+        <div class="detalle">
+
+            <div class="titulo">
+                Cliente
+            </div>
+
+            <div th:text="${mensaje.cliente.persona.primerNombre + ' ' + mensaje.cliente.persona.primerApellido}">
+            </div>
+
+            <div class="titulo">
+                Correo
+            </div>
+
+            <div th:text="${mensaje.cliente.persona.email}">
+            </div>
+
+            <div class="titulo">
+                Fecha
+            </div>
+
+            <div th:text="${mensaje.fechaMensaje}">
+            </div>
+
+            <div class="titulo">
+                Mensaje
+            </div>
+
+            <div th:text="${mensaje.mensajeCliente}">
+            </div>
+
+        </div>
+
+        <br>
+
+        <form th:action="@{/admin/soporte/{id}/eliminar(id=${mensaje.idMensaje})}"
+              method="post">
+
+            <button type="submit"
+                    class="boton boton-peligro"
+                    onclick="return confirm('¿Eliminar mensaje?')">
+
+                Eliminar mensaje
+
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+</div>
+
+</body>
+</html>

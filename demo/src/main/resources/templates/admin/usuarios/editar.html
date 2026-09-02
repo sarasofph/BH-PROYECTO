@@ -1,169 +1,397 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Editar usuario | BackHome</title>
 
-    <link
-        rel="stylesheet"
-        th:href="@{/css/admin/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/admin-crud.css}">
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+        }
+
         .editar-page {
-            padding:30px;
+            padding: 32px;
+            min-height: calc(100vh - 70px);
         }
 
         .editar-header {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+
+        .header-text {
+            min-width: 0;
         }
 
         .kicker {
-            color:#c96e8d;
-            font-size:11px;
-            font-weight:800;
-            text-transform:uppercase;
-            letter-spacing:1px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #c96889;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
         }
 
         .title {
-            margin:7px 0 5px;
-            color:#4d4247;
-            font-size:30px;
-            font-weight:850;
+            margin: 0;
+            color: #493d43;
+            font-size: 31px;
+            line-height: 1.2;
+            font-weight: 850;
         }
 
         .description {
-            margin:0;
-            color:#8b7b81;
-            font-size:13px;
+            margin: 8px 0 0;
+            color: #8d7c83;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         .back-button {
-            padding:11px 16px;
-            border-radius:14px;
-            background:white;
-            border:1px solid #f1dce3;
-            color:#8a596b;
-            text-decoration:none;
-            font-size:12px;
-            font-weight:700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 42px;
+            padding: 0 17px;
+            border-radius: 13px;
+            background: #ffffff;
+            border: 1px solid #efdce3;
+            color: #80596a;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: .2s ease;
         }
 
+        .back-button:hover {
+            background: #fff4f7;
+            border-color: #e7b9c9;
+            transform: translateY(-1px);
+        }
+
+        /* ALERTAS */
+
+        .alert {
+            max-width: 1100px;
+            margin-bottom: 18px;
+            padding: 14px 17px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .alert-error {
+            color: #a84f5e;
+            background: #fff0f2;
+            border: 1px solid #f3cdd5;
+        }
+
+        .alert-success {
+            color: #47785b;
+            background: #effaf2;
+            border: 1px solid #cdebd5;
+        }
+
+        /* TARJETA PRINCIPAL */
+
+        .edit-layout {
+            max-width: 1100px;
+        }
+
+        .user-summary {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            padding: 19px 21px;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #fff7fa, #fffafb);
+            border: 1px solid #f0dce3;
+            border-radius: 20px;
+        }
+
+        .user-avatar {
+            width: 58px;
+            height: 58px;
+            flex: 0 0 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 17px;
+            background: #f9dce7;
+            font-size: 27px;
+        }
+
+        .user-summary-info {
+            min-width: 0;
+        }
+
+        .user-name {
+            margin: 0 0 5px;
+            color: #493d43;
+            font-size: 17px;
+            font-weight: 850;
+            text-transform: capitalize;
+        }
+
+        .user-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            color: #8c7b82;
+            font-size: 11px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #f8e3eb;
+            color: #a95775;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .status-activo {
+            color: #3d7c55;
+            background: #eaf7ee;
+        }
+
+        .status-bloqueado {
+            color: #a54f5a;
+            background: #fff0f1;
+        }
+
+        .status-suspendido {
+            color: #9a6b32;
+            background: #fff5e6;
+        }
+
+        /* FORM CARD */
+
         .form-card {
-            max-width:950px;
-            background:white;
-            border:1px solid #f1e0e5;
-            border-radius:22px;
-            padding:25px;
-            box-shadow:0 15px 40px rgba(100,70,80,.07);
+            background: #ffffff;
+            border: 1px solid #efdee4;
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 15px 45px rgba(100, 70, 80, .07);
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            color: #4e4148;
+            font-size: 18px;
+            font-weight: 850;
+        }
+
+        .section-heading p {
+            margin: 5px 0 0;
+            color: #99888f;
+            font-size: 11px;
         }
 
         .form-grid {
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:18px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 19px 18px;
+        }
+
+        .field {
+            min-width: 0;
         }
 
         .field.full {
-            grid-column:1 / -1;
+            grid-column: 1 / -1;
         }
 
         .field label {
-            display:block;
-            margin-bottom:7px;
-            color:#786970;
-            font-size:11px;
-            font-weight:800;
+            display: block;
+            margin-bottom: 7px;
+            color: #675960;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .required {
+            color: #d47796;
         }
 
         .field input,
         .field select {
-            width:100%;
-            box-sizing:border-box;
-            padding:12px;
-            border:1px solid #eadde1;
-            border-radius:12px;
-            background:#fffafb;
-            color:#55484e;
-            outline:none;
-            font-size:12px;
+            width: 100%;
+            height: 45px;
+            padding: 0 13px;
+            border: 1px solid #eadde2;
+            border-radius: 12px;
+            outline: none;
+            background: #fffafb;
+            color: #51454b;
+            font-family: inherit;
+            font-size: 12px;
+            transition: .2s ease;
+        }
+
+        .field input::placeholder {
+            color: #b7aab0;
+        }
+
+        .field input:hover,
+        .field select:hover {
+            border-color: #dfc2cd;
         }
 
         .field input:focus,
         .field select:focus {
-            border-color:#dda1b6;
-            background:white;
+            border-color: #d995ad;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(217, 149, 173, .10);
         }
 
+        .field-help {
+            margin-top: 5px;
+            color: #a4949b;
+            font-size: 10px;
+        }
+
+        /* ACCIONES */
+
         .form-actions {
-            display:flex;
-            justify-content:flex-end;
-            gap:10px;
-            margin-top:25px;
-            padding-top:20px;
-            border-top:1px solid #f3e8eb;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-top: 28px;
+            padding-top: 21px;
+            border-top: 1px solid #f1e6e9;
         }
 
         .button {
-            padding:11px 18px;
-            border:0;
-            border-radius:12px;
-            text-decoration:none;
-            cursor:pointer;
-            font-size:12px;
-            font-weight:800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 43px;
+            padding: 0 18px;
+            border: 0;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            transition: .2s ease;
         }
 
-        .cancel {
-            background:#f7eef1;
-            color:#805f6b;
+        .button.cancel {
+            background: #f7eef1;
+            color: #765b67;
         }
 
-        .save {
-            background:#d87898;
-            color:white;
+        .button.cancel:hover {
+            background: #f1e3e8;
         }
 
-        @media(max-width:750px) {
+        .button.save {
+            background: #d87898;
+            color: #ffffff;
+            box-shadow: 0 7px 18px rgba(216, 120, 152, .22);
+        }
 
-            .form-grid {
-                grid-template-columns:1fr;
-            }
+        .button.save:hover {
+            background: #c96688;
+            transform: translateY(-1px);
+            box-shadow: 0 9px 22px rgba(216, 120, 152, .28);
+        }
 
-            .field.full {
-                grid-column:auto;
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .editar-page {
+                padding: 22px;
             }
 
             .editar-header {
-                align-items:flex-start;
-                flex-direction:column;
-                gap:15px;
+                flex-direction: column;
             }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .editar-page {
+                padding: 16px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .user-summary {
+                align-items: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .button {
+                width: 100%;
+            }
+
         }
 
     </style>
-
 </head>
 
 
 <body class="admin-page">
 
-
 <div class="admin-shell">
 
-
-    <!-- SIDEBAR -->
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
 
     <aside class="admin-sidebar">
 
@@ -198,48 +426,89 @@
             <nav class="admin-nav">
 
                 <a th:href="@{/admin/dashboard}">
+
                     <span class="nav-icon">🏠</span>
-                    <span>Dashboard</span>
+
+                    <span>
+                        Dashboard
+                    </span>
+
                 </a>
+
 
                 <a
                     th:href="@{/admin/usuarios}"
                     class="active">
 
                     <span class="nav-icon">👥</span>
-                    <span>Gestionar usuarios</span>
+
+                    <span>
+                        Gestionar usuarios
+                    </span>
 
                 </a>
 
+
                 <a href="#">
+
                     <span class="nav-icon">🐾</span>
-                    <span>Gestionar seguimientos</span>
+
+                    <span>
+                        Gestionar seguimientos
+                    </span>
+
                 </a>
 
+
                 <a href="#">
+
                     <span class="nav-icon">💗</span>
-                    <span>Gestionar donaciones</span>
+
+                    <span>
+                        Gestionar donaciones
+                    </span>
+
                 </a>
 
+
                 <a href="#">
+
                     <span class="nav-icon">💬</span>
-                    <span>Soporte</span>
+
+                    <span>
+                        Soporte
+                    </span>
+
                 </a>
 
+
                 <a href="#">
+
                     <span class="nav-icon">🏠</span>
-                    <span>Gestionar refugios</span>
+
+                    <span>
+                        Gestionar refugios
+                    </span>
+
                 </a>
 
+
                 <a href="#">
+
                     <span class="nav-icon">📊</span>
-                    <span>Reportes PDF</span>
+
+                    <span>
+                        Reportes PDF
+                    </span>
+
                 </a>
 
             </nav>
 
         </div>
 
+
+        <!-- CERRAR SESIÓN -->
 
         <div class="sidebar-bottom">
 
@@ -268,8 +537,9 @@
     </aside>
 
 
-
-    <!-- CONTENIDO -->
+    <!-- =========================
+         CONTENIDO
+    ========================== -->
 
     <main class="admin-main">
 
@@ -278,8 +548,21 @@
 
             <div class="breadcrumb">
 
-                BackHome
-                <span>›</span>
+                <span>
+                    BackHome
+                </span>
+
+                <span>
+                    ›
+                </span>
+
+                <strong>
+                    Gestionar usuarios
+                </strong>
+
+                <span>
+                    ›
+                </span>
 
                 <strong>
                     Editar usuario
@@ -290,13 +573,16 @@
         </header>
 
 
-
         <section class="editar-page">
 
 
+            <!-- =========================
+                 CABECERA
+            ========================== -->
+
             <div class="editar-header">
 
-                <div>
+                <div class="header-text">
 
                     <div class="kicker">
                         ✏️ Administración
@@ -307,10 +593,7 @@
                     </h1>
 
                     <p class="description">
-
-                        Actualiza la información personal
-                        del usuario seleccionado.
-
+                        Actualiza la información personal del usuario seleccionado.
                     </p>
 
                 </div>
@@ -327,233 +610,407 @@
             </div>
 
 
-
-            <!-- ERROR -->
+            <!-- =========================
+                 MENSAJES
+            ========================== -->
 
             <div
                 th:if="${error}"
-                style="max-width:950px; box-sizing:border-box; padding:13px 16px; margin-bottom:15px; border-radius:13px; background:#fff0f0; color:#b45e5e; font-size:12px; font-weight:700;"
+                class="alert alert-error"
                 th:text="${error}">
             </div>
 
 
-
-            <!-- FORM -->
-
-            <section class="form-card">
-
-
-                <form
-                    method="post"
-                    th:action="@{/admin/usuarios/{id}/editar(id=${usuario.idPersona})}">
+            <div
+                th:if="${success}"
+                class="alert alert-success"
+                th:text="${success}">
+            </div>
 
 
-                    <div class="form-grid">
+            <div class="edit-layout">
 
 
-                        <!-- TIPO DOCUMENTO -->
+                <!-- =========================
+                     RESUMEN DEL USUARIO
+                ========================== -->
 
-                        <div class="field">
+                <div class="user-summary">
 
-                            <label>
-                                Tipo de documento
-                            </label>
+                    <div class="user-avatar">
+                        👤
+                    </div>
 
-                            <select
-                                name="tipoDocumentoId"
-                                required>
 
-                                <option
-                                    th:each="tipo : ${tiposDocumento}"
-                                    th:value="${tipo.idTDoc}"
-                                    th:text="${tipo.nDoc}"
-                                    th:selected="${tipo.idTDoc == usuario.tipoDocumentoId}">
+                    <div class="user-summary-info">
 
-                                    Documento
+                        <div
+                            class="user-name"
+                            th:text="${usuario.primerNombre + ' ' + (usuario.primerApellido == null ? '' : usuario.primerApellido)}">
 
-                                </option>
-
-                            </select>
+                            Usuario
 
                         </div>
 
 
+                        <div class="user-meta">
 
-                        <!-- NUMERO -->
+                            <span
+                                class="role-badge"
+                                th:text="${rol}">
 
-                        <div class="field">
+                                Cliente
 
-                            <label>
-                                Número de documento
-                            </label>
-
-                            <input
-                                type="text"
-                                name="numeroDocumento"
-                                maxlength="20"
-                                required
-                                th:value="${usuario.numeroDocumento}">
-
-                        </div>
+                            </span>
 
 
+                            <span
+                                class="status-badge status-activo"
+                                th:if="${usuario.estado != null and usuario.estado.name() == 'activo'}">
 
-                        <!-- PRIMER NOMBRE -->
+                                ● Activo
 
-                        <div class="field">
-
-                            <label>
-                                Primer nombre
-                            </label>
-
-                            <input
-                                type="text"
-                                name="primerNombre"
-                                required
-                                th:value="${usuario.primerNombre}">
-
-                        </div>
+                            </span>
 
 
+                            <span
+                                class="status-badge status-bloqueado"
+                                th:if="${usuario.estado != null and usuario.estado.name() == 'bloqueado'}">
 
-                        <!-- SEGUNDO NOMBRE -->
+                                ● Bloqueado
 
-                        <div class="field">
+                            </span>
 
-                            <label>
-                                Segundo nombre
-                            </label>
 
-                            <input
-                                type="text"
-                                name="segundoNombre"
-                                th:value="${usuario.segundoNombre}">
+                            <span
+                                class="status-badge status-suspendido"
+                                th:if="${usuario.estado != null and usuario.estado.name() == 'suspendido'}">
+
+                                ● Suspendido
+
+                            </span>
+
+
+                            <span
+                                th:if="${usuario.email != null}"
+                                th:text="${usuario.email}">
+
+                                correo
+
+                            </span>
 
                         </div>
 
+                    </div>
+
+                </div>
 
 
-                        <!-- PRIMER APELLIDO -->
+                <!-- =========================
+                     FORMULARIO
+                ========================== -->
 
-                        <div class="field">
-
-                            <label>
-                                Primer apellido
-                            </label>
-
-                            <input
-                                type="text"
-                                name="primerApellido"
-                                required
-                                th:value="${usuario.primerApellido}">
-
-                        </div>
+                <section class="form-card">
 
 
+                    <div class="section-heading">
 
-                        <!-- SEGUNDO APELLIDO -->
+                        <h2>
+                            Información personal
+                        </h2>
 
-                        <div class="field">
-
-                            <label>
-                                Segundo apellido
-                            </label>
-
-                            <input
-                                type="text"
-                                name="segundoApellido"
-                                th:value="${usuario.segundoApellido}">
-
-                        </div>
-
-
-
-                        <!-- EMAIL -->
-
-                        <div class="field full">
-
-                            <label>
-                                Correo electrónico
-                            </label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                th:value="${usuario.email}">
-
-                        </div>
-
-
-
-                        <!-- TELEFONO -->
-
-                        <div class="field">
-
-                            <label>
-                                Teléfono
-                            </label>
-
-                            <input
-                                type="text"
-                                name="numeroTel"
-                                required
-                                th:value="${usuario.numeroTel}">
-
-                        </div>
-
-
-
-                        <!-- ESTRATO -->
-
-                        <div class="field">
-
-                            <label>
-                                Estrato
-                            </label>
-
-                            <input
-                                type="number"
-                                name="estrato"
-                                min="0"
-                                max="6"
-                                th:value="${usuario.estrato}">
-
-                        </div>
-
+                        <p>
+                            Modifica los datos del usuario y guarda los cambios.
+                        </p>
 
                     </div>
 
 
-
-                    <div class="form-actions">
-
-
-                        <a
-                            class="button cancel"
-                            th:href="@{/admin/usuarios/{id}(id=${usuario.idPersona})}">
-
-                            Cancelar
-
-                        </a>
+                    <form
+                        method="post"
+                        th:action="@{/admin/usuarios/{id}/editar(id=${usuario.idPersona})}">
 
 
-                        <button
-                            class="button save"
-                            type="submit">
-
-                            💾 Guardar cambios
-
-                        </button>
+                        <div class="form-grid">
 
 
-                    </div>
+                            <!-- TIPO DOCUMENTO -->
+
+                            <div class="field">
+
+                                <label for="tipoDocumentoId">
+
+                                    Tipo de documento
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
 
 
-                </form>
+                                <select
+                                    id="tipoDocumentoId"
+                                    name="tipoDocumentoId"
+                                    required>
+
+                                    <option
+                                        value=""
+                                        disabled
+                                        th:selected="${usuario.tipoDocumentoId == null}">
+
+                                        Selecciona un tipo
+
+                                    </option>
 
 
-            </section>
+                                    <option
+                                        th:each="tipo : ${tiposDocumento}"
+                                        th:value="${tipo.idTDoc}"
+                                        th:text="${tipo.nDoc}"
+                                        th:selected="${tipo.idTDoc == usuario.tipoDocumentoId}">
+
+                                        Documento
+
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- DOCUMENTO -->
+
+                            <div class="field">
+
+                                <label for="numeroDocumento">
+
+                                    Número de documento
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="numeroDocumento"
+                                    type="text"
+                                    name="numeroDocumento"
+                                    maxlength="20"
+                                    autocomplete="off"
+                                    required
+                                    th:value="${usuario.numeroDocumento}">
+
+                            </div>
+
+
+                            <!-- PRIMER NOMBRE -->
+
+                            <div class="field">
+
+                                <label for="primerNombre">
+
+                                    Primer nombre
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="primerNombre"
+                                    type="text"
+                                    name="primerNombre"
+                                    maxlength="100"
+                                    required
+                                    th:value="${usuario.primerNombre}">
+
+                            </div>
+
+
+                            <!-- SEGUNDO NOMBRE -->
+
+                            <div class="field">
+
+                                <label for="segundoNombre">
+
+                                    Segundo nombre
+
+                                </label>
+
+
+                                <input
+                                    id="segundoNombre"
+                                    type="text"
+                                    name="segundoNombre"
+                                    maxlength="100"
+                                    th:value="${usuario.segundoNombre}">
+
+                            </div>
+
+
+                            <!-- PRIMER APELLIDO -->
+
+                            <div class="field">
+
+                                <label for="primerApellido">
+
+                                    Primer apellido
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="primerApellido"
+                                    type="text"
+                                    name="primerApellido"
+                                    maxlength="100"
+                                    required
+                                    th:value="${usuario.primerApellido}">
+
+                            </div>
+
+
+                            <!-- SEGUNDO APELLIDO -->
+
+                            <div class="field">
+
+                                <label for="segundoApellido">
+
+                                    Segundo apellido
+
+                                </label>
+
+
+                                <input
+                                    id="segundoApellido"
+                                    type="text"
+                                    name="segundoApellido"
+                                    maxlength="100"
+                                    th:value="${usuario.segundoApellido}">
+
+                            </div>
+
+
+                            <!-- CORREO -->
+
+                            <div class="field full">
+
+                                <label for="email">
+
+                                    Correo electrónico
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="email"
+                                    type="email"
+                                    name="email"
+                                    maxlength="150"
+                                    required
+                                    th:value="${usuario.email}">
+
+                            </div>
+
+
+                            <!-- TELÉFONO -->
+
+                            <div class="field">
+
+                                <label for="numeroTel">
+
+                                    Teléfono
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+
+                                <input
+                                    id="numeroTel"
+                                    type="text"
+                                    name="numeroTel"
+                                    maxlength="20"
+                                    required
+                                    th:value="${usuario.numeroTel}">
+
+                            </div>
+
+
+                            <!-- ID -->
+
+                            <div class="field">
+
+                                <label>
+                                    ID del usuario
+                                </label>
+
+
+                                <input
+                                    type="text"
+                                    readonly
+                                    th:value="${usuario.idPersona}">
+
+                                <div class="field-help">
+                                    El identificador se genera automáticamente y no puede modificarse.
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- =========================
+                             BOTONES
+                        ========================== -->
+
+                        <div class="form-actions">
+
+
+                            <a
+                                class="button cancel"
+                                th:href="@{/admin/usuarios/{id}(id=${usuario.idPersona})}">
+
+                                Cancelar
+
+                            </a>
+
+
+                            <button
+                                class="button save"
+                                type="submit">
+
+                                💾 Guardar cambios
+
+                            </button>
+
+
+                        </div>
+
+
+                    </form>
+
+
+                </section>
+
+
+            </div>
 
 
         </section>
@@ -561,9 +1018,7 @@
 
     </main>
 
-
 </div>
-
 
 </body>
 

@@ -42,8 +42,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
-        String emailNormalizado =
-                email.trim().toLowerCase();
+        String emailNormalizado = email.trim().toLowerCase();
+
 
         // =====================================================
         // 2. BUSCAR PERSONA
@@ -57,8 +57,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                         )
                 );
 
+
         // =====================================================
-        // 3. VALIDAR ESTADO
+        // 3. VALIDAR ESTADO DE LA CUENTA
         // =====================================================
 
         if (persona.getEstado() == null) {
@@ -70,14 +71,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         switch (persona.getEstado()) {
 
             case activo:
+                // Puede continuar con el inicio de sesión.
                 break;
 
             case bloqueado:
+                // NO puede iniciar sesión.
                 throw new UsernameNotFoundException(
                         "La cuenta se encuentra bloqueada."
                 );
 
             case suspendido:
+                // NO puede iniciar sesión.
                 throw new UsernameNotFoundException(
                         "La cuenta se encuentra suspendida."
                 );
@@ -88,17 +92,19 @@ public class CustomUserDetailsService implements UserDetailsService {
                 );
         }
 
+
         // =====================================================
         // 4. VALIDAR CONTRASEÑA
         // =====================================================
 
-        if (persona.getPassword() == null ||
-                persona.getPassword().trim().isEmpty()) {
+        if (persona.getPassword() == null
+                || persona.getPassword().trim().isEmpty()) {
 
             throw new UsernameNotFoundException(
                     "La cuenta no tiene una contraseña configurada."
             );
         }
+
 
         // =====================================================
         // 5. COMPROBAR PERFIL / ROL
@@ -116,23 +122,29 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 persona.getIdPersona()
                         );
 
+
         if (!esAdmin && !esCliente) {
             throw new UsernameNotFoundException(
                     "La persona no tiene un perfil asociado."
             );
         }
 
+
         // =====================================================
-        // 6. CREAR USUARIO PARA SPRING SECURITY
+        // 6. CREAR USUARIO DE SPRING SECURITY
         // =====================================================
 
         User.UserBuilder userBuilder = User
                 .withUsername(persona.getEmail())
                 .password(persona.getPassword())
+
+                // La cuenta ya fue validada arriba.
                 .disabled(false)
+
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false);
+
 
         // =====================================================
         // 7. ASIGNAR ROL
@@ -146,6 +158,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             userBuilder.roles("CLIENTE");
         }
+
+
+        // =====================================================
+        // 8. DEVOLVER USUARIO AUTENTICABLE
+        // =====================================================
 
         return userBuilder.build();
     }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -9,226 +8,490 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Detalle usuario | BackHome</title>
+    <title>Detalle de usuario | BackHome</title>
 
-    <link
-        rel="stylesheet"
-        th:href="@{/css/admin/admin.css}">
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin-crud.css}">
 
     <style>
 
+        * {
+            box-sizing: border-box;
+        }
+
         .detalle-page {
             padding: 30px;
+            min-height: calc(100vh - 70px);
         }
+
+        /* =========================
+           CABECERA
+        ========================= */
 
         .detalle-header {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
-        }
-
-        .detalle-title {
-            margin:7px 0 5px;
-            color:#4d4247;
-            font-size:30px;
-            font-weight:850;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
         .detalle-kicker {
-            color:#c96e8d;
-            font-size:11px;
-            font-weight:800;
-            text-transform:uppercase;
-            letter-spacing:1px;
+            color: #c96889;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 7px;
+        }
+
+        .detalle-title {
+            margin: 0;
+            color: #493d43;
+            font-size: 31px;
+            line-height: 1.2;
+            font-weight: 850;
+        }
+
+        .detalle-description {
+            margin: 7px 0 0;
+            color: #96868d;
+            font-size: 13px;
         }
 
         .back-button {
-            padding:11px 16px;
-            border-radius:14px;
-            background:white;
-            border:1px solid #f1dce3;
-            color:#8a596b;
-            text-decoration:none;
-            font-size:12px;
-            font-weight:700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 42px;
+            padding: 0 17px;
+            border-radius: 13px;
+            background: #ffffff;
+            border: 1px solid #efdce3;
+            color: #80596a;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: .2s ease;
         }
 
+        .back-button:hover {
+            background: #fff4f7;
+            border-color: #e6bdcc;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           MENSAJES
+        ========================= */
+
+        .message {
+            padding: 13px 17px;
+            margin-bottom: 18px;
+            border-radius: 13px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .message-success {
+            background: #edf8f0;
+            border: 1px solid #d3ead9;
+            color: #558c63;
+        }
+
+        .message-error {
+            background: #fff0f0;
+            border: 1px solid #f0d1d1;
+            color: #b45e5e;
+        }
+
+
+        /* =========================
+           CONTENEDOR
+        ========================= */
+
+        .detalle-container {
+            max-width: 1150px;
+        }
+
+
+        /* =========================
+           PERFIL
+        ========================= */
+
         .profile-card {
-            background:white;
-            border:1px solid #f1e0e5;
-            border-radius:22px;
-            padding:25px;
-            margin-bottom:20px;
-            box-shadow:0 15px 40px rgba(100,70,80,.07);
+            position: relative;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #efdee4;
+            border-radius: 22px;
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 45px rgba(100, 70, 80, .07);
+        }
+
+        .profile-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(
+                90deg,
+                #f4cbd9,
+                #d985a2,
+                #f4cbd9
+            );
         }
 
         .profile-top {
-            display:flex;
-            align-items:center;
-            gap:18px;
-            padding-bottom:22px;
-            border-bottom:1px solid #f3e8eb;
+            display: flex;
+            align-items: center;
+            gap: 19px;
+            padding-bottom: 23px;
+            border-bottom: 1px solid #f1e5e9;
         }
 
         .profile-avatar {
-            width:70px;
-            height:70px;
-            display:grid;
-            place-items:center;
-            border-radius:20px;
-            background:#f9e0e9;
-            color:#a45572;
-            font-size:25px;
-            font-weight:850;
+            width: 76px;
+            height: 76px;
+            flex: 0 0 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 21px;
+            background: linear-gradient(
+                135deg,
+                #f9dce7,
+                #f5e8ed
+            );
+            color: #a45572;
+            font-size: 27px;
+            font-weight: 850;
+        }
+
+        .profile-content {
+            min-width: 0;
         }
 
         .profile-name {
-            color:#51454a;
-            font-size:23px;
-            font-weight:850;
+            margin: 0;
+            color: #4d4147;
+            font-size: 24px;
+            font-weight: 850;
+            text-transform: capitalize;
         }
 
         .profile-email {
-            margin-top:5px;
-            color:#94848a;
-            font-size:12px;
+            margin-top: 5px;
+            color: #93838a;
+            font-size: 12px;
+        }
+
+        .profile-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 10px;
         }
 
         .role {
-            display:inline-block;
-            margin-top:8px;
-            padding:5px 10px;
-            border-radius:999px;
-            background:#f7e7ed;
-            color:#a45772;
-            font-size:10px;
-            font-weight:800;
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 11px;
+            border-radius: 999px;
+            background: #f7e4eb;
+            color: #a45772;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .status-activo {
+            background: #edf8f0;
+            color: #558c63;
+        }
+
+        .status-bloqueado {
+            background: #fff0f0;
+            color: #b45e5e;
+        }
+
+        .status-suspendido {
+            background: #fff6e8;
+            color: #ae8145;
+        }
+
+
+        /* =========================
+           INFORMACIÓN
+        ========================= */
+
+        .information-title {
+            margin: 22px 0 14px;
+            color: #51454b;
+            font-size: 16px;
+            font-weight: 850;
         }
 
         .info-grid {
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:15px;
-            margin-top:22px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
         }
 
         .info-item {
-            padding:15px;
-            border-radius:14px;
-            background:#fff9fb;
+            min-height: 76px;
+            padding: 14px 15px;
+            border: 1px solid #f2e4e9;
+            border-radius: 15px;
+            background: #fff9fb;
+            transition: .2s ease;
+        }
+
+        .info-item:hover {
+            border-color: #ebccd8;
+            background: #fff7fa;
         }
 
         .info-label {
-            color:#9a8990;
-            font-size:10px;
-            font-weight:700;
-            text-transform:uppercase;
+            color: #a08e96;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .5px;
         }
 
         .info-value {
-            margin-top:6px;
-            color:#574a50;
-            font-size:13px;
-            font-weight:750;
+            margin-top: 7px;
+            color: #55484e;
+            font-size: 12px;
+            line-height: 1.4;
+            font-weight: 750;
+            word-break: break-word;
         }
 
-        .estado {
-            display:inline-flex;
-            padding:6px 10px;
-            border-radius:999px;
-            font-size:10px;
-            font-weight:800;
+        .info-value.muted {
+            color: #aa9ba1;
+            font-weight: 600;
         }
 
-        .activo {
-            background:#edf8f0;
-            color:#5d956b;
-        }
 
-        .bloqueado {
-            background:#fff0f0;
-            color:#bd6868;
-        }
+        /* =========================
+           ACCIONES
+        ========================= */
 
-        .suspendido {
-            background:#fff6e8;
-            color:#ae8145;
+        .actions-title {
+            margin: 25px 0 13px;
+            color: #51454b;
+            font-size: 16px;
+            font-weight: 850;
         }
 
         .actions-grid {
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:12px;
-            margin-top:20px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 13px;
         }
 
         .action-card {
-            padding:18px;
-            border:1px solid #f1e0e5;
-            border-radius:17px;
-            background:white;
+            background: #ffffff;
+            border: 1px solid #efdee4;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 9px 25px rgba(100, 70, 80, .045);
+        }
+
+        .action-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 11px;
+            border-radius: 12px;
+            background: #f9e6ed;
+            font-size: 18px;
         }
 
         .action-card h3 {
-            margin:0 0 5px;
-            color:#584a50;
-            font-size:14px;
+            margin: 0 0 5px;
+            color: #55484e;
+            font-size: 13px;
+            font-weight: 850;
         }
 
         .action-card p {
-            margin:0 0 13px;
-            color:#9a8990;
-            font-size:11px;
+            min-height: 32px;
+            margin: 0 0 13px;
+            color: #9a8990;
+            font-size: 10px;
+            line-height: 1.5;
         }
 
         .action-button {
-            width:100%;
-            padding:10px;
-            border:0;
-            border-radius:11px;
-            background:#f8e4eb;
-            color:#a45772;
-            font-weight:800;
-            cursor:pointer;
+            width: 100%;
+            min-height: 39px;
+            padding: 0 10px;
+            border: 0;
+            border-radius: 11px;
+            background: #f8e4eb;
+            color: #a45772;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
         }
 
         .action-button:hover {
-            background:#f3d4df;
-        }
-
-        .danger-button {
-            background:#fff0f0;
-            color:#b45e5e;
+            background: #f1d3de;
+            transform: translateY(-1px);
         }
 
         .success-button {
-            background:#edf8f0;
-            color:#558c63;
+            background: #edf8f0;
+            color: #558c63;
+        }
+
+        .success-button:hover {
+            background: #dff1e4;
+        }
+
+        .danger-button {
+            background: #fff0f0;
+            color: #b45e5e;
+        }
+
+        .danger-button:hover {
+            background: #f9dddd;
+        }
+
+
+        /* =========================
+           PASSWORD
+        ========================= */
+
+        .password-card {
+            grid-column: span 2;
+        }
+
+        .password-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 8px;
+            align-items: center;
         }
 
         .password-input {
-            width:100%;
-            box-sizing:border-box;
-            padding:10px;
-            margin-bottom:8px;
-            border:1px solid #eadde1;
-            border-radius:10px;
-            outline:none;
+            width: 100%;
+            height: 39px;
+            padding: 0 11px;
+            border: 1px solid #eadde1;
+            border-radius: 10px;
+            outline: none;
+            background: #fffafb;
+            color: #51454b;
+            font-family: inherit;
+            font-size: 11px;
         }
 
-        @media(max-width:850px) {
+        .password-input:focus {
+            border-color: #d995ad;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(217, 149, 173, .10);
+        }
 
-            .info-grid,
+        .password-form .action-button {
+            width: auto;
+            min-width: 150px;
+        }
+
+
+        /* =========================
+           EDITAR
+        ========================= */
+
+        .edit-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-card .action-button {
+            margin-top: auto;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1050px) {
+
+            .info-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
             .actions-grid {
-                grid-template-columns:1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .password-card {
+                grid-column: auto;
+            }
+
+            .password-form {
+                grid-template-columns: 1fr;
+            }
+
+            .password-form .action-button {
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .detalle-page {
+                padding: 20px;
             }
 
             .detalle-header {
-                align-items:flex-start;
-                flex-direction:column;
-                gap:15px;
+                flex-direction: column;
             }
+
+            .info-grid,
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-top {
+                align-items: flex-start;
+            }
+
+            .profile-name {
+                font-size: 20px;
+            }
+
+            .profile-avatar {
+                width: 62px;
+                height: 62px;
+                flex-basis: 62px;
+            }
+
         }
 
     </style>
@@ -242,7 +505,9 @@
 <div class="admin-shell">
 
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
     <aside class="admin-sidebar">
 
@@ -276,49 +541,106 @@
 
             <nav class="admin-nav">
 
+
                 <a th:href="@{/admin/dashboard}">
-                    <span class="nav-icon">🏠</span>
-                    <span>Dashboard</span>
+
+                    <span class="nav-icon">
+                        🏠
+                    </span>
+
+                    <span>
+                        Dashboard
+                    </span>
+
                 </a>
+
 
                 <a
                     th:href="@{/admin/usuarios}"
                     class="active">
 
-                    <span class="nav-icon">👥</span>
-                    <span>Gestionar usuarios</span>
+                    <span class="nav-icon">
+                        👥
+                    </span>
+
+                    <span>
+                        Gestionar usuarios
+                    </span>
 
                 </a>
 
-                <a href="#">
-                    <span class="nav-icon">🐾</span>
-                    <span>Gestionar seguimientos</span>
-                </a>
-
-                <a href="#">
-                    <span class="nav-icon">💗</span>
-                    <span>Gestionar donaciones</span>
-                </a>
 
                 <a href="#">
-                    <span class="nav-icon">💬</span>
-                    <span>Soporte</span>
+
+                    <span class="nav-icon">
+                        🐾
+                    </span>
+
+                    <span>
+                        Gestionar seguimientos
+                    </span>
+
                 </a>
 
-                <a href="#">
-                    <span class="nav-icon">🏠</span>
-                    <span>Gestionar refugios</span>
-                </a>
 
                 <a href="#">
-                    <span class="nav-icon">📊</span>
-                    <span>Reportes PDF</span>
+
+                    <span class="nav-icon">
+                        💗
+                    </span>
+
+                    <span>
+                        Gestionar donaciones
+                    </span>
+
                 </a>
+
+
+                <a href="#">
+
+                    <span class="nav-icon">
+                        💬
+                    </span>
+
+                    <span>
+                        Soporte
+                    </span>
+
+                </a>
+
+
+                <a href="#">
+
+                    <span class="nav-icon">
+                        🏠
+                    </span>
+
+                    <span>
+                        Gestionar refugios
+                    </span>
+
+                </a>
+
+
+                <a href="#">
+
+                    <span class="nav-icon">
+                        📊
+                    </span>
+
+                    <span>
+                        Reportes PDF
+                    </span>
+
+                </a>
+
 
             </nav>
 
         </div>
 
+
+        <!-- CERRAR SESIÓN -->
 
         <div class="sidebar-bottom">
 
@@ -348,18 +670,38 @@
 
 
 
-    <!-- CONTENIDO -->
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
 
     <main class="admin-main">
 
+
+        <!-- TOPBAR -->
 
         <header class="admin-topbar">
 
             <div class="breadcrumb">
 
-                BackHome
-                <span>›</span>
-                <strong>Usuario</strong>
+                <span>
+                    BackHome
+                </span>
+
+                <span>
+                    ›
+                </span>
+
+                <strong>
+                    Gestionar usuarios
+                </strong>
+
+                <span>
+                    ›
+                </span>
+
+                <strong>
+                    Detalle
+                </strong>
 
             </div>
 
@@ -370,506 +712,691 @@
         <section class="detalle-page">
 
 
-            <div class="detalle-header">
-
-                <div>
-
-                    <div class="detalle-kicker">
-                        👤 Información del usuario
-                    </div>
-
-                    <h1 class="detalle-title">
-                        Detalle de usuario
-                    </h1>
-
-                </div>
+            <div class="detalle-container">
 
 
-                <a
-                    class="back-button"
-                    th:href="@{/admin/usuarios}">
+                <!-- =================================================
+                     CABECERA
+                ================================================== -->
 
-                    ← Volver a usuarios
-
-                </a>
-
-            </div>
-
-
-
-            <!-- MENSAJES -->
-
-            <div
-                th:if="${success}"
-                style="padding:13px 16px; margin-bottom:15px; border-radius:13px; background:#edf8f0; color:#558c63; font-size:12px; font-weight:700;"
-                th:text="${success}">
-            </div>
-
-
-            <div
-                th:if="${error}"
-                style="padding:13px 16px; margin-bottom:15px; border-radius:13px; background:#fff0f0; color:#b45e5e; font-size:12px; font-weight:700;"
-                th:text="${error}">
-            </div>
-
-
-
-            <!-- PERFIL -->
-
-            <section class="profile-card">
-
-
-                <div class="profile-top">
-
-
-                    <div
-                        class="profile-avatar"
-                        th:text="${usuario.primerNombre != null ? #strings.substring(usuario.primerNombre,0,1).toUpperCase() : 'U'}">
-
-                        U
-
-                    </div>
-
+                <div class="detalle-header">
 
                     <div>
 
-                        <div
-                            class="profile-name"
-                            th:text="${usuario.primerNombre + ' ' + usuario.primerApellido}">
-
-                            Usuario
-
+                        <div class="detalle-kicker">
+                            👤 Información del usuario
                         </div>
 
+                        <h1 class="detalle-title">
+                            Detalle de usuario
+                        </h1>
 
-                        <div
-                            class="profile-email"
-                            th:text="${usuario.email}">
-
-                            correo
-
-                        </div>
-
-
-                        <span
-                            class="role"
-                            th:text="${rol}">
-
-                            Cliente
-
-                        </span>
+                        <p class="detalle-description">
+                            Consulta y administra la información de este usuario.
+                        </p>
 
                     </div>
-
-
-                </div>
-
-
-
-                <div class="info-grid">
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            ID
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.idPersona}">
-
-                            0
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Tipo de documento
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${nombreTipoDocumento}">
-
-                            Documento
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Número de documento
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.numeroDocumento}">
-
-                            Documento
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Segundo nombre
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.segundoNombre ?: 'No registrado'}">
-
-                            -
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Segundo apellido
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.segundoApellido ?: 'No registrado'}">
-
-                            -
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Teléfono
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.numeroTel}">
-
-                            Teléfono
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Estrato
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.estrato ?: 'No registrado'}">
-
-                            -
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Estado
-                        </div>
-
-
-                        <div class="info-value">
-
-
-                            <span
-                                class="estado activo"
-                                th:if="${usuario.estado.name() == 'activo'}">
-
-                                ● Activo
-
-                            </span>
-
-
-                            <span
-                                class="estado bloqueado"
-                                th:if="${usuario.estado.name() == 'bloqueado'}">
-
-                                ● Bloqueado
-
-                            </span>
-
-
-                            <span
-                                class="estado suspendido"
-                                th:if="${usuario.estado.name() == 'suspendido'}">
-
-                                ● Suspendido
-
-                            </span>
-
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Fecha de registro
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.createdAt != null ? #temporals.format(usuario.createdAt, 'dd/MM/yyyy HH:mm') : 'No disponible'}">
-
-                            -
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <div class="info-label">
-                            Última actualización
-                        </div>
-
-                        <div
-                            class="info-value"
-                            th:text="${usuario.updatedAt != null ? #temporals.format(usuario.updatedAt, 'dd/MM/yyyy HH:mm') : 'No disponible'}">
-
-                            -
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- ACCIONES -->
-
-            <div class="actions-grid">
-
-
-                <!-- ACTIVAR -->
-
-                <div class="action-card">
-
-                    <h3>
-                        🟢 Activar cuenta
-                    </h3>
-
-                    <p>
-                        Permite nuevamente el acceso al sistema.
-                    </p>
-
-
-                    <form
-                        th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
-                        method="post">
-
-                        <input
-                            type="hidden"
-                            name="nuevoEstado"
-                            value="activo">
-
-                        <button
-                            class="action-button success-button"
-                            type="submit">
-
-                            Activar usuario
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-
-                <!-- BLOQUEAR -->
-
-                <div class="action-card">
-
-                    <h3>
-                        🔒 Bloquear cuenta
-                    </h3>
-
-                    <p>
-                        Impide temporalmente el acceso.
-                    </p>
-
-
-                    <form
-                        th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
-                        method="post">
-
-                        <input
-                            type="hidden"
-                            name="nuevoEstado"
-                            value="bloqueado">
-
-                        <button
-                            class="action-button danger-button"
-                            type="submit">
-
-                            Bloquear usuario
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-
-                <!-- SUSPENDER -->
-
-                <div class="action-card">
-
-                    <h3>
-                        ⏸️ Suspender cuenta
-                    </h3>
-
-                    <p>
-                        Suspende el acceso de la cuenta.
-                    </p>
-
-
-                    <form
-                        th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
-                        method="post">
-
-                        <input
-                            type="hidden"
-                            name="nuevoEstado"
-                            value="suspendido">
-
-                        <button
-                            class="action-button"
-                            type="submit">
-
-                            Suspender usuario
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-
-                <!-- CAMBIAR PASSWORD -->
-
-                <div class="action-card">
-
-                    <h3>
-                        🔑 Contraseña
-                    </h3>
-
-                    <p>
-                        Cambiar la contraseña del usuario.
-                    </p>
-
-
-                    <form
-                        th:action="@{/admin/usuarios/{id}/password(id=${usuario.idPersona})}"
-                        method="post">
-
-
-                        <input
-                            class="password-input"
-                            type="password"
-                            name="nuevaPassword"
-                            placeholder="Nueva contraseña"
-                            minlength="6"
-                            required>
-
-
-                        <input
-                            class="password-input"
-                            type="password"
-                            name="confirmarPassword"
-                            placeholder="Confirmar contraseña"
-                            minlength="6"
-                            required>
-
-
-                        <button
-                            class="action-button"
-                            type="submit">
-
-                            Actualizar contraseña
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-
-                <!-- EDITAR -->
-
-                <div class="action-card">
-
-                    <h3>
-                        ✏️ Editar información
-                    </h3>
-
-                    <p>
-                        Modifica los datos personales.
-                    </p>
 
 
                     <a
-                        class="action-button"
-                        style="display:block; box-sizing:border-box; text-align:center; text-decoration:none;"
-                        th:href="@{/admin/usuarios/{id}/editar(id=${usuario.idPersona})}">
+                        class="back-button"
+                        th:href="@{/admin/usuarios}">
 
-                        Editar usuario
+                        ← Volver a usuarios
 
                     </a>
 
                 </div>
 
 
-            </div>
 
+                <!-- =================================================
+                     MENSAJES
+                ================================================== -->
+
+                <div
+                    th:if="${success}"
+                    class="message message-success"
+                    th:text="${success}">
+
+                    Usuario actualizado correctamente.
+
+                </div>
+
+
+                <div
+                    th:if="${error}"
+                    class="message message-error"
+                    th:text="${error}">
+
+                    Ha ocurrido un error.
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PERFIL + INFORMACIÓN
+                ================================================== -->
+
+                <section class="profile-card">
+
+
+                    <!-- PERFIL -->
+
+                    <div class="profile-top">
+
+
+                        <div
+                            class="profile-avatar"
+                            th:text="${usuario.primerNombre != null and !usuario.primerNombre.isEmpty()
+                                ? #strings.substring(usuario.primerNombre, 0, 1).toUpperCase()
+                                : 'U'}">
+
+                            U
+
+                        </div>
+
+
+                        <div class="profile-content">
+
+
+                            <h2
+                                class="profile-name"
+                                th:text="${usuario.primerNombre
+                                    + ' '
+                                    + (usuario.segundoNombre != null ? usuario.segundoNombre + ' ' : '')
+                                    + (usuario.primerApellido != null ? usuario.primerApellido : '')
+                                    + (usuario.segundoApellido != null ? ' ' + usuario.segundoApellido : '')}">
+
+                                Usuario
+
+                            </h2>
+
+
+                            <div
+                                class="profile-email"
+                                th:text="${usuario.email != null ? usuario.email : 'Correo no registrado'}">
+
+                                correo
+
+                            </div>
+
+
+                            <div class="profile-badges">
+
+
+                                <span
+                                    class="role"
+                                    th:text="${rol}">
+
+                                    Cliente
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'activo'}"
+                                    class="status status-activo">
+
+                                    ● Activo
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'bloqueado'}"
+                                    class="status status-bloqueado">
+
+                                    ● Bloqueado
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'suspendido'}"
+                                    class="status status-suspendido">
+
+                                    ● Suspendido
+
+                                </span>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- INFORMACIÓN -->
+
+                    <h3 class="information-title">
+                        Información personal
+                    </h3>
+
+
+                    <div class="info-grid">
+
+
+                        <!-- ID -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                ID de usuario
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.idPersona}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TIPO DOCUMENTO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Tipo de documento
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${nombreTipoDocumento != null
+                                    ? nombreTipoDocumento
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DOCUMENTO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Número de documento
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.numeroDocumento != null
+                                    ? usuario.numeroDocumento
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PRIMER NOMBRE -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Primer nombre
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.primerNombre != null
+                                    ? usuario.primerNombre
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEGUNDO NOMBRE -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Segundo nombre
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:classappend="${usuario.segundoNombre == null ? ' muted' : ''}"
+                                th:text="${usuario.segundoNombre != null
+                                    ? usuario.segundoNombre
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PRIMER APELLIDO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Primer apellido
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.primerApellido != null
+                                    ? usuario.primerApellido
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SEGUNDO APELLIDO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Segundo apellido
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:classappend="${usuario.segundoApellido == null ? ' muted' : ''}"
+                                th:text="${usuario.segundoApellido != null
+                                    ? usuario.segundoApellido
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CORREO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Correo electrónico
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.email != null
+                                    ? usuario.email
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TELÉFONO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Teléfono
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.numeroTel != null
+                                    ? usuario.numeroTel
+                                    : 'No registrado'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Estado de cuenta
+                            </div>
+
+                            <div class="info-value">
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'activo'}"
+                                    class="status status-activo">
+
+                                    ● Activo
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'bloqueado'}"
+                                    class="status status-bloqueado">
+
+                                    ● Bloqueado
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado != null and usuario.estado.name() == 'suspendido'}"
+                                    class="status status-suspendido">
+
+                                    ● Suspendido
+
+                                </span>
+
+
+                                <span
+                                    th:if="${usuario.estado == null}"
+                                    class="info-value muted">
+
+                                    No registrado
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FECHA REGISTRO -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Fecha de registro
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.createdAt != null
+                                    ? #temporals.format(usuario.createdAt, 'dd/MM/yyyy HH:mm')
+                                    : 'No disponible'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ACTUALIZACIÓN -->
+
+                        <div class="info-item">
+
+                            <div class="info-label">
+                                Última actualización
+                            </div>
+
+                            <div
+                                class="info-value"
+                                th:text="${usuario.updatedAt != null
+                                    ? #temporals.format(usuario.updatedAt, 'dd/MM/yyyy HH:mm')
+                                    : 'No disponible'}">
+
+                                -
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     ACCIONES
+                ================================================== -->
+
+                <h3 class="actions-title">
+                    Administración de la cuenta
+                </h3>
+
+
+                <div class="actions-grid">
+
+
+                    <!-- ACTIVAR -->
+
+                    <div class="action-card">
+
+                        <div class="action-icon">
+                            🟢
+                        </div>
+
+                        <h3>
+                            Activar cuenta
+                        </h3>
+
+                        <p>
+                            Permite nuevamente el acceso del usuario al sistema.
+                        </p>
+
+
+                        <form
+                            th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
+                            method="post">
+
+                            <input
+                                type="hidden"
+                                name="nuevoEstado"
+                                value="activo">
+
+
+                            <button
+                                class="action-button success-button"
+                                type="submit">
+
+                                Activar usuario
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- BLOQUEAR -->
+
+                    <div class="action-card">
+
+                        <div class="action-icon">
+                            🔒
+                        </div>
+
+                        <h3>
+                            Bloquear cuenta
+                        </h3>
+
+                        <p>
+                            Impide el acceso del usuario al sistema.
+                        </p>
+
+
+                        <form
+                            th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
+                            method="post">
+
+                            <input
+                                type="hidden"
+                                name="nuevoEstado"
+                                value="bloqueado">
+
+
+                            <button
+                                class="action-button danger-button"
+                                type="submit">
+
+                                Bloquear usuario
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- SUSPENDER -->
+
+                    <div class="action-card">
+
+                        <div class="action-icon">
+                            ⏸️
+                        </div>
+
+                        <h3>
+                            Suspender cuenta
+                        </h3>
+
+                        <p>
+                            Suspende temporalmente el acceso del usuario.
+                        </p>
+
+
+                        <form
+                            th:action="@{/admin/usuarios/{id}/estado(id=${usuario.idPersona})}"
+                            method="post">
+
+                            <input
+                                type="hidden"
+                                name="nuevoEstado"
+                                value="suspendido">
+
+
+                            <button
+                                class="action-button"
+                                type="submit">
+
+                                Suspender usuario
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- CONTRASEÑA -->
+
+                    <div class="action-card password-card">
+
+                        <div class="action-icon">
+                            🔑
+                        </div>
+
+                        <h3>
+                            Cambiar contraseña
+                        </h3>
+
+                        <p>
+                            Establece una nueva contraseña para este usuario.
+                        </p>
+
+
+                        <form
+                            class="password-form"
+                            th:action="@{/admin/usuarios/{id}/password(id=${usuario.idPersona})}"
+                            method="post">
+
+
+                            <input
+                                class="password-input"
+                                type="password"
+                                name="nuevaPassword"
+                                placeholder="Nueva contraseña"
+                                minlength="6"
+                                required>
+
+
+                            <input
+                                class="password-input"
+                                type="password"
+                                name="confirmarPassword"
+                                placeholder="Confirmar contraseña"
+                                minlength="6"
+                                required>
+
+
+                            <button
+                                class="action-button"
+                                type="submit">
+
+                                Actualizar
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- EDITAR -->
+
+                    <div class="action-card edit-card">
+
+                        <div class="action-icon">
+                            ✏️
+                        </div>
+
+                        <h3>
+                            Editar información
+                        </h3>
+
+                        <p>
+                            Modifica los datos personales y de contacto.
+                        </p>
+
+
+                        <a
+                            class="action-button"
+                            style="display:flex; align-items:center; justify-content:center; text-decoration:none;"
+                            th:href="@{/admin/usuarios/{id}/editar(id=${usuario.idPersona})}">
+
+                            Editar usuario
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
 
         </section>
 
-
     </main>
 
-
 </div>
-
 
 </body>
 
