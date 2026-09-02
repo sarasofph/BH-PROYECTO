@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="es" 
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,11 +44,41 @@
                 <a href="#apoyo-donaciones">Apóyanos</a>
             </nav>
 
-            <div class="header-actions-group">
-                <a th:href="@{/login}" class="auth-link-login">Iniciar sesión</a>
-                <a th:href="@{/registro}" class="auth-btn-register">Crear cuenta gratis</a>
-            </div>
-        </div>
+
+            <div class="header-actions-group"
+     sec:authorize="!isAuthenticated()">
+
+    <a th:href="@{/login}" class="auth-link-login">
+        Iniciar sesión
+    </a>
+
+    <a th:href="@{/registro}" class="auth-btn-register">
+        Crear cuenta gratis
+    </a>
+
+</div>
+
+
+<div class="header-actions-group"
+     sec:authorize="isAuthenticated()">
+
+    <a th:href="@{/cliente/dashboard}"
+       class="auth-link-login">
+        Mi Cuenta
+    </a>
+
+    <form th:action="@{/logout}"
+          method="post"
+          style="display: inline;">
+
+        <button type="submit"
+                class="auth-btn-register">
+            Cerrar sesión
+        </button>
+
+    </form>
+
+</div>
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -65,7 +96,7 @@
                     </h1>
                     <p>Haz seguimiento a mascotas perdidas o encontradas en Bogotá, desde el primer reporte hasta el reencuentro.</p>
                     <div class="hero-buttons-container">
-                        <a th:href="@{/registro}" class="btn-primary-action">Reportar mi mascota</a>
+                        <a th:href="@{/registro}"  sec:authorize="!isAuthenticated()" class="btn-primary-action">Reportar mi mascota</a>
                     </div>
                 </div>
 
@@ -122,7 +153,19 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Reportar pérdida ahora <span aria-hidden="true">→</span></a>
+                   <a th:href="@{/registro}"
+   sec:authorize="!isAuthenticated()"
+   class="primary-action-cta">
+    Reportar pérdida ahora
+    <span aria-hidden="true">→</span>
+</a>
+
+<a th:href="@{/}"
+   sec:authorize="isAuthenticated()"
+   class="primary-action-cta">
+    Reportar pérdida ahora
+    <span aria-hidden="true">→</span>
+</a>
                 </div>
 
                 <div class="primary-action-card tone-hope">
@@ -159,7 +202,21 @@
                         </div>
                     </div>
 
-                    <a th:href="@{/registro}" class="primary-action-cta">Reportar hallazgo ahora <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/registro}"
+                       sec:authorize="!isAuthenticated()"
+                       class="primary-action-cta">
+                        Reportar hallazgo ahora
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                    <a th:href="@{/}"
+                       sec:authorize="isAuthenticated()"
+                       class="primary-action-cta">
+                        Reportar hallazgo ahora
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+
                 </div>
             </div>
 
@@ -314,8 +371,13 @@
             <div class="footer-column-links">
                 <h4><span aria-hidden="true">🐾</span> Plataforma</h4>
                 <ul>
-                    <li><a th:href="@{/login}">Iniciar Sesión</a></li>
-                    <li><a th:href="@{/registro}">Registrarse</a></li>
+                    <li sec:authorize="!isAuthenticated()">
+    <a th:href="@{/login}">Iniciar Sesión</a>
+</li>
+
+<li sec:authorize="!isAuthenticated()">
+    <a th:href="@{/registro}">Registrarse</a>
+</li>
                     <li><a th:href="@{/donaciones}">Centro de Donaciones</a></li>
                 </ul>
             </div>
