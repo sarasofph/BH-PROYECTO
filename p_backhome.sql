@@ -210,8 +210,6 @@ CREATE TABLE seguimiento (
         NOT NULL,
 
     estado_seguimiento ENUM(
-        'perdido',
-        'encontrado',
         'en_busqueda',
         'en_refugio',
         'reunido',
@@ -222,7 +220,7 @@ CREATE TABLE seguimiento (
 
     estado_moderacion ENUM(
         'pendiente',
-        'aprobado',
+        'verificado',
         'rechazado'
     )
     DEFAULT 'pendiente'
