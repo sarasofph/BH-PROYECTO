@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis seguimientos | BackHome</title>
+    <link rel="stylesheet" th:href="@{/css/cliente/seguimientos.css}">
+</head>
+<body>
+<header class="site-header">
+    <div class="header-container">
+        <a th:href="@{/}" class="header-brand-group">
+            <img th:src="@{/images/logo-backhome.png}" alt="Logo BackHome" class="header-logo-img">
+            <span class="header-brand-title">BackHome</span>
+        </a>
+        <nav class="header-nav-menu">
+            <a th:href="@{/cliente/dashboard}">Mi cuenta</a>
+            <a th:href="@{/cliente/seguimientos}" class="active">Mis seguimientos</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-heading">
+        <p class="eyebrow">MI CUENTA</p>
+        <h1>Mis seguimientos 🐾</h1>
+        <p>Consulta los reportes asociados a tu cuenta y revisa sus actualizaciones.</p>
+    </section>
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+
+    <section th:if="${#lists.isEmpty(seguimientos)}" class="empty-state">
+        <div class="empty-icon">🐾</div>
+        <h2>Aún no tienes seguimientos</h2>
+        <p>Cuando tengas un reporte asociado a tu cuenta aparecerá aquí.</p>
+    </section>
+
+    <section th:unless="${#lists.isEmpty(seguimientos)}" class="cards-grid">
+        <article class="tracking-card" th:each="seguimiento : ${seguimientos}">
+            <div class="card-top">
+                <span class="status" th:text="${seguimiento.estadoSeguimiento}">en_busqueda</span>
+                <span class="moderation" th:text="${seguimiento.estadoModeracion}">pendiente</span>
+            </div>
+
+            <h2 th:text="${seguimiento.titulo}">Reporte</h2>
+            <p class="description" th:text="${seguimiento.descripcion}">Descripción del reporte.</p>
+
+            <div class="details">
+                <div>
+                    <strong>Mascota</strong>
+                    <span th:text="${seguimiento.animal.nombre != null ? seguimiento.animal.nombre : 'Sin nombre'}">Sin nombre</span>
+                </div>
+                <div>
+                    <strong>Ubicación</strong>
+                    <span th:text="${seguimiento.lugar.direccion}">Dirección</span>
+                </div>
+                <div>
+                    <strong>Localidad</strong>
+                    <span th:text="${seguimiento.lugar.localidad.nombre}">Localidad</span>
+                </div>
+                <div>
+                    <strong>Publicado</strong>
+                    <span th:text="${#temporals.format(seguimiento.fechaPublicacion, 'dd/MM/yyyy HH:mm')}">01/09/2026</span>
+                </div>
+            </div>
+
+            <a class="button" th:href="@{/cliente/seguimientos/{id}(id=${seguimiento.idSeguimiento})}">Ver seguimiento</a>
+        </article>
+    </section>
+</main>
+</body>
+</html>

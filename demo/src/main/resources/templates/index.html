@@ -12,7 +12,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@300;400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Hoja de estilos externa -->
+
     <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 
@@ -209,7 +209,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                         <span aria-hidden="true">→</span>
                     </a>
 
-                    <a th:href="@{/}"
+                    <a th:href="@{/cliente/seguimientos}"
                        sec:authorize="isAuthenticated()"
                        class="primary-action-cta">
                         Reportar hallazgo ahora

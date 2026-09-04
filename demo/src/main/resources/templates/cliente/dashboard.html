@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org">
+       <link rel="stylesheet" th:href="@{/css/cliente/perfil.css}">
 
 <head>
 
@@ -10,125 +11,6 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>Mi cuenta | BackHome</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #fff7fa;
-            color: #4a3f42;
-        }
-
-        .navbar {
-            background: white;
-            padding: 18px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 15px rgba(190,120,145,.12);
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #d9829a;
-        }
-
-        .usuario {
-            color: #806f75;
-        }
-
-        .contenedor {
-            max-width: 1100px;
-            margin: 50px auto;
-            padding: 0 25px;
-        }
-
-        .bienvenida {
-            background: linear-gradient(
-                135deg,
-                #f8dce4,
-                #fff
-            );
-
-            padding: 35px;
-            border-radius: 25px;
-            margin-bottom: 30px;
-        }
-
-        .bienvenida h1 {
-            margin-top: 0;
-            color: #c96f89;
-        }
-
-        .bienvenida p {
-            font-size: 17px;
-        }
-
-        .tarjetas {
-            display: grid;
-            grid-template-columns:
-                repeat(auto-fit, minmax(250px, 1fr));
-
-            gap: 20px;
-        }
-
-        .tarjeta {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-
-            box-shadow:
-                0 10px 30px
-                rgba(190,120,145,.12);
-        }
-
-        .tarjeta h3 {
-            color: #d9829a;
-            margin-top: 0;
-        }
-
-        .dato {
-            margin: 12px 0;
-        }
-
-        .dato strong {
-            display: block;
-            color: #806f75;
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-
-        .estado {
-            display: inline-block;
-            background: #e4f4e8;
-            color: #427052;
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .boton {
-            border: none;
-            background: #d9829a;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .boton:hover {
-            background: #c96f89;
-        }
-
-    </style>
 
 </head>
 
