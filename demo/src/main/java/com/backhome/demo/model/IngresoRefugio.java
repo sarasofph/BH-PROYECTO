@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,15 +29,11 @@ public class IngresoRefugio {
     @Column(name = "id_ingreso")
     private Integer idIngreso;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "refugio_id", nullable = false)
     private Refugio refugio;
 
-    @ManyToOne
-    @JoinColumn(name = "animal_id", nullable = false)
-    private Animal animal;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "seguimiento_id", nullable = false)
     private Seguimiento seguimiento;
 
@@ -50,7 +47,7 @@ public class IngresoRefugio {
     @Column(name = "estado", nullable = false)
     private Estado estado = Estado.pendiente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "administrador_id")
     private Administrador administrador;
 
@@ -74,14 +71,6 @@ public class IngresoRefugio {
 
     public void setRefugio(Refugio refugio) {
         this.refugio = refugio;
-    }
-
-    public Animal getAnimal() {
-        return animal;
-    }
-
-    public void setAnimal(Animal animal) {
-        this.animal = animal;
     }
 
     public Seguimiento getSeguimiento() {

@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,11 +16,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "refugios")
 public class Refugio {
-
-    public enum Estado {
-        activo,
-        inactivo
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,10 +41,6 @@ public class Refugio {
     @JoinColumn(name = "localidad_id", nullable = false)
     private Localidad localidad;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private Estado estado = Estado.activo;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -62,7 +51,8 @@ public class Refugio {
     }
 
     @PrePersist
-    protected void alCrear() {
+    protected void prePersist() {
+
         LocalDateTime ahora = LocalDateTime.now();
 
         if (createdAt == null) {
@@ -75,7 +65,7 @@ public class Refugio {
     }
 
     @PreUpdate
-    protected void alActualizar() {
+    protected void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
@@ -133,14 +123,6 @@ public class Refugio {
 
     public void setLocalidad(Localidad localidad) {
         this.localidad = localidad;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -69,17 +69,16 @@
 
                 <span>Seguimientos</span>
 
-
             </a>
 
-            <a href="#"
-               class="menu-item disabled">
+            <!-- ÚNICO CAMBIO 1: REFUGIOS -->
+
+            <a th:href="@{/admin/refugios}"
+               class="menu-item">
 
                 <i class="fa-solid fa-house"></i>
 
                 <span>Refugios</span>
-
-                <small>Próximamente</small>
 
             </a>
 
@@ -350,7 +349,10 @@
                 </a>
 
 
-                <div class="quick-card coming-soon">
+                <!-- ÚNICO CAMBIO 2: GESTIONAR REFUGIOS -->
+
+                <a th:href="@{/admin/refugios}"
+                   class="quick-card">
 
                     <div class="quick-icon">
 
@@ -363,15 +365,15 @@
                         <h3>Gestionar refugios</h3>
 
                         <p>
-                            Próximamente podrás administrar
-                            refugios y sus animales.
+                            Administra refugios y verifica
+                            los ingresos de animales.
                         </p>
 
                     </div>
 
-                    <span>Próximamente</span>
+                    <i class="fa-solid fa-arrow-right arrow"></i>
 
-                </div>
+                </a>
 
 
                 <div class="quick-card coming-soon">

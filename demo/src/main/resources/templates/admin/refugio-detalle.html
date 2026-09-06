@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Detalle del refugio</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div>
+                <strong>BackHome</strong>
+                <span>Panel administrativo</span>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-users"></i>
+                <span>Usuarios</span>
+
+            </a>
+
+            <a th:href="@{/admin/seguimientos}"
+               class="menu-item">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Seguimientos</span>
+
+            </a>
+
+            <a th:href="@{/admin/refugios}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-house"></i>
+                <span>Refugios</span>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <span>Donaciones</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-lightbulb"></i>
+                <span>Consejos</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Reportes</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Refugios
+                </p>
+
+                <h1 th:text="${refugio.nombre}">
+                    Refugio
+                </h1>
+
+                <p class="welcome-description"
+                   th:text="${refugio.localidad.nombre}">
+                    Localidad
+                </p>
+
+            </div>
+
+            <div style="display:flex; gap:10px;">
+
+                <a th:href="@{/admin/refugios/{id}/editar(id=${refugio.idRefugio})}"
+                   class="primary-button">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Editar
+
+                </a>
+
+                <a th:href="@{/admin/refugios}"
+                   class="secondary-button">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Volver
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- INFORMACIÓN -->
+
+        <section class="stats-grid">
+
+            <article class="stat-card">
+
+                <div class="stat-icon pink">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Pendientes</span>
+
+                    <strong th:text="${pendientes}">
+                        0
+                    </strong>
+
+                    <small>
+                        Por verificar
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon green">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Confirmados</span>
+
+                    <strong th:text="${confirmados}">
+                        0
+                    </strong>
+
+                    <small>
+                        Ingresos verificados
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon orange">
+
+                    <i class="fa-solid fa-circle-xmark"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Rechazados</span>
+
+                    <strong th:text="${rechazados}">
+                        0
+                    </strong>
+
+                    <small>
+                        Ingresos no verificados
+                    </small>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- DATOS DEL REFUGIO -->
+
+        <section class="table-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Información del refugio
+                    </span>
+
+                    <h2>
+                        Datos registrados
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Nombre
+                    </label>
+
+                    <input type="text"
+                           readonly
+                           th:value="${refugio.nombre}">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Localidad
+                    </label>
+
+                    <input type="text"
+                           readonly
+                           th:value="${refugio.localidad.nombre}">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Dirección
+                    </label>
+
+                    <input type="text"
+                           readonly
+                           th:value="${refugio.direccion}">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Teléfono
+                    </label>
+
+                    <input type="text"
+                           readonly
+                           th:value="${refugio.telefono != null ? refugio.telefono : 'No registrado'}">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Correo electrónico
+                    </label>
+
+                    <input type="text"
+                           readonly
+                           th:value="${refugio.email != null ? refugio.email : 'No registrado'}">
+
+                </div>
+
+
+                <div class="form-group"
+                     style="grid-column: 1 / -1;">
+
+                    <label>
+                        Descripción
+                    </label>
+
+                    <textarea readonly
+                              rows="4"
+                              th:text="${refugio.descripcion != null ? refugio.descripcion : 'Sin descripción registrada'}"></textarea>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INGRESOS DE ANIMALES -->
+
+        <section class="table-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Seguimiento de ingresos
+                    </span>
+
+                    <h2>
+                        Animales que han ingresado
+                    </h2>
+
+                    <p>
+                        Revisa y verifica los ingresos asociados a este refugio.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="users-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Animal</th>
+                        <th>Seguimiento</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="ingreso : ${ingresos}">
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="avatar">
+
+                                    <i class="fa-solid fa-paw"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <strong th:text="${ingreso.seguimiento.animal.nombre != null ? ingreso.seguimiento.animal.nombre : 'Sin nombre'}">
+                                        Animal
+                                    </strong>
+
+                                    <span th:text="${ingreso.seguimiento.animal.sexo}">
+                                        Sexo
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong th:text="${ingreso.seguimiento.titulo}">
+                                Seguimiento
+                            </strong>
+
+                        </td>
+
+
+                        <td th:text="${#temporals.format(ingreso.fechaIngreso, 'dd/MM/yyyy HH:mm')}">
+                            Fecha
+                        </td>
+
+
+                        <td>
+
+                            <span th:if="${ingreso.estado.name() == 'pendiente'}"
+                                  class="status-badge status-suspended">
+
+                                Pendiente
+
+                            </span>
+
+                            <span th:if="${ingreso.estado.name() == 'confirmado'}"
+                                  class="status-badge status-active">
+
+                                Confirmado
+
+                            </span>
+
+                            <span th:if="${ingreso.estado.name() == 'rechazado'}"
+                                  class="status-badge status-blocked">
+
+                                Rechazado
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions"
+                                 th:if="${ingreso.estado.name() == 'pendiente'}">
+
+                                <form th:action="@{/admin/refugios/ingresos/{id}/confirmar(id=${ingreso.idIngreso})}"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+
+                                    <button type="submit"
+                                            class="icon-button"
+                                            title="Confirmar">
+
+                                        <i class="fa-solid fa-check"></i>
+
+                                    </button>
+
+                                </form>
+
+
+                                <form th:action="@{/admin/refugios/ingresos/{id}/rechazar(id=${ingreso.idIngreso})}"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+
+                                    <button type="submit"
+                                            class="icon-button"
+                                            title="Rechazar">
+
+                                        <i class="fa-solid fa-xmark"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <span th:if="${ingreso.estado.name() != 'pendiente'}">
+                                Verificado
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div class="empty-state"
+                     th:if="${#lists.isEmpty(ingresos)}">
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-paw"></i>
+
+                    </div>
+
+                    <h3>
+                        No hay ingresos registrados
+                    </h3>
+
+                    <p>
+                        Este refugio todavía no tiene ingresos asociados.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- REFUGIOS RECOMENDADOS -->
+
+        <section class="table-section"
+                 th:if="${!#lists.isEmpty(recomendados)}">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Recomendaciones
+                    </span>
+
+                    <h2>
+                        Otros refugios para contactar
+                    </h2>
+
+                    <p>
+                        Refugios registrados en la misma localidad.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="users-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Refugio</th>
+                        <th>Localidad</th>
+                        <th>Dirección</th>
+                        <th>Contacto</th>
+                        <th></th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="recomendado : ${recomendados}">
+
+                        <td th:text="${recomendado.nombre}">
+                            Refugio
+                        </td>
+
+                        <td th:text="${recomendado.localidad.nombre}">
+                            Localidad
+                        </td>
+
+                        <td th:text="${recomendado.direccion}">
+                            Dirección
+                        </td>
+
+                        <td th:text="${recomendado.telefono != null ? recomendado.telefono : 'Sin teléfono'}">
+                            Contacto
+                        </td>
+
+                        <td>
+
+                            <a th:href="@{/admin/refugios/{id}(id=${recomendado.idRefugio})}"
+                               class="icon-button"
+                               title="Ver refugio">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

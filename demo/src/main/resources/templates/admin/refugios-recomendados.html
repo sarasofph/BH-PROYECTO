@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Refugios recomendados</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div>
+                <strong>BackHome</strong>
+                <span>Panel administrativo</span>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-users"></i>
+                <span>Usuarios</span>
+
+            </a>
+
+            <a th:href="@{/admin/seguimientos}"
+               class="menu-item">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Seguimientos</span>
+
+            </a>
+
+            <a th:href="@{/admin/refugios}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-house"></i>
+                <span>Refugios</span>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                <span>Donaciones</span>
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-lightbulb"></i>
+                <span>Consejos</span>
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Reportes</span>
+                <small>Próximamente</small>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Refugios
+                </p>
+
+                <h1>
+                    Refugios recomendados
+                </h1>
+
+                <p class="welcome-description">
+                    Refugios que pueden ser contactados como alternativa.
+                </p>
+
+            </div>
+
+            <a th:href="@{/admin/refugios}"
+               class="secondary-button">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Gestionar refugios
+
+            </a>
+
+        </header>
+
+
+        <section class="table-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Recomendaciones
+                    </span>
+
+                    <h2>
+                        Buscar refugios por localidad
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form class="filters"
+                  method="get"
+                  th:action="@{/admin/refugios/recomendados}">
+
+                <div class="filter-select">
+
+                    <i class="fa-solid fa-location-dot"></i>
+
+                    <select name="localidad">
+
+                        <option value="">
+                            Todas las localidades
+                        </option>
+
+                        <option th:each="loc : ${localidades}"
+                                th:value="${loc.idLocalidad}"
+                                th:text="${loc.nombre}"
+                                th:selected="${localidadSeleccionada != null and localidadSeleccionada == loc.idLocalidad}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button type="submit"
+                        class="primary-button">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Buscar
+
+                </button>
+
+
+                <a th:href="@{/admin/refugios/recomendados}"
+                   class="secondary-button">
+
+                    Limpiar
+
+                </a>
+
+            </form>
+
+
+            <div class="table-wrapper">
+
+                <table class="users-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Refugio</th>
+                        <th>Localidad</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="refugio : ${refugios}">
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="avatar">
+
+                                    <i class="fa-solid fa-house"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <strong th:text="${refugio.nombre}">
+                                        Refugio
+                                    </strong>
+
+                                    <span>
+                                        Refugio recomendado
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td th:text="${refugio.localidad.nombre}">
+                            Localidad
+                        </td>
+
+
+                        <td th:text="${refugio.direccion}">
+                            Dirección
+                        </td>
+
+
+                        <td th:text="${refugio.telefono != null ? refugio.telefono : 'No registrado'}">
+                            Teléfono
+                        </td>
+
+
+                        <td th:text="${refugio.email != null ? refugio.email : 'No registrado'}">
+                            Correo
+                        </td>
+
+
+                        <td>
+
+                            <a th:href="@{/admin/refugios/{id}(id=${refugio.idRefugio})}"
+                               class="icon-button"
+                               title="Ver refugio">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div class="empty-state"
+                     th:if="${#lists.isEmpty(refugios)}">
+
+                    <div class="empty-icon">
+
+                        <i class="fa-solid fa-house"></i>
+
+                    </div>
+
+                    <h3>
+                        No hay refugios disponibles
+                    </h3>
+
+                    <p>
+                        No se encontraron refugios para la localidad seleccionada.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
