@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Gestión de usuarios</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="BackHome">
+
+            <div>
+                <strong>BackHome</strong>
+                <span>Panel administrativo</span>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Usuarios</span>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>Seguimientos</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Refugios</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+
+                <span>Donaciones</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                <span>Consejos</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>Reportes</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <form th:action="@{/logout}"
+                  method="post">
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
+
+                <button type="submit"
+                        class="logout-button">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Cerrar sesión
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Administración
+                </p>
+
+                <h1>
+                    Gestión de usuarios
+                </h1>
+
+                <p class="welcome-description">
+                    Consulta y administra las cuentas registradas
+                    en BackHome.
+                </p>
+
+            </div>
+
+            <div class="admin-profile">
+
+                <div class="profile-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Administrador</strong>
+
+                    <span>Gestión de cuentas</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             MENSAJES
+        ================================================== -->
+
+        <div th:if="${success}"
+             class="alert success-alert">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            <span th:text="${success}">
+                Operación realizada correctamente.
+            </span>
+
+        </div>
+
+
+        <div th:if="${error}"
+             class="alert error-alert">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <span th:text="${error}">
+                Ocurrió un error.
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             ESTADÍSTICAS
+        ================================================== -->
+
+        <section class="stats-grid">
+
+            <article class="stat-card">
+
+                <div class="stat-icon pink">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Total</span>
+
+                    <strong th:text="${totalUsuarios}">
+                        0
+                    </strong>
+
+                    <small>
+                        Personas registradas
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon green">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Activos</span>
+
+                    <strong th:text="${usuariosActivos}">
+                        0
+                    </strong>
+
+                    <small>
+                        Cuentas habilitadas
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon orange">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Bloqueados</span>
+
+                    <strong th:text="${usuariosBloqueados}">
+                        0
+                    </strong>
+
+                    <small>
+                        Acceso bloqueado
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <div class="stat-icon purple">
+
+                    <i class="fa-solid fa-hourglass-half"></i>
+
+                </div>
+
+                <div>
+
+                    <span>Suspendidos</span>
+
+                    <strong th:text="${usuariosSuspendidos}">
+                        0
+                    </strong>
+
+                    <small>
+                        Acceso suspendido
+                    </small>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             FILTROS
+        ================================================== -->
+
+        <section class="table-section">
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Directorio
+                    </span>
+
+                    <h2>
+                        Usuarios registrados
+                    </h2>
+
+                </div>
+
+                <span class="result-count"
+                      th:text="${usuarios.size()} + ' resultados'">
+
+                    0 resultados
+
+                </span>
+
+            </div>
+
+
+            <form th:action="@{/admin/usuarios}"
+                  method="get"
+                  class="filters">
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text"
+                           name="buscar"
+                           th:value="${buscar}"
+                           placeholder="Buscar por nombre, documento, correo...">
+
+                </div>
+
+
+                <div class="filter-select">
+
+                    <i class="fa-solid fa-filter"></i>
+
+                    <select name="estado">
+
+                        <option value="todos"
+                                th:selected="${estadoSeleccionado == 'todos'}">
+
+                            Todos los estados
+
+                        </option>
+
+                        <option th:each="estado : ${estados}"
+                                th:value="${estado.name()}"
+                                th:text="${estado.name()}"
+                                th:selected="${estadoSeleccionado == estado.name()}">
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button type="submit"
+                        class="primary-button">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Buscar
+
+                </button>
+
+
+                <a th:href="@{/admin/usuarios}"
+                   class="secondary-button">
+
+                    <i class="fa-solid fa-rotate-left"></i>
+
+                    Limpiar
+
+                </a>
+
+            </form>
+
+
+            <!-- =================================================
+                 TABLA
+            ================================================== -->
+
+            <div class="table-wrapper">
+
+                <table class="users-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Usuario</th>
+
+                        <th>Documento</th>
+
+                        <th>Contacto</th>
+
+                        <th>Rol</th>
+
+                        <th>Estado</th>
+
+                        <th>Registro</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="usuario : ${usuarios}">
+
+                        <!-- USUARIO -->
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="avatar">
+
+                                    <span
+                                        th:text="${#strings.substring(usuario.primerNombre, 0, 1)}">
+
+                                        U
+
+                                    </span>
+
+                                </div>
+
+                                <div>
+
+                                    <strong
+                                        th:text="${usuario.primerNombre + ' ' + usuario.primerApellido}">
+
+                                        Usuario
+
+                                    </strong>
+
+                                    <span
+                                        th:text="${usuario.email}">
+
+                                        correo@email.com
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- DOCUMENTO -->
+
+                        <td>
+
+                            <div class="document-cell">
+
+                                <span
+                                    th:text="${usuario.tipoDocumentoId}">
+
+                                    CC
+
+                                </span>
+
+                                <strong
+                                    th:text="${usuario.numeroDocumento}">
+
+                                    000000
+
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- CONTACTO -->
+
+                        <td>
+
+                            <span
+                                class="phone"
+                                th:text="${usuario.numeroTel}">
+
+                                0000000000
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ROL -->
+
+                        <td>
+
+                            <span class="role-badge"
+                                  th:classappend="${roles[usuario.idPersona] == 'ADMIN'} ? ' role-admin' : ' role-client'">
+
+                                <i
+                                    th:class="${roles[usuario.idPersona] == 'ADMIN'}
+                                    ? 'fa-solid fa-user-shield'
+                                    : 'fa-solid fa-user'">
+                                </i>
+
+                                <span
+                                    th:text="${roles[usuario.idPersona]}">
+
+                                    CLIENTE
+
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ESTADO -->
+
+                        <td>
+
+                            <span class="status-badge"
+                                  th:classappend="${usuario.estado.name() == 'activo'}
+                                    ? ' status-active'
+                                    : (${usuario.estado.name() == 'bloqueado'}
+                                        ? ' status-blocked'
+                                        : ' status-suspended')">
+
+                                <span class="status-dot"></span>
+
+                                <span
+                                    th:text="${usuario.estado.name()}">
+
+                                    activo
+
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- FECHA -->
+
+                        <td>
+
+                            <span class="date-cell"
+                                  th:text="${usuario.createdAt != null
+                                    ? #temporals.format(usuario.createdAt, 'dd/MM/yyyy')
+                                    : 'Sin fecha'}">
+
+                                01/01/2026
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ACCIONES -->
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button type="button"
+                                        class="icon-button edit-button"
+                                        title="Editar usuario"
+                                        th:attr="data-id=${usuario.idPersona}">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </button>
+
+
+                                <button type="button"
+                                        class="icon-button more-button"
+                                        title="Cambiar estado"
+                                        th:attr="data-id=${usuario.idPersona}">
+
+                                    <i class="fa-solid fa-ellipsis"></i>
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 MODAL EDICIÓN
+                            ================================================== -->
+
+                            <div class="modal"
+                                 th:id="'editModal-' + ${usuario.idPersona}">
+
+                                <div class="modal-overlay"></div>
+
+                                <div class="modal-content">
+
+                                    <button type="button"
+                                            class="modal-close">
+
+                                        <i class="fa-solid fa-xmark"></i>
+
+                                    </button>
+
+                                    <div class="modal-heading">
+
+                                        <div class="modal-icon">
+
+                                            <i class="fa-solid fa-user-pen"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <h2>
+                                                Editar usuario
+                                            </h2>
+
+                                            <p>
+                                                Actualiza la información
+                                                personal del usuario.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <form
+                                        th:action="@{'/admin/usuarios/' + ${usuario.idPersona} + '/editar'}"
+                                        method="post"
+                                        class="edit-form">
+
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}">
+
+
+                                        <div class="form-grid">
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Tipo documento
+                                                </label>
+
+                                                <input type="text"
+                                                       name="tipoDocumentoId"
+                                                       maxlength="3"
+                                                       th:value="${usuario.tipoDocumentoId}"
+                                                       required>
+
+                                            </div>
+
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Número documento
+                                                </label>
+
+                                                <input type="text"
+                                                       name="numeroDocumento"
+                                                       th:value="${usuario.numeroDocumento}"
+                                                       required>
+
+                                            </div>
+
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Primer nombre
+                                                </label>
+
+                                                <input type="text"
+                                                       name="primerNombre"
+                                                       th:value="${usuario.primerNombre}"
+                                                       required>
+
+                                            </div>
+
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Segundo nombre
+                                                </label>
+
+                                                <input type="text"
+                                                       name="segundoNombre"
+                                                       th:value="${usuario.segundoNombre}">
+
+                                            </div>
+
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Primer apellido
+                                                </label>
+
+                                                <input type="text"
+                                                       name="primerApellido"
+                                                       th:value="${usuario.primerApellido}"
+                                                       required>
+
+                                            </div>
+
+
+                                            <div class="form-group">
+
+                                                <label>
+                                                    Segundo apellido
+                                                </label>
+
+                                                <input type="text"
+                                                       name="segundoApellido"
+                                                       th:value="${usuario.segundoApellido}">
+
+                                            </div>
+
+
+                                            <div class="form-group full">
+
+                                                <label>
+                                                    Correo electrónico
+                                                </label>
+
+                                                <input type="email"
+                                                       name="email"
+                                                       th:value="${usuario.email}"
+                                                       required>
+
+                                            </div>
+
+
+                                            <div class="form-group full">
+
+                                                <label>
+                                                    Número telefónico
+                                                </label>
+
+                                                <input type="text"
+                                                       name="numeroTel"
+                                                       th:value="${usuario.numeroTel}"
+                                                       required>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="modal-actions">
+
+                                            <button type="button"
+                                                    class="secondary-button modal-cancel">
+
+                                                Cancelar
+
+                                            </button>
+
+                                            <button type="submit"
+                                                    class="primary-button">
+
+                                                <i class="fa-solid fa-check"></i>
+
+                                                Guardar cambios
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 MODAL ESTADO
+                            ================================================== -->
+
+                            <div class="modal"
+                                 th:id="'statusModal-' + ${usuario.idPersona}">
+
+                                <div class="modal-overlay"></div>
+
+                                <div class="modal-content small-modal">
+
+                                    <button type="button"
+                                            class="modal-close">
+
+                                        <i class="fa-solid fa-xmark"></i>
+
+                                    </button>
+
+                                    <div class="modal-heading">
+
+                                        <div class="modal-icon">
+
+                                            <i class="fa-solid fa-user-gear"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <h2>
+                                                Estado de la cuenta
+                                            </h2>
+
+                                            <p
+                                                th:text="${usuario.primerNombre + ' ' + usuario.primerApellido}">
+                                                Usuario
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="status-options">
+
+                                        <form
+                                            th:action="@{'/admin/usuarios/' + ${usuario.idPersona} + '/estado'}"
+                                            method="post">
+
+                                            <input type="hidden"
+                                                   th:name="${_csrf.parameterName}"
+                                                   th:value="${_csrf.token}">
+
+                                            <input type="hidden"
+                                                   name="estado"
+                                                   value="activo">
+
+                                            <button type="submit"
+                                                    class="status-option active-option">
+
+                                                <i class="fa-solid fa-circle-check"></i>
+
+                                                <div>
+
+                                                    <strong>
+                                                        Activar
+                                                    </strong>
+
+                                                    <span>
+                                                        Permitir acceso al sistema
+                                                    </span>
+
+                                                </div>
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <form
+                                            th:action="@{'/admin/usuarios/' + ${usuario.idPersona} + '/estado'}"
+                                            method="post">
+
+                                            <input type="hidden"
+                                                   th:name="${_csrf.parameterName}"
+                                                   th:value="${_csrf.token}">
+
+                                            <input type="hidden"
+                                                   name="estado"
+                                                   value="suspendido">
+
+                                            <button type="submit"
+                                                    class="status-option suspended-option">
+
+                                                <i class="fa-solid fa-clock"></i>
+
+                                                <div>
+
+                                                    <strong>
+                                                        Suspender
+                                                    </strong>
+
+                                                    <span>
+                                                        Restringir temporalmente
+                                                    </span>
+
+                                                </div>
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <form
+                                            th:action="@{'/admin/usuarios/' + ${usuario.idPersona} + '/estado'}"
+                                            method="post">
+
+                                            <input type="hidden"
+                                                   th:name="${_csrf.parameterName}"
+                                                   th:value="${_csrf.token}">
+
+                                            <input type="hidden"
+                                                   name="estado"
+                                                   value="bloqueado">
+
+                                            <button type="submit"
+                                                    class="status-option blocked-option">
+
+                                                <i class="fa-solid fa-user-lock"></i>
+
+                                                <div>
+
+                                                    <strong>
+                                                        Bloquear
+                                                    </strong>
+
+                                                    <span>
+                                                        Impedir el acceso
+                                                    </span>
+
+                                                </div>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- SIN RESULTADOS -->
+
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+
+                        <td colspan="7">
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+
+                                    <i class="fa-solid fa-users-slash"></i>
+
+                                </div>
+
+                                <h3>
+                                    No encontramos usuarios
+                                </h3>
+
+                                <p>
+                                    Intenta cambiar los filtros
+                                    o realizar otra búsqueda.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // =========================================================
+    // MODALES DE EDICIÓN
+    // =========================================================
+
+    document.querySelectorAll(".edit-button").forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const id = this.dataset.id;
+
+            const modal =
+                document.getElementById("editModal-" + id);
+
+            if (modal) {
+                modal.classList.add("show");
+                document.body.classList.add("modal-open");
+            }
+
+        });
+
+    });
+
+
+    // =========================================================
+    // MODALES DE ESTADO
+    // =========================================================
+
+    document.querySelectorAll(".more-button").forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const id = this.dataset.id;
+
+            const modal =
+                document.getElementById("statusModal-" + id);
+
+            if (modal) {
+                modal.classList.add("show");
+                document.body.classList.add("modal-open");
+            }
+
+        });
+
+    });
+
+
+    // =========================================================
+    // CERRAR MODALES
+    // =========================================================
+
+    document.querySelectorAll(".modal-close, .modal-cancel, .modal-overlay")
+        .forEach(function (element) {
+
+            element.addEventListener("click", function () {
+
+                const modal =
+                    this.closest(".modal");
+
+                if (modal) {
+
+                    modal.classList.remove("show");
+
+                    document.body.classList.remove("modal-open");
+                }
+
+            });
+
+        });
+
+
+    // =========================================================
+    // ESC
+    // =========================================================
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
+
+            document.querySelectorAll(".modal.show")
+                .forEach(function (modal) {
+
+                    modal.classList.remove("show");
+
+                });
+
+            document.body.classList.remove("modal-open");
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</html>

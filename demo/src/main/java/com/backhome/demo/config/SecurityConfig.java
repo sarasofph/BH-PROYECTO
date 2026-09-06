@@ -2,6 +2,7 @@ package com.backhome.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,7 @@ import com.backhome.demo.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -19,11 +21,13 @@ public class SecurityConfig {
     public SecurityConfig(
             CustomUserDetailsService customUserDetailsService) {
 
-        this.customUserDetailsService = customUserDetailsService;
+        this.customUserDetailsService =
+                customUserDetailsService;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
@@ -33,7 +37,9 @@ public class SecurityConfig {
 
         http
 
-            .userDetailsService(customUserDetailsService)
+            .userDetailsService(
+                    customUserDetailsService
+            )
 
             // =====================================================
             // AUTORIZACIONES
@@ -64,12 +70,6 @@ public class SecurityConfig {
             // =====================================================
             // CSRF
             // =====================================================
-            //
-            // Login y registro no utilizarán el token CSRF
-            // porque sus formularios serán HTML normales.
-            //
-            // El resto de la aplicación sigue protegido.
-            // =====================================================
 
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
@@ -96,7 +96,8 @@ public class SecurityConfig {
                     (request, response, authentication) -> {
 
                         boolean esAdmin =
-                            authentication.getAuthorities()
+                            authentication
+                                .getAuthorities()
                                 .stream()
                                 .anyMatch(authority ->
                                     authority
@@ -112,7 +113,7 @@ public class SecurityConfig {
 
                         } else {
 
-                           response.sendRedirect("/");
+                            response.sendRedirect("/");
                         }
                     }
                 )
@@ -130,7 +131,9 @@ public class SecurityConfig {
 
                 .logoutUrl("/logout")
 
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl(
+                        "/login?logout"
+                )
 
                 .invalidateHttpSession(true)
 
