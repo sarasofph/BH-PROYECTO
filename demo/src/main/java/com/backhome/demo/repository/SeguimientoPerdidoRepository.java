@@ -12,7 +12,7 @@ import com.backhome.demo.model.SeguimientoPerdido;
 public interface SeguimientoPerdidoRepository
         extends JpaRepository<SeguimientoPerdido, Integer> {
 
-    List<SeguimientoPerdido> findAllByOrderByIdSeguimientoPerdidoDesc();
+    List<SeguimientoPerdido> findAllByOrderByIdPerdidoDesc();
 
     Optional<SeguimientoPerdido> findBySeguimiento_IdSeguimiento(
             Integer idSeguimiento

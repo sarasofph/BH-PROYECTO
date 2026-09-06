@@ -1,73 +1,324 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Mis seguimientos | BackHome</title>
-    <link rel="stylesheet" th:href="@{/css/cliente/seguimientos.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/cliente/seguimientos.css}">
 </head>
+
 <body>
+
 <header class="site-header">
+
     <div class="header-container">
-        <a th:href="@{/}" class="header-brand-group">
-            <img th:src="@{/images/logo-backhome.png}" alt="Logo BackHome" class="header-logo-img">
-            <span class="header-brand-title">BackHome</span>
+
+        <a th:href="@{/}"
+           class="header-brand-group">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="Logo BackHome"
+                 class="header-logo-img">
+
+            <span class="header-brand-title">
+                BackHome
+            </span>
+
         </a>
+
+
         <nav class="header-nav-menu">
-            <a th:href="@{/cliente/dashboard}">Mi cuenta</a>
-            <a th:href="@{/cliente/seguimientos}" class="active">Mis seguimientos</a>
+
+            <a th:href="@{/cliente/dashboard}">
+                Mi cuenta
+            </a>
+
+            <a th:href="@{/cliente/seguimientos}"
+               class="active">
+                Mis seguimientos
+            </a>
+
         </nav>
+
     </div>
+
 </header>
 
+
 <main class="container">
+
+    <!-- =====================================================
+         ENCABEZADO
+    ====================================================== -->
+
     <section class="page-heading">
-        <p class="eyebrow">MI CUENTA</p>
-        <h1>Mis seguimientos 🐾</h1>
-        <p>Consulta los reportes asociados a tu cuenta y revisa sus actualizaciones.</p>
+
+        <p class="eyebrow">
+            MI CUENTA
+        </p>
+
+        <h1>
+            Mis seguimientos 🐾
+        </h1>
+
+        <p>
+            Consulta los reportes asociados a tu cuenta
+            y revisa su estado y actualizaciones.
+        </p>
+
     </section>
 
-    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
 
-    <section th:if="${#lists.isEmpty(seguimientos)}" class="empty-state">
-        <div class="empty-icon">🐾</div>
-        <h2>Aún no tienes seguimientos</h2>
-        <p>Cuando tengas un reporte asociado a tu cuenta aparecerá aquí.</p>
+    <!-- =====================================================
+         MENSAJES
+    ====================================================== -->
+
+    <div th:if="${error}"
+         class="alert alert-error"
+         th:text="${error}">
+    </div>
+
+
+    <div th:if="${exito}"
+         class="alert alert-success"
+         th:text="${exito}">
+    </div>
+
+
+    <!-- =====================================================
+         SIN SEGUIMIENTOS
+    ====================================================== -->
+
+    <section th:if="${#lists.isEmpty(seguimientos)}"
+             class="empty-state">
+
+        <div class="empty-icon">
+            🐾
+        </div>
+
+        <h2>
+            Aún no tienes seguimientos
+        </h2>
+
+        <p>
+            Cuando publiques un reporte asociado
+            a tu cuenta aparecerá aquí.
+        </p>
+
+        <a th:href="@{/cliente/seguimientos/nuevo}"
+           class="button">
+            Crear seguimiento
+        </a>
+
     </section>
 
-    <section th:unless="${#lists.isEmpty(seguimientos)}" class="cards-grid">
-        <article class="tracking-card" th:each="seguimiento : ${seguimientos}">
+
+    <!-- =====================================================
+         LISTA DE SEGUIMIENTOS
+    ====================================================== -->
+
+    <section th:unless="${#lists.isEmpty(seguimientos)}"
+             class="cards-grid">
+
+
+        <article class="tracking-card"
+                 th:each="seguimiento : ${seguimientos}">
+
+
+            <!-- =================================================
+                 ESTADOS
+            ================================================== -->
+
             <div class="card-top">
-                <span class="status" th:text="${seguimiento.estadoSeguimiento}">en_busqueda</span>
-                <span class="moderation" th:text="${seguimiento.estadoModeracion}">pendiente</span>
+
+                <!-- Tipo: perdido / encontrado -->
+
+                <span class="status"
+                      th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'} ? ' status-lost' : ' status-found'"
+                      th:text="${seguimiento.tipoSeguimiento}">
+                    perdido
+                </span>
+
+
+                <!-- Estado del seguimiento -->
+
+                <span class="moderation"
+                      th:text="${seguimiento.estadoSeguimiento}">
+                    activo
+                </span>
+
             </div>
 
-            <h2 th:text="${seguimiento.titulo}">Reporte</h2>
-            <p class="description" th:text="${seguimiento.descripcion}">Descripción del reporte.</p>
+
+            <!-- =================================================
+                 MODERACIÓN
+            ================================================== -->
+
+            <div class="moderation-info">
+
+                <strong>
+                    Moderación:
+                </strong>
+
+                <span th:text="${seguimiento.estadoModeracion}">
+                    pendiente
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 TÍTULO
+            ================================================== -->
+
+            <h2 th:text="${seguimiento.titulo}">
+                Reporte
+            </h2>
+
+
+            <!-- =================================================
+                 DESCRIPCIÓN
+            ================================================== -->
+
+            <p class="description"
+               th:text="${seguimiento.descripcion}">
+                Descripción del reporte.
+            </p>
+
+
+            <!-- =================================================
+                 DATOS
+            ================================================== -->
 
             <div class="details">
+
+
+                <!-- MASCOTA -->
+
                 <div>
-                    <strong>Mascota</strong>
-                    <span th:text="${seguimiento.animal.nombre != null ? seguimiento.animal.nombre : 'Sin nombre'}">Sin nombre</span>
+
+                    <strong>
+                        Mascota
+                    </strong>
+
+                    <span th:text="${seguimiento.animal.nombre != null
+                            ? seguimiento.animal.nombre
+                            : 'Sin nombre'}">
+                        Sin nombre
+                    </span>
+
                 </div>
+
+
+                <!-- UBICACIÓN -->
+
                 <div>
-                    <strong>Ubicación</strong>
-                    <span th:text="${seguimiento.lugar.direccion}">Dirección</span>
+
+                    <strong>
+                        Ubicación
+                    </strong>
+
+                    <span th:text="${seguimiento.lugar.direccion}">
+                        Dirección
+                    </span>
+
                 </div>
+
+
+                <!-- LOCALIDAD -->
+
                 <div>
-                    <strong>Localidad</strong>
-                    <span th:text="${seguimiento.lugar.localidad.nombre}">Localidad</span>
+
+                    <strong>
+                        Localidad
+                    </strong>
+
+                    <span th:text="${seguimiento.lugar.localidad.nombre}">
+                        Localidad
+                    </span>
+
                 </div>
+
+
+                <!-- PRIORIDAD -->
+
                 <div>
-                    <strong>Publicado</strong>
-                    <span th:text="${#temporals.format(seguimiento.fechaPublicacion, 'dd/MM/yyyy HH:mm')}">01/09/2026</span>
+
+                    <strong>
+                        Prioridad
+                    </strong>
+
+                    <span th:if="${seguimiento.prioridad != null}"
+                          th:text="${seguimiento.prioridad.nombre}">
+                        Normal
+                    </span>
+
+                    <span th:unless="${seguimiento.prioridad != null}">
+                        Sin prioridad
+                    </span>
+
                 </div>
+
+
+                <!-- FECHA -->
+
+                <div>
+
+                    <strong>
+                        Publicado
+                    </strong>
+
+                    <span th:text="${#temporals.format(
+                            seguimiento.fechaPublicacion,
+                            'dd/MM/yyyy HH:mm')}">
+                        01/09/2026 12:00
+                    </span>
+
+                </div>
+
             </div>
 
-            <a class="button" th:href="@{/cliente/seguimientos/{id}(id=${seguimiento.idSeguimiento})}">Ver seguimiento</a>
+
+            <!-- =================================================
+                 BOTÓN
+            ================================================== -->
+
+            <a class="button"
+               th:href="@{/cliente/seguimientos/{id}
+                         (id=${seguimiento.idSeguimiento})}">
+
+                Ver seguimiento
+
+            </a>
+
         </article>
+
     </section>
+
+
+    <!-- =====================================================
+         BOTÓN NUEVO
+    ====================================================== -->
+
+    <div th:unless="${#lists.isEmpty(seguimientos)}"
+         style="margin-top: 25px;">
+
+        <a th:href="@{/cliente/seguimientos/nuevo}"
+           class="button">
+
+            + Nuevo seguimiento
+
+        </a>
+
+    </div>
+
 </main>
+
 </body>
 </html>

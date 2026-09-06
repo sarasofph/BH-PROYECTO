@@ -12,15 +12,11 @@ import com.backhome.demo.model.SeguimientoEncontrado;
 public interface SeguimientoEncontradoRepository
         extends JpaRepository<SeguimientoEncontrado, Integer> {
 
-    List<SeguimientoEncontrado> findAllByOrderByIdSeguimientoEncontradoDesc();
+    List<SeguimientoEncontrado> findAllByOrderByIdEncontradoDesc();
 
     Optional<SeguimientoEncontrado> findBySeguimiento_IdSeguimiento(
             Integer idSeguimiento
     );
-
-    List<SeguimientoEncontrado> findByNecesitaRefugioTrue();
-
-    List<SeguimientoEncontrado> findByRefugio_IdRefugio(Integer idRefugio);
 
     boolean existsBySeguimiento_IdSeguimiento(Integer idSeguimiento);
 }

@@ -1,29 +1,11 @@
 package com.backhome.demo.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "seguimiento")
 public class Seguimiento {
-
-    public enum EstadoSeguimiento {
-        perdido,
-        encontrado,
-        en_busqueda,
-        en_refugio,
-        reunido,
-        adoptado,
-        cerrado,
-        cancelado
-    }
-
-    public enum EstadoModeracion {
-        pendiente,
-        aprobado,
-        rechazado
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,37 +27,30 @@ public class Seguimiento {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_moderacion", nullable = false)
-    private EstadoModeracion estadoModeracion = EstadoModeracion.pendiente;
+    private EstadoModeracion estadoModeracion;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_seguimiento", nullable = false)
+    private TipoSeguimiento tipoSeguimiento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "animal_id", nullable = false)
     private Animal animal;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lugar_id", nullable = false)
     private Lugar lugar;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prioridad_id")
     private Prioridad prioridad;
 
-    public Seguimiento() {
-    }
 
-    @PrePersist
-    protected void alCrear() {
-        if (fechaPublicacion == null) {
-            fechaPublicacion = LocalDateTime.now();
-        }
-
-        if (estadoModeracion == null) {
-            estadoModeracion = EstadoModeracion.pendiente;
-        }
-    }
+    // GETTERS Y SETTERS
 
     public Integer getIdSeguimiento() {
         return idSeguimiento;
@@ -123,6 +98,14 @@ public class Seguimiento {
 
     public void setEstadoModeracion(EstadoModeracion estadoModeracion) {
         this.estadoModeracion = estadoModeracion;
+    }
+
+    public TipoSeguimiento getTipoSeguimiento() {
+        return tipoSeguimiento;
+    }
+
+    public void setTipoSeguimiento(TipoSeguimiento tipoSeguimiento) {
+        this.tipoSeguimiento = tipoSeguimiento;
     }
 
     public Animal getAnimal() {

@@ -30,6 +30,10 @@ public class HistorialEstadoSeguimiento {
     @Column(name = "estado_nuevo", length = 50)
     private String estadoNuevo;
 
+    @ManyToOne
+@JoinColumn(name = "modificado_por")
+private Administrador administrador;
+
     @Column(name = "fecha_cambio")
     private LocalDateTime fechaCambio;
 
@@ -67,6 +71,14 @@ public class HistorialEstadoSeguimiento {
     public void setEstadoNuevo(String estadoNuevo) {
         this.estadoNuevo = estadoNuevo;
     }
+
+    public Administrador getAdministrador() {
+    return administrador;
+}
+
+public void setAdministrador(Administrador administrador) {
+    this.administrador = administrador;
+}
 
     public LocalDateTime getFechaCambio() {
         return fechaCambio;

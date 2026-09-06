@@ -33,9 +33,9 @@ public class GestionSeguimiento {
     @Column(name = "observacion", columnDefinition = "TEXT")
     private String observacion;
 
-    @ManyToOne
-    @JoinColumn(name = "administrador_id", nullable = false)
-    private Administrador administrador;
+  @ManyToOne
+@JoinColumn(name = "administrador_id", nullable = true)
+private Administrador administrador;
 
     public GestionSeguimiento() {
     }

@@ -1,105 +1,33 @@
 package com.backhome.demo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "animal")
 public class Animal {
-
-    // =========================================================
-    // ENUM SEXO
-    // =========================================================
-
-    public enum Sexo {
-
-        macho,
-        hembra,
-        desconocido
-    }
-
-
-    // =========================================================
-    // ENUM TAMAÑO
-    // =========================================================
-
-    public enum Tamano {
-
-        pequeño,
-        mediano,
-        grande
-    }
-
-
-    // =========================================================
-    // ID
-    // =========================================================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_animal")
     private Integer idAnimal;
 
-
-    // =========================================================
-    // NOMBRE
-    // =========================================================
-
     @Column(name = "nombre", length = 100)
     private String nombre;
-
-
-    // =========================================================
-    // SEXO
-    // =========================================================
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sexo", nullable = false)
     private Sexo sexo;
 
-
-    // =========================================================
-    // COLOR
-    // =========================================================
-
-    @Column(name = "color", nullable = false, length = 50)
+    @Column(name = "color", nullable = false, length = 100)
     private String color;
 
-
-    // =========================================================
-    // TAMAÑO
-    // =========================================================
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "tamano")
+    @Column(name = "tamano", nullable = false)
     private Tamano tamano;
 
-
-    // =========================================================
-    // DESCRIPCIÓN
-    // =========================================================
-
-    @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "descripcion_fisica", columnDefinition = "TEXT")
     private String descripcion;
 
-
-    // =========================================================
-    // CONSTRUCTOR
-    // =========================================================
-
-    public Animal() {
-    }
-
-
-    // =========================================================
-    // GETTERS Y SETTERS
-    // =========================================================
 
     public Integer getIdAnimal() {
         return idAnimal;
@@ -109,7 +37,6 @@ public class Animal {
         this.idAnimal = idAnimal;
     }
 
-
     public String getNombre() {
         return nombre;
     }
@@ -117,7 +44,6 @@ public class Animal {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
 
     public Sexo getSexo() {
         return sexo;
@@ -127,7 +53,6 @@ public class Animal {
         this.sexo = sexo;
     }
 
-
     public String getColor() {
         return color;
     }
@@ -136,7 +61,6 @@ public class Animal {
         this.color = color;
     }
 
-
     public Tamano getTamano() {
         return tamano;
     }
@@ -144,7 +68,6 @@ public class Animal {
     public void setTamano(Tamano tamano) {
         this.tamano = tamano;
     }
-
 
     public String getDescripcion() {
         return descripcion;

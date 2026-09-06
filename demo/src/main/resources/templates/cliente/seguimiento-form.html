@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nuevo seguimiento | BackHome</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f5f7;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #8f3d62;
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 950px;
+            margin: 35px auto 60px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #8f3d62;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            color: #8f3d62;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #444;
+        }
+
+        .required {
+            color: #c0395c;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d5d5d5;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #8f3d62;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .help {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .type-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .type-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .type-option input {
+            display: none;
+        }
+
+        .type-option label {
+            display: block;
+            padding: 18px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .type-option input:checked + label {
+            border-color: #8f3d62;
+            background: #f8edf2;
+            color: #8f3d62;
+        }
+
+        .conditional {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #faf7f9;
+            border-radius: 10px;
+            border-left: 4px solid #8f3d62;
+        }
+
+        .conditional.active {
+            display: block;
+        }
+
+        .animal-type-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .animal-type-option {
+            flex: 1;
+        }
+
+        .animal-type-option input {
+            display: none;
+        }
+
+        .animal-type-option label {
+            display: block;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .animal-type-option input:checked + label {
+            border-color: #8f3d62;
+            background: #f8edf2;
+            color: #8f3d62;
+        }
+
+        .notice {
+            background: #fff7df;
+            border: 1px solid #efd98b;
+            color: #765d00;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 25px;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel {
+            background: #e5e5e5;
+            color: #444;
+        }
+
+        .btn-primary {
+            background: #8f3d62;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #73304e;
+        }
+
+        .error {
+            background: #fdecec;
+            color: #a52828;
+            border: 1px solid #efb1b1;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .type-options,
+            .animal-type-options {
+                flex-direction: column;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">BackHome</div>
+
+    <a th:href="@{/cliente/seguimientos}"
+       class="back-link">
+        ← Mis seguimientos
+    </a>
+</nav>
+
+
+<main class="container">
+
+    <div class="header">
+        <h1>Crear nuevo seguimiento</h1>
+        <p>
+            Registra la información del animal perdido o encontrado.
+        </p>
+    </div>
+
+
+    <!-- MENSAJE DE ERROR -->
+
+    <div class="error"
+         th:if="${error}"
+         th:text="${error}">
+    </div>
+
+
+    <div class="form-card">
+
+        <div class="notice">
+            <strong>Importante:</strong>
+            tu reporte será creado como
+            <strong>pendiente de moderación</strong>.
+            Un administrador deberá verificarlo antes de que sea visible públicamente.
+        </div>
+
+
+        <form th:action="@{/cliente/seguimientos}"
+              method="post">
+
+
+            <!-- =====================================================
+                 INFORMACIÓN DEL REPORTE
+            ====================================================== -->
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    Información del reporte
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+                        <label for="titulo">
+                            Título <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="titulo"
+                               name="titulo"
+                               maxlength="150"
+                               placeholder="Ej: Luna se perdió en Suba"
+                               required>
+                    </div>
+
+
+                    <div class="form-group full">
+                        <label for="descripcion">
+                            Descripción del reporte
+                            <span class="required">*</span>
+                        </label>
+
+                        <textarea id="descripcion"
+                                  name="descripcion"
+                                  placeholder="Describe lo ocurrido y cualquier información importante..."
+                                  required></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Tipo de reporte
+                            <span class="required">*</span>
+                        </label>
+
+                        <div class="type-options">
+
+                            <div class="type-option">
+
+                                <input type="radio"
+                                       id="perdido"
+                                       name="tipoSeguimiento"
+                                       value="perdido"
+                                       required>
+
+                                <label for="perdido">
+                                    🔴 Perdido
+                                </label>
+
+                            </div>
+
+
+                            <div class="type-option">
+
+                                <input type="radio"
+                                       id="encontrado"
+                                       name="tipoSeguimiento"
+                                       value="encontrado">
+
+                                <label for="encontrado">
+                                    🟢 Encontrado
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="prioridad">
+                            Prioridad
+                        </label>
+
+                        <select id="prioridad"
+                                name="prioridadId">
+
+                            <option value="">
+                                Seleccionar prioridad
+                            </option>
+
+                            <option th:each="prioridad : ${prioridades}"
+                                    th:value="${prioridad.idPrioridad}"
+                                    th:text="${prioridad.nombre}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 INFORMACIÓN DEL ANIMAL
+            ====================================================== -->
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    🐾 Información del animal
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="nombreAnimal">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               id="nombreAnimal"
+                               name="nombreAnimal"
+                               maxlength="100"
+                               placeholder="Ej: Luna">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="sexo">
+                            Sexo <span class="required">*</span>
+                        </label>
+
+                        <select id="sexo"
+                                name="sexo"
+                                required>
+
+                            <option value="">
+                                Seleccionar
+                            </option>
+
+                            <option th:each="sexo : ${sexos}"
+                                    th:value="${sexo}"
+                                    th:text="${sexo}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="color">
+                            Color <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="color"
+                               name="color"
+                               maxlength="50"
+                               placeholder="Ej: Blanco con manchas negras"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="tamano">
+                            Tamaño <span class="required">*</span>
+                        </label>
+
+                        <select id="tamano"
+                                name="tamano"
+                                required>
+
+                            <option value="">
+                                Seleccionar
+                            </option>
+
+                            <option th:each="tamano : ${tamanos}"
+                                    th:value="${tamano}"
+                                    th:text="${tamano}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label for="descripcionAnimal">
+                            Descripción física
+                        </label>
+
+                        <textarea id="descripcionAnimal"
+                                  name="descripcionAnimal"
+                                  placeholder="Características que permitan identificar al animal..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TIPO DE ANIMAL -->
+
+                <div class="form-group">
+
+                    <label>
+                        Tipo de animal
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="animal-type-options">
+
+                        <div class="animal-type-option">
+
+                            <input type="radio"
+                                   id="domestico"
+                                   name="tipoAnimal"
+                                   value="domestico"
+                                   required>
+
+                            <label for="domestico">
+                                🐶 Doméstico
+                            </label>
+
+                        </div>
+
+
+                        <div class="animal-type-option">
+
+                            <input type="radio"
+                                   id="exotico"
+                                   name="tipoAnimal"
+                                   value="exotico">
+
+                            <label for="exotico">
+                                🦎 Exótico
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATOS DOMÉSTICO -->
+
+                <div id="datosDomestico"
+                     class="conditional">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="especieDomestica">
+                                Especie
+                                <span class="required">*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="especieDomestica"
+                                   name="especie"
+                                   maxlength="100"
+                                   placeholder="Ej: Perro">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="raza">
+                                Raza
+                                <span class="required">*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="raza"
+                                   name="raza"
+                                   maxlength="100"
+                                   placeholder="Ej: Labrador">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DATOS EXÓTICO -->
+
+                <div id="datosExotico"
+                     class="conditional">
+
+                    <div class="form-group">
+
+                        <label for="especieExotica">
+                            Especie
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="especieExotica"
+                               name="especie"
+                               maxlength="100"
+                               placeholder="Ej: Iguana">
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 LUGAR
+            ====================================================== -->
+
+            <section class="section">
+
+                <h2 class="section-title">
+                    📍 Lugar
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group full">
+
+                        <label for="direccion">
+                            Dirección
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="direccion"
+                               name="direccion"
+                               maxlength="255"
+                               placeholder="Ej: Calle 145 # 20-30"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="localidadId">
+                            Localidad
+                            <span class="required">*</span>
+                        </label>
+
+                        <select id="localidadId"
+                                name="localidadId"
+                                required>
+
+                            <option value="">
+                                Seleccionar localidad
+                            </option>
+
+                            <option th:each="localidad : ${localidades}"
+                                    th:value="${localidad.idLocalidad}"
+                                    th:text="${localidad.nombre}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 PERDIDO
+            ====================================================== -->
+
+            <section id="seccionPerdido"
+                     class="section conditional">
+
+                <h2 class="section-title">
+                    🔴 Información de pérdida
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="fechaPerdida">
+                            Fecha de pérdida
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="datetime-local"
+                               id="fechaPerdida"
+                               name="fechaPerdida">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="fechaUltimaVezVisto">
+                            Última vez visto
+                        </label>
+
+                        <input type="datetime-local"
+                               id="fechaUltimaVezVisto"
+                               name="fechaUltimaVezVisto">
+
+                        <span class="help">
+                            Si conoces la fecha y hora aproximada.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 ENCONTRADO
+            ====================================================== -->
+
+            <section id="seccionEncontrado"
+                     class="section conditional">
+
+                <h2 class="section-title">
+                    🟢 Información del hallazgo
+                </h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="fechaEncontrado">
+                            Fecha de encontrado
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="datetime-local"
+                               id="fechaEncontrado"
+                               name="fechaEncontrado">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="estadoCustodiaId">
+                            Estado de custodia
+                            <span class="required">*</span>
+                        </label>
+
+                        <select id="estadoCustodiaId"
+                                name="estadoCustodiaId">
+
+                            <option value="">
+                                Seleccionar estado
+                            </option>
+
+                            <option th:each="estado : ${estadosCustodia}"
+                                    th:value="${estado.idEstadoCustodia}"
+                                    th:text="${estado.nombre}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+                 BOTONES
+            ====================================================== -->
+
+            <div class="buttons">
+
+                <a th:href="@{/cliente/seguimientos}"
+                   class="btn btn-cancel">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Publicar seguimiento
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<script>
+
+    const perdido = document.getElementById("perdido");
+    const encontrado = document.getElementById("encontrado");
+
+    const seccionPerdido =
+        document.getElementById("seccionPerdido");
+
+    const seccionEncontrado =
+        document.getElementById("seccionEncontrado");
+
+    const fechaPerdida =
+        document.getElementById("fechaPerdida");
+
+    const fechaEncontrado =
+        document.getElementById("fechaEncontrado");
+
+    const estadoCustodia =
+        document.getElementById("estadoCustodiaId");
+
+
+    const domestico =
+        document.getElementById("domestico");
+
+    const exotico =
+        document.getElementById("exotico");
+
+    const datosDomestico =
+        document.getElementById("datosDomestico");
+
+    const datosExotico =
+        document.getElementById("datosExotico");
+
+    const especieDomestica =
+        document.getElementById("especieDomestica");
+
+    const especieExotica =
+        document.getElementById("especieExotica");
+
+    const raza =
+        document.getElementById("raza");
+
+
+    /*
+     * =========================================================
+     * PERDIDO / ENCONTRADO
+     * =========================================================
+     */
+
+    function actualizarTipoSeguimiento() {
+
+        if (perdido.checked) {
+
+            seccionPerdido.classList.add("active");
+            seccionEncontrado.classList.remove("active");
+
+            fechaPerdida.required = true;
+            fechaEncontrado.required = false;
+            estadoCustodia.required = false;
+
+            fechaEncontrado.value = "";
+            estadoCustodia.value = "";
+
+        }
+
+
+        if (encontrado.checked) {
+
+            seccionEncontrado.classList.add("active");
+            seccionPerdido.classList.remove("active");
+
+            fechaPerdida.required = false;
+            fechaEncontrado.required = true;
+            estadoCustodia.required = true;
+
+            fechaPerdida.value = "";
+
+        }
+    }
+
+
+    perdido.addEventListener(
+        "change",
+        actualizarTipoSeguimiento
+    );
+
+    encontrado.addEventListener(
+        "change",
+        actualizarTipoSeguimiento
+    );
+
+
+    /*
+     * =========================================================
+     * DOMÉSTICO / EXÓTICO
+     * =========================================================
+     */
+
+    function actualizarTipoAnimal() {
+
+        if (domestico.checked) {
+
+            datosDomestico.classList.add("active");
+            datosExotico.classList.remove("active");
+
+            especieDomestica.disabled = false;
+            especieDomestica.required = true;
+
+            raza.disabled = false;
+            raza.required = true;
+
+            especieExotica.disabled = true;
+            especieExotica.required = false;
+            especieExotica.value = "";
+
+        }
+
+
+        if (exotico.checked) {
+
+            datosExotico.classList.add("active");
+            datosDomestico.classList.remove("active");
+
+            especieExotica.disabled = false;
+            especieExotica.required = true;
+
+            especieDomestica.disabled = true;
+            especieDomestica.required = false;
+            especieDomestica.value = "";
+
+            raza.disabled = true;
+            raza.required = false;
+            raza.value = "";
+
+        }
+    }
+
+
+    domestico.addEventListener(
+        "change",
+        actualizarTipoAnimal
+    );
+
+    exotico.addEventListener(
+        "change",
+        actualizarTipoAnimal
+    );
+
+</script>
+
+</body>
+</html>

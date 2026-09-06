@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.backhome.demo.model.Seguimiento;
-import com.backhome.demo.model.Seguimiento.EstadoModeracion;
-import com.backhome.demo.model.Seguimiento.EstadoSeguimiento;
+import com.backhome.demo.model.EstadoModeracion;
+import com.backhome.demo.model.EstadoSeguimiento;
 
 @Repository
 public interface SeguimientoRepository extends JpaRepository<Seguimiento, Integer> {
