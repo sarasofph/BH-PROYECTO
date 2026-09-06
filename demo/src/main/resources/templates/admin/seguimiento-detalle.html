@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Revisar seguimiento</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+    <style>
+
+        /* =====================================================
+           DETALLE DEL SEGUIMIENTO
+        ===================================================== */
+
+        .detail-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 2fr)
+                minmax(280px, 1fr);
+
+            gap: 20px;
+        }
+
+        .detail-card {
+
+            background: var(--white);
+
+            border: 1px solid var(--border);
+
+            border-radius: 18px;
+
+            padding: 24px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .detail-card + .detail-card {
+
+            margin-top: 18px;
+        }
+
+        /* HEADER DEL REPORTE */
+
+        .report-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 20px;
+
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid var(--border);
+
+            margin-bottom: 20px;
+        }
+
+        .report-type {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 10px;
+
+            border-radius: 8px;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .report-type.perdido {
+
+            background: var(--red-light);
+
+            color: var(--red);
+        }
+
+        .report-type.encontrado {
+
+            background: var(--green-light);
+
+            color: var(--green);
+        }
+
+        .report-header h2 {
+
+            font-size: 22px;
+
+            color: #464248;
+
+            margin-bottom: 7px;
+        }
+
+        .report-date {
+
+            color: var(--text-light);
+
+            font-size: 11px;
+        }
+
+        /* MODERACION */
+
+        .moderation-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 8px 11px;
+
+            border-radius: 9px;
+
+            background: var(--orange-light);
+
+            color: #bd8248;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        .moderation-status i {
+
+            font-size: 11px;
+        }
+
+        /* SECCIONES */
+
+        .detail-section {
+
+            margin-bottom: 25px;
+        }
+
+        .detail-section:last-child {
+
+            margin-bottom: 0;
+        }
+
+        .detail-section-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            margin-bottom: 14px;
+        }
+
+        .detail-section-title i {
+
+            width: 32px;
+
+            height: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: var(--pink-light);
+
+            color: var(--pink-dark);
+
+            font-size: 13px;
+        }
+
+        .detail-section-title h3 {
+
+            font-size: 14px;
+
+            color: #4b464b;
+        }
+
+        /* DESCRIPCION */
+
+        .description-box {
+
+            padding: 15px;
+
+            background: #fcfafb;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            color: #6f686d;
+
+            font-size: 12px;
+
+            line-height: 1.7;
+        }
+
+        /* DATOS */
+
+        .data-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+        }
+
+        .data-item {
+
+            padding: 13px;
+
+            background: #fcfafb;
+
+            border: 1px solid var(--border);
+
+            border-radius: 11px;
+        }
+
+        .data-item.full {
+
+            grid-column: 1 / -1;
+        }
+
+        .data-label {
+
+            display: block;
+
+            color: #aaa0a5;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .5px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+
+            display: block;
+
+            color: #514b50;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+        /* PRIORIDAD */
+
+        .priority-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 8px;
+
+            border-radius: 7px;
+
+            background: var(--purple-light);
+
+            color: #8b72ad;
+
+            font-size: 9px;
+
+            font-weight: 800;
+        }
+
+        /* ESTADO */
+
+        .state-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 8px;
+
+            border-radius: 7px;
+
+            background: var(--green-light);
+
+            color: #5d9a74;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+        }
+
+        /* SIDEBAR INFO */
+
+        .side-info {
+
+            display: grid;
+
+            gap: 12px;
+        }
+
+        .info-row {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 11px;
+
+            padding: 12px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 11px;
+
+        }
+
+        .info-row-icon {
+
+            width: 34px;
+
+            height: 34px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: var(--pink-light);
+
+            color: var(--pink-dark);
+
+            font-size: 13px;
+
+        }
+
+        .info-row span {
+
+            display: block;
+
+            color: #aaa0a5;
+
+            font-size: 9px;
+
+            margin-bottom: 4px;
+
+        }
+
+        .info-row strong {
+
+            display: block;
+
+            color: #504a4f;
+
+            font-size: 11px;
+
+            line-height: 1.4;
+        }
+
+        /* ACCIONES */
+
+        .review-actions {
+
+            display: grid;
+
+            gap: 9px;
+
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .review-button {
+
+            width: 100%;
+
+            height: 43px;
+
+            border-radius: 10px;
+
+            border: none;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: .2s ease;
+        }
+
+        .verify-button {
+
+            background: var(--green);
+
+            color: white;
+
+            box-shadow:
+                0 6px 15px rgba(130,185,154,.20);
+        }
+
+        .verify-button:hover {
+
+            transform: translateY(-1px);
+
+            filter: brightness(.96);
+        }
+
+        .reject-button {
+
+            background: var(--red-light);
+
+            color: var(--red);
+
+            border: 1px solid #f4d5da;
+        }
+
+        .reject-button:hover {
+
+            background: #f9dfe3;
+        }
+
+        .back-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            width: 100%;
+
+            height: 40px;
+
+            margin-top: 10px;
+
+            border-radius: 10px;
+
+            border: 1px solid var(--border);
+
+            background: white;
+
+            color: #777;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition: .2s ease;
+        }
+
+        .back-button:hover {
+
+            background: #faf6f8;
+
+            border-color: #e7dce1;
+        }
+
+        /* AVISO */
+
+        .review-notice {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+            padding: 13px;
+
+            margin-bottom: 18px;
+
+            border-radius: 11px;
+
+            background: var(--orange-light);
+
+            border: 1px solid #f5dfc5;
+
+            color: #aa7843;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+        .review-notice i {
+
+            margin-top: 2px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 950px) {
+
+            .detail-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .report-header {
+
+                flex-direction: column;
+            }
+
+            .data-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .data-item.full {
+
+                grid-column: auto;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /* =====================================================
+   MODAL DE RECHAZO
+===================================================== */
+
+.rejection-modal {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(52, 52, 59, .45);
+
+    backdrop-filter: blur(3px);
+}
+
+.rejection-modal.show {
+
+    display: flex;
+}
+
+.rejection-modal-content {
+
+    width: 100%;
+
+    max-width: 480px;
+
+    background: var(--white);
+
+    border-radius: 18px;
+
+    padding: 24px;
+
+    box-shadow: 0 25px 70px rgba(52, 52, 59, .20);
+
+    animation: modalEntrada .2s ease;
+}
+
+@keyframes modalEntrada {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(10px) scale(.98);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.rejection-modal-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 13px;
+
+    margin-bottom: 20px;
+}
+
+.rejection-icon {
+
+    width: 40px;
+
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--red-light);
+
+    color: var(--red);
+
+    font-size: 16px;
+}
+
+.rejection-modal-header h3 {
+
+    color: #464248;
+
+    font-size: 16px;
+
+    margin-bottom: 5px;
+}
+
+.rejection-modal-header p {
+
+    color: var(--text-light);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    margin: 0;
+}
+
+.rejection-modal-content label {
+
+    display: block;
+
+    color: #59535a;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    margin-bottom: 7px;
+}
+
+.rejection-modal-content textarea {
+
+    width: 100%;
+
+    min-height: 120px;
+
+    resize: vertical;
+
+    padding: 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    color: var(--text);
+
+    background: #fcfafb;
+
+    transition: .2s ease;
+
+    box-sizing: border-box;
+}
+
+.rejection-modal-content textarea:focus {
+
+    border-color: var(--pink);
+
+    background: white;
+
+    box-shadow: 0 0 0 3px var(--pink-light);
+}
+
+.rejection-modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 18px;
+}
+
+.modal-cancel-button,
+.modal-reject-button {
+
+    height: 40px;
+
+    padding: 0 15px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.modal-cancel-button {
+
+    border: 1px solid var(--border);
+
+    background: white;
+
+    color: #777;
+}
+
+.modal-cancel-button:hover {
+
+    background: #faf6f8;
+}
+
+.modal-reject-button {
+
+    border: none;
+
+    background: var(--red);
+
+    color: white;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    box-shadow: 0 5px 14px rgba(220,124,137,.20);
+}
+
+.modal-reject-button:hover {
+
+    filter: brightness(.96);
+
+    transform: translateY(-1px);
+}
+
+
+/* RESPONSIVE MODAL */
+
+@media (max-width: 500px) {
+
+    .rejection-modal-content {
+
+        padding: 20px;
+    }
+
+    .rejection-modal-actions {
+
+        flex-direction: column;
+    }
+
+    .modal-cancel-button,
+    .modal-reject-button {
+
+        width: 100%;
+
+        justify-content: center;
+    }
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="BackHome">
+
+            <div>
+
+                <strong>BackHome</strong>
+
+                <span>Panel administrativo</span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Usuarios</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/seguimientos}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>Seguimientos</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Refugios</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+
+                <span>Donaciones</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                <span>Consejos</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>Reportes</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <form th:action="@{/logout}"
+                  method="post">
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
+
+                <button type="submit"
+                        class="logout-button">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Cerrar sesión
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Moderación
+                </p>
+
+                <h1>
+                    Revisar seguimiento
+                </h1>
+
+                <p class="welcome-description">
+                    Verifica la información del reporte antes de publicarlo.
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div class="profile-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Administrador</strong>
+
+                    <span>Cuenta administrativa</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENIDO
+        ================================================== -->
+
+        <div class="detail-grid">
+
+
+            <!-- =================================================
+                 INFORMACION PRINCIPAL
+            ================================================== -->
+
+            <div>
+
+
+                <!-- REPORTE -->
+
+                <section class="detail-card">
+
+                    <div class="report-header">
+
+                        <div>
+
+                            <span class="report-type perdido"
+                                  th:if="${seguimiento.tipoSeguimiento.name() == 'perdido'}">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                                Mascota perdida
+
+                            </span>
+
+
+                            <span class="report-type encontrado"
+                                  th:if="${seguimiento.tipoSeguimiento.name() == 'encontrado'}">
+
+                                <i class="fa-solid fa-heart"></i>
+
+                                Mascota encontrada
+
+                            </span>
+
+
+                            <h2 th:text="${seguimiento.titulo}">
+                                Título del seguimiento
+                            </h2>
+
+
+                            <p class="report-date">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                Publicado el
+
+                                <span th:text="${#temporals.format(
+                                    seguimiento.fechaPublicacion,
+                                    'dd/MM/yyyy HH:mm'
+                                )}">
+                                    00/00/0000
+                                </span>
+
+                            </p>
+
+                        </div>
+
+
+                        <span class="moderation-status">
+
+                            <i class="fa-solid fa-clock"></i>
+
+                            Pendiente de revisión
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- DESCRIPCION -->
+
+                    <div class="detail-section">
+
+                        <div class="detail-section-title">
+
+                            <i class="fa-solid fa-align-left"></i>
+
+                            <h3>Descripción del reporte</h3>
+
+                        </div>
+
+
+                        <div class="description-box"
+                             th:text="${seguimiento.descripcion}">
+
+                            Descripción del seguimiento.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MASCOTA -->
+
+                    <div class="detail-section">
+
+                        <div class="detail-section-title">
+
+                            <i class="fa-solid fa-paw"></i>
+
+                            <h3>Información de la mascota</h3>
+
+                        </div>
+
+
+                        <div class="data-grid">
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Nombre
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.animal.nombre != null
+                                          && !seguimiento.animal.nombre.isEmpty()
+                                          ? seguimiento.animal.nombre
+                                          : 'Sin nombre'}">
+
+                                    Sin nombre
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Sexo
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.animal.sexo}">
+
+                                    Desconocido
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Color
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.animal.color}">
+
+                                    Color
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Tamaño
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.animal.tamano}">
+
+                                    Tamaño
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item full">
+
+                                <span class="data-label">
+                                    Descripción física
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.animal.descripcion != null
+                                          && !seguimiento.animal.descripcion.isEmpty()
+                                          ? seguimiento.animal.descripcion
+                                          : 'Sin descripción física registrada.'}">
+
+                                    Sin descripción física registrada.
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- UBICACION -->
+
+                    <div class="detail-section">
+
+                        <div class="detail-section-title">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <h3>Ubicación</h3>
+
+                        </div>
+
+
+                        <div class="data-grid">
+
+
+                            <div class="data-item full">
+
+                                <span class="data-label">
+                                    Dirección
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.lugar.direccion}">
+
+                                    Dirección
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Localidad
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimiento.lugar.localidad.nombre}">
+
+                                    Localidad
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMACION SEGUN TIPO -->
+
+                    <div class="detail-section">
+
+                        <div class="detail-section-title">
+
+                            <i class="fa-solid fa-calendar-days"></i>
+
+                            <h3>Información del seguimiento</h3>
+
+                        </div>
+
+
+                        <!-- PERDIDO -->
+
+                        <div class="data-grid"
+                             th:if="${seguimientoPerdido != null}">
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Fecha de pérdida
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${#temporals.format(
+                                          seguimientoPerdido.fechaPerdida,
+                                          'dd/MM/yyyy HH:mm'
+                                      )}">
+
+                                    Fecha
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item"
+                                 th:if="${seguimientoPerdido.fechaUltimaVezVisto != null}">
+
+                                <span class="data-label">
+                                    Última vez visto
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${#temporals.format(
+                                          seguimientoPerdido.fechaUltimaVezVisto,
+                                          'dd/MM/yyyy HH:mm'
+                                      )}">
+
+                                    Fecha
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ENCONTRADO -->
+
+                        <div class="data-grid"
+                             th:if="${seguimientoEncontrado != null}">
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Fecha de encontrado
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${#temporals.format(
+                                          seguimientoEncontrado.fechaEncontrado,
+                                          'dd/MM/yyyy HH:mm'
+                                      )}">
+
+                                    Fecha
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="data-item">
+
+                                <span class="data-label">
+                                    Estado de custodia
+                                </span>
+
+                                <span class="data-value"
+                                      th:text="${seguimientoEncontrado.estadoCustodia.nombre}">
+
+                                    Estado de custodia
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ESTADO ACTUAL -->
+
+                <section class="detail-card">
+
+                    <div class="detail-section-title">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <h3>Estado actual del seguimiento</h3>
+
+                    </div>
+
+
+                    <div class="data-grid">
+
+
+                        <div class="data-item">
+
+                            <span class="data-label">
+                                Estado
+                            </span>
+
+                            <span class="state-badge">
+
+                                <i class="fa-solid fa-circle"></i>
+
+                                <span th:text="${seguimiento.estadoSeguimiento}">
+                                    Activo
+                                </span>
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="data-item"
+                             th:if="${seguimiento.prioridad != null}">
+
+                            <span class="data-label">
+                                Prioridad
+                            </span>
+
+                            <span class="priority-badge">
+
+                                <i class="fa-solid fa-flag"></i>
+
+                                <span th:text="${seguimiento.prioridad.nombre}">
+                                    Normal
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 PANEL LATERAL
+            ================================================== -->
+
+            <aside>
+
+
+                <!-- AVISO -->
+
+                <section class="detail-card">
+
+                    <div class="review-notice">
+
+                        <i class="fa-solid fa-circle-exclamation"></i>
+
+                        <span>
+                            Revisa cuidadosamente la información antes
+                            de tomar una decisión sobre este reporte.
+                        </span>
+
+                    </div>
+
+
+                    <!-- CLIENTE -->
+
+                    <div class="detail-section">
+
+                        <div class="detail-section-title">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <h3>Reportado por</h3>
+
+                        </div>
+
+
+                        <div class="side-info">
+
+
+                            <div class="info-row">
+
+                                <div class="info-row-icon">
+
+                                    <i class="fa-solid fa-user"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Nombre
+                                    </span>
+
+                                    <strong
+                                        th:text="${seguimiento.cliente.persona.primerNombre
+                                            + ' '
+                                            + seguimiento.cliente.persona.primerApellido}">
+
+                                        Nombre del cliente
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-row">
+
+                                <div class="info-row-icon">
+
+                                    <i class="fa-solid fa-envelope"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Correo
+                                    </span>
+
+                                    <strong
+                                        th:text="${seguimiento.cliente.persona.email}">
+
+                                        correo@email.com
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-row">
+
+                                <div class="info-row-icon">
+
+                                    <i class="fa-solid fa-phone"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Teléfono
+                                    </span>
+
+                                    <strong
+                                        th:text="${seguimiento.cliente.persona.numeroTel}">
+
+                                        Teléfono
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACCIONES -->
+
+<div class="review-actions">
+
+    <!-- VERIFICAR -->
+
+    <form th:action="@{/admin/seguimientos/{id}/verificar(id=${seguimiento.idSeguimiento})}"
+          method="post">
+
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}">
+
+        <button type="submit"
+                class="review-button verify-button">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            Verificar reporte
+
+        </button>
+
+    </form>
+
+
+    <!-- RECHAZAR -->
+
+    <button type="button"
+            class="review-button reject-button"
+            onclick="abrirModalRechazo()">
+
+        <i class="fa-solid fa-circle-xmark"></i>
+
+        Rechazar reporte
+
+    </button>
+
+</div>
+
+
+                    <a th:href="@{/admin/seguimientos}"
+                       class="back-button">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Volver a seguimientos
+
+                    </a>
+
+                </section>
+
+            </aside>
+
+
+        </div>
+
+    </main>
+
+</div>
+<!-- =====================================================
+     MODAL RECHAZAR REPORTE
+====================================================== -->
+
+<div id="rechazoModal"
+     class="rejection-modal">
+
+    <div class="rejection-modal-content">
+
+        <div class="rejection-modal-header">
+
+            <div class="rejection-icon">
+
+                <i class="fa-solid fa-circle-xmark"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Rechazar reporte</h3>
+
+                <p>
+                    Indica el motivo por el cual este reporte
+                    no puede ser verificado.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form th:action="@{/admin/seguimientos/{id}/rechazar(id=${seguimiento.idSeguimiento})}"
+              method="post">
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+
+            <label for="observacion">
+                Motivo del rechazo
+            </label>
+
+            <textarea id="observacion"
+                      name="observacion"
+                      rows="5"
+                      required
+                      maxlength="1000"
+                      placeholder="Escribe la observación del rechazo..."></textarea>
+
+
+            <div class="rejection-modal-actions">
+
+                <button type="button"
+                        class="modal-cancel-button"
+                        onclick="cerrarModalRechazo()">
+
+                    Cancelar
+
+                </button>
+
+
+                <button type="submit"
+                        class="modal-reject-button">
+
+                    <i class="fa-solid fa-circle-xmark"></i>
+
+                    Confirmar rechazo
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    function abrirModalRechazo() {
+
+        const modal = document.getElementById("rechazoModal");
+
+        modal.classList.add("show");
+
+        document.getElementById("observacion").focus();
+    }
+
+
+    function cerrarModalRechazo() {
+
+        const modal = document.getElementById("rechazoModal");
+
+        modal.classList.remove("show");
+
+        document.getElementById("observacion").value = "";
+    }
+
+
+    // Cerrar al hacer clic fuera del modal
+
+    document.getElementById("rechazoModal")
+        .addEventListener("click", function(event) {
+
+            if (event.target === this) {
+
+                cerrarModalRechazo();
+            }
+
+        });
+
+
+    // Cerrar con la tecla ESC
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            cerrarModalRechazo();
+        }
+
+    });
+
+</script>
+</body>
+
+</html>

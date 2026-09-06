@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Seguimientos</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+    <style>
+
+        /* =====================================================
+           SEGUIMIENTOS
+        ===================================================== */
+
+        .seguimiento-list {
+
+            display: grid;
+
+            gap: 14px;
+        }
+
+        .seguimiento-card {
+
+            display: grid;
+
+            grid-template-columns: 1fr auto;
+
+            gap: 20px;
+
+            padding: 20px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 16px;
+
+            background: white;
+
+            transition: .2s ease;
+        }
+
+        .seguimiento-card:hover {
+
+            border-color: #f1ccd8;
+
+            box-shadow: var(--shadow-hover);
+
+            transform: translateY(-2px);
+        }
+
+        /* CABECERA */
+
+        .seguimiento-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+        }
+
+        .seguimiento-type {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 6px 9px;
+
+            border-radius: 8px;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: .3px;
+        }
+
+        .seguimiento-type.perdido {
+
+            background: var(--red-light);
+
+            color: var(--red);
+        }
+
+        .seguimiento-type.encontrado {
+
+            background: var(--green-light);
+
+            color: var(--green);
+        }
+
+        .moderation-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 6px 9px;
+
+            border-radius: 8px;
+
+            background: var(--orange-light);
+
+            color: #c28a4e;
+
+            font-size: 9px;
+
+            font-weight: 800;
+        }
+
+        /* TITULO */
+
+        .seguimiento-card h3 {
+
+            font-size: 16px;
+
+            color: #464248;
+
+            margin-bottom: 7px;
+        }
+
+        .seguimiento-description {
+
+            color: var(--text-light);
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            max-width: 850px;
+
+            display: -webkit-box;
+
+            -webkit-line-clamp: 2;
+
+            line-clamp: 2;
+
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
+        }
+
+        /* INFORMACION */
+
+        .seguimiento-info {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px 18px;
+
+            margin-top: 15px;
+        }
+
+        .info-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            color: #898187;
+
+            font-size: 10px;
+        }
+
+        .info-item i {
+
+            color: var(--pink);
+
+            width: 14px;
+
+            text-align: center;
+        }
+
+        .info-item strong {
+
+            color: #5b555a;
+
+            font-weight: 700;
+        }
+
+        /* ACCION */
+
+        .seguimiento-action {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .review-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            min-width: 135px;
+
+            height: 40px;
+
+            padding: 0 14px;
+
+            border-radius: 10px;
+
+            background: var(--pink);
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 6px 15px rgba(233,141,169,.18);
+
+            transition: .2s ease;
+        }
+
+        .review-button:hover {
+
+            background: var(--pink-dark);
+
+            transform: translateY(-1px);
+        }
+
+        /* PRIORIDAD */
+
+        .priority-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 8px;
+
+            border-radius: 7px;
+
+            background: var(--purple-light);
+
+            color: #8b72ad;
+
+            font-size: 9px;
+
+            font-weight: 800;
+        }
+
+        /* ESTADO */
+
+        .lifecycle-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding: 5px 8px;
+
+            border-radius: 7px;
+
+            background: var(--green-light);
+
+            color: #5d9a74;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: capitalize;
+        }
+
+        /* CONTADOR */
+
+        .pending-summary {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 13px;
+
+            background: var(--orange-light);
+
+            border: 1px solid #f5dfc5;
+
+            color: #b47d43;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .pending-summary i {
+
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 800px) {
+
+            .seguimiento-card {
+
+                grid-template-columns: 1fr;
+            }
+
+            .seguimiento-action {
+
+                justify-content: flex-start;
+            }
+
+            .review-button {
+
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="BackHome">
+
+            <div>
+
+                <strong>BackHome</strong>
+
+                <span>Panel administrativo</span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Usuarios</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/seguimientos}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>Seguimientos</span>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Refugios</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+
+                <span>Donaciones</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                <span>Consejos</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+
+            <a href="#"
+               class="menu-item disabled">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>Reportes</span>
+
+                <small>Próximamente</small>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <form th:action="@{/logout}"
+                  method="post">
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
+
+                <button type="submit"
+                        class="logout-button">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Cerrar sesión
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Administración
+                </p>
+
+                <h1>
+                    Seguimientos
+                </h1>
+
+                <p class="welcome-description">
+                    Revisa y gestiona los seguimientos de mascotas registrados en BackHome.
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div class="profile-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Administrador</strong>
+
+                    <span>Gestión de seguimientos</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             CONTENIDO
+        ================================================== -->
+
+        <section class="table-section">
+
+
+            <div class="table-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        Moderación
+                    </span>
+
+                    <h2>
+                        Seguimientos pendientes
+                    </h2>
+
+                </div>
+
+
+                <span class="result-count"
+                      th:text="${seguimientos.size()} + ' pendientes'">
+
+                    0 pendientes
+
+                </span>
+
+            </div>
+
+
+            <!-- AVISO -->
+
+            <div class="pending-summary"
+                 th:if="${!seguimientos.isEmpty()}">
+
+                <i class="fa-solid fa-circle-exclamation"></i>
+
+                <span>
+                    Estos reportes están pendientes de revisión administrativa.
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 LISTA
+            ================================================== -->
+
+            <div class="seguimiento-list"
+                 th:if="${!seguimientos.isEmpty()}">
+
+                <article class="seguimiento-card"
+                         th:each="seguimiento : ${seguimientos}">
+
+
+                    <div class="seguimiento-content">
+
+
+                        <!-- BADGES -->
+
+                        <div class="seguimiento-header">
+
+                            <span class="seguimiento-type perdido"
+                                  th:if="${seguimiento.tipoSeguimiento.name() == 'perdido'}">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                                Perdido
+
+                            </span>
+
+
+                            <span class="seguimiento-type encontrado"
+                                  th:if="${seguimiento.tipoSeguimiento.name() == 'encontrado'}">
+
+                                <i class="fa-solid fa-heart"></i>
+
+                                Encontrado
+
+                            </span>
+
+
+                            <span class="moderation-badge">
+
+                                <i class="fa-solid fa-clock"></i>
+
+                                Pendiente
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- TITULO -->
+
+                        <h3 th:text="${seguimiento.titulo}">
+                            Título del seguimiento
+                        </h3>
+
+
+                        <!-- DESCRIPCION -->
+
+                        <p class="seguimiento-description"
+                           th:text="${seguimiento.descripcion}">
+
+                            Descripción del seguimiento.
+
+                        </p>
+
+
+                        <!-- INFORMACION -->
+
+                        <div class="seguimiento-info">
+
+
+                            <div class="info-item">
+
+                                <i class="fa-solid fa-paw"></i>
+
+                                <span>
+                                    Mascota:
+                                </span>
+
+                                <strong th:text="${seguimiento.animal.nombre != null
+                                    && !seguimiento.animal.nombre.isEmpty()
+                                    ? seguimiento.animal.nombre
+                                    : 'Sin nombre'}">
+
+                                    Sin nombre
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <i class="fa-solid fa-location-dot"></i>
+
+                                <span>
+                                    Localidad:
+                                </span>
+
+                                <strong th:text="${seguimiento.lugar.localidad.nombre}">
+                                    Localidad
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <i class="fa-solid fa-road"></i>
+
+                                <span>
+                                    Lugar:
+                                </span>
+
+                                <strong th:text="${seguimiento.lugar.direccion}">
+                                    Dirección
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item"
+                                 th:if="${seguimiento.prioridad != null}">
+
+                                <i class="fa-solid fa-flag"></i>
+
+                                <span>
+                                    Prioridad:
+                                </span>
+
+                                <strong class="priority-badge"
+                                        th:text="${seguimiento.prioridad.nombre}">
+
+                                    Normal
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                <span>
+                                    Estado:
+                                </span>
+
+                                <strong class="lifecycle-badge"
+                                        th:text="${seguimiento.estadoSeguimiento}">
+
+                                    Activo
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="info-item">
+
+                                <i class="fa-regular fa-calendar"></i>
+
+                                <span>
+                                    Publicado:
+                                </span>
+
+                                <strong th:text="${#temporals.format(
+                                    seguimiento.fechaPublicacion,
+                                    'dd/MM/yyyy HH:mm'
+                                )}">
+
+                                    00/00/0000
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         ACCION
+                    ================================================== -->
+
+                    <div class="seguimiento-action">
+
+                        <a th:href="@{/admin/seguimientos/{id}(id=${seguimiento.idSeguimiento})}"
+                           class="review-button">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                            Revisar reporte
+
+                        </a>
+
+                    </div>
+
+
+                </article>
+
+            </div>
+
+
+            <!-- =================================================
+                 VACIO
+            ================================================== -->
+
+            <div class="empty-state"
+                 th:if="${seguimientos.isEmpty()}">
+
+                <div class="empty-icon">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+                <h3>
+                    Todo está al día
+                </h3>
+
+                <p>
+                    No hay seguimientos pendientes de revisión.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
