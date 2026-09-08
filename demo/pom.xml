@@ -19,52 +19,79 @@
     <name>BackHome</name>
     <description>Sistema de seguimiento de mascotas BackHome</description>
 
-   <properties>
-        <java.version>21</java.version>
-        <!-- PROPIEDADES DE SONARQUBE CONFIGURADAS CON TU PUERTO 8089 -->
-        <sonar.host.url>http://localhost:8089</sonar.host.url>
-        <sonar.projectKey>backhome-mascotas</sonar.projectKey>
-        <sonar.projectName>BackHome</sonar.projectName>
-    </properties>
+ 
 
-    <dependencies>
-        <!-- SPRING WEB -->
+        <!-- =====================================================
+             SPRING WEB
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
-        <!-- THYMELEAF -->
+
+        <!-- =====================================================
+             THYMELEAF
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-         <dependency>
+        <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
 
-        <!-- JPA / BASE DE DATOS -->
+
+        <!-- =====================================================
+             JPA / BASE DE DATOS
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- SPRING SECURITY -->
+
+        <!-- =====================================================
+             SPRING SECURITY
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- MYSQL -->
+
+        <!-- =====================================================
+             MYSQL
+        ====================================================== -->
+
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- DEVTOOLS -->
+
+        <!-- =====================================================
+             JACKSON
+             Necesario para leer la respuesta JSON de Wompi.
+        ====================================================== -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+
+        <!-- =====================================================
+             DEVTOOLS
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -72,7 +99,32 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- TEST -->
+
+        <!-- =====================================================
+             VALIDATION
+        ====================================================== -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+
+        <!-- =====================================================
+             PDF
+        ====================================================== -->
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+
+
+        <!-- =====================================================
+             TEST
+        ====================================================== -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa-test</artifactId>
@@ -90,6 +142,7 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf-test</artifactId>
@@ -103,7 +156,13 @@
         </dependency>
     </dependencies>
 
+
+    <!-- =========================================================
+         BUILD
+    ========================================================== -->
+
     <build>
+
         <plugins>
             <!-- Cobertura de Código JaCoCo -->
             <plugin>
@@ -128,6 +187,7 @@
             </plugin>
 
             <!-- Plugin de Spring Boot -->
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -139,6 +199,8 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>5.0.0.4389</version>
             </plugin>
+
         </plugins>
+
     </build>
 </project>

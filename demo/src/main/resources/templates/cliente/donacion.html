@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Donar - BackHome</title>
+
+    <link rel="stylesheet" th:href="@{/css/cliente/donacion.css}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        BackHome
+    </div>
+
+    <a th:href="@{/cliente/dashboard}" class="volver">
+        ← Volver al inicio
+    </a>
+
+</nav>
+
+
+<main class="donacion-container">
+
+    <section class="donacion-card">
+
+        <div class="donacion-header">
+
+            <div class="icono">
+                💗
+            </div>
+
+            <h1>
+                Haz una donación
+            </h1>
+
+            <p>
+                Tu aporte ayuda a BackHome a seguir apoyando
+                a mascotas y familias que lo necesitan.
+            </p>
+
+        </div>
+
+
+        <div class="cliente-info" th:if="${cliente}">
+
+            <span class="cliente-icono">
+                👤
+            </span>
+
+            <div>
+
+                <strong>
+                    Donación a nombre de
+                </strong>
+
+                <span th:text="${cliente.persona.primerNombre + ' ' + cliente.persona.primerApellido}">
+                    Cliente
+                </span>
+
+                <small th:text="${cliente.persona.email}">
+                    correo@email.com
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="monto">
+                ¿Cuánto deseas donar?
+            </label>
+
+            <div class="monto-input">
+
+                <span>
+                    $
+                </span>
+
+                <input
+                    type="number"
+                    id="monto"
+                    min="1"
+                    step="0.01"
+                    placeholder="0.00"
+                >
+
+            </div>
+
+            <small>
+                Al continuar serás enviado directamente a la página oficial de Wompi.
+            </small>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="mensaje">
+                Mensaje
+                <span>(opcional)</span>
+            </label>
+
+            <textarea
+                id="mensaje"
+                maxlength="255"
+                rows="4"
+                placeholder="Escribe un mensaje para BackHome..."
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-donar"
+            id="btnDonar"
+            onclick="irAWompi()"
+        >
+            💳 Ir a Wompi
+        </button>
+
+
+        <p class="nota">
+            Serás enviado directamente a la página oficial de Wompi. 🐾
+        </p>
+
+    </section>
+
+</main>
+
+
+<script>
+
+function irAWompi() {
+
+    window.location.href = "https://wompi.com/";
+
+}
+
+</script>
+
+</body>
+
+</html>

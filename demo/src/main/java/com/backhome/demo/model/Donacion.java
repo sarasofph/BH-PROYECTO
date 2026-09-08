@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,12 +16,6 @@ import jakarta.persistence.Table;
 @Table(name = "donaciones")
 public class Donacion {
 
-    public enum Estado {
-        pendiente,
-        confirmada,
-        cancelada
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_donacion")
@@ -33,10 +25,6 @@ public class Donacion {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @ManyToOne
-    @JoinColumn(name = "refugio_id")
-    private Refugio refugio;
-
     @Column(name = "monto", nullable = false, precision = 10, scale = 2)
     private BigDecimal monto;
 
@@ -45,10 +33,6 @@ public class Donacion {
 
     @Column(name = "fecha_donacion")
     private LocalDateTime fechaDonacion;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private Estado estado = Estado.pendiente;
 
     public Donacion() {
     }
@@ -67,14 +51,6 @@ public class Donacion {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
-    }
-
-    public Refugio getRefugio() {
-        return refugio;
-    }
-
-    public void setRefugio(Refugio refugio) {
-        this.refugio = refugio;
     }
 
     public BigDecimal getMonto() {
@@ -99,13 +75,5 @@ public class Donacion {
 
     public void setFechaDonacion(LocalDateTime fechaDonacion) {
         this.fechaDonacion = fechaDonacion;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
     }
 }

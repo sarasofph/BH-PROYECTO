@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Redirigiendo a Wompi - BackHome</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #f7f5f2;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 450px;
+
+            padding: 40px;
+
+            text-align: center;
+
+            background: white;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+
+            color: #333;
+
+            font-size: 25px;
+        }
+
+        p {
+            margin: 0;
+
+            color: #777;
+
+            line-height: 1.5;
+
+            font-size: 15px;
+        }
+
+        button {
+            margin-top: 25px;
+
+            width: 100%;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #6b4eff;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="icon">
+        💳
+    </div>
+
+    <h1>
+        Preparando tu pago
+    </h1>
+
+    <p>
+        Serás enviado a Wompi para completar
+        tu donación de forma segura.
+    </p>
+
+    <form
+        id="wompiForm"
+        action="https://checkout.wompi.co/p/"
+        method="GET">
+
+        <input
+            type="hidden"
+            name="public-key"
+            th:value="${publicKey}">
+
+        <input
+            type="hidden"
+            name="currency"
+            th:value="${currency}">
+
+        <input
+            type="hidden"
+            name="amount-in-cents"
+            th:value="${amountInCents}">
+
+        <input
+            type="hidden"
+            name="reference"
+            th:value="${reference}">
+
+        <input
+            type="hidden"
+            name="signature:integrity"
+            th:value="${integritySignature}">
+
+        <input
+            type="hidden"
+            name="redirect-url"
+            th:value="${redirectUrl}">
+
+        <button type="submit">
+            Continuar a Wompi
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+
+    window.addEventListener("load", function () {
+
+        document
+            .getElementById("wompiForm")
+            .submit();
+
+    });
+
+</script>
+
+</body>
+
+</html>

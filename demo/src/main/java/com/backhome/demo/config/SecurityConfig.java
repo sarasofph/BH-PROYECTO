@@ -36,10 +36,7 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-
-            .userDetailsService(
-                    customUserDetailsService
-            )
+            .userDetailsService(customUserDetailsService)
 
             // =====================================================
             // AUTORIZACIONES
@@ -47,22 +44,46 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-               .requestMatchers(
-    "/",
-    "/login",
-    "/registro",
-    "/seguimientos",
-    "/seguimientos/**",
-    "/css/**",
-    "/js/**",
-    "/images/**",
-    "/favicon.ico"
-).permitAll()
+                .requestMatchers(
+                    "/",
+                    "/login",
+                    "/registro",
+                    "/seguimientos",
+                    "/seguimientos/**",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/favicon.ico"
+                ).permitAll()
 
-                
+                // =================================================
+                // ADMIN
+                // =================================================
 
                 .requestMatchers("/admin/**")
                     .hasRole("ADMIN")
+
+                // =================================================
+                // DASHBOARD CLIENTE
+                // =================================================
+
+                .requestMatchers("/cliente/dashboard")
+                    .authenticated()
+
+                // =================================================
+                // DONACIONES
+                // =================================================
+                // Solo necesita que el usuario haya iniciado
+                // sesión. El controlador se encarga de buscar
+                // el Cliente relacionado con su Persona.
+                // =================================================
+
+                .requestMatchers("/cliente/donar")
+                    .authenticated()
+
+                // =================================================
+                // RESTO DE RUTAS CLIENTE
+                // =================================================
 
                 .requestMatchers("/cliente/**")
                     .hasRole("CLIENTE")
@@ -117,7 +138,9 @@ public class SecurityConfig {
 
                         } else {
 
-                            response.sendRedirect("/");
+                            response.sendRedirect(
+                                "/cliente/dashboard"
+                            );
                         }
                     }
                 )
@@ -136,7 +159,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
 
                 .logoutSuccessUrl(
-                        "/login?logout"
+                    "/login?logout"
                 )
 
                 .invalidateHttpSession(true)

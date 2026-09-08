@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BackHome | Gestión de Consejos</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/admin/admin.css}">
+
+    <style>
+
+        /* =====================================================
+           CONSEJOS
+        ====================================================== */
+
+        .consejos-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 24px;
+        }
+
+        .consejo-form-card,
+        .consejos-list-card {
+            background: #ffffff;
+            border: 1px solid #eee7eb;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(40, 30, 35, 0.04);
+        }
+
+        .consejo-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .consejo-card-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #fde8f0;
+            color: #e85d8c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .consejo-card-header h2 {
+            margin: 0;
+            font-size: 19px;
+        }
+
+        .consejo-card-header p {
+            margin: 4px 0 0;
+            color: #8c8589;
+            font-size: 13px;
+        }
+
+        .consejo-form-group {
+            margin-bottom: 18px;
+        }
+
+        .consejo-form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #393236;
+        }
+
+        .consejo-form-group input,
+        .consejo-form-group textarea,
+        .editar-consejo-form input,
+        .editar-consejo-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #e5dfe3;
+            border-radius: 10px;
+            padding: 12px 13px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #3f393d;
+            background: #fff;
+            outline: none;
+        }
+
+        .consejo-form-group input:focus,
+        .consejo-form-group textarea:focus,
+        .editar-consejo-form input:focus,
+        .editar-consejo-form textarea:focus {
+            border-color: #e85d8c;
+        }
+
+        .consejo-form-group textarea {
+            min-height: 135px;
+            resize: vertical;
+        }
+
+        .btn-crear-consejo {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            background: #e85d8c;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-crear-consejo:hover {
+            opacity: .92;
+        }
+
+        .consejo-item {
+            border: 1px solid #eee7eb;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 13px;
+        }
+
+        .consejo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .consejo-item-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .consejo-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .consejo-numero {
+            color: #a39ba0;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .consejo-titulo {
+            margin: 0 0 7px;
+            font-size: 16px;
+            color: #292428;
+        }
+
+        .consejo-descripcion {
+            margin: 0;
+            color: #777075;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .consejo-acciones {
+            display: flex;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .btn-consejo {
+            border: 1px solid #eee7eb;
+            background: #fff;
+            border-radius: 9px;
+            padding: 8px 11px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-editar-consejo {
+            color: #706970;
+        }
+
+        .btn-editar-consejo:hover {
+            background: #f8f5f7;
+        }
+
+        .btn-eliminar-consejo {
+            color: #d95b67;
+        }
+
+        .btn-eliminar-consejo:hover {
+            background: #fff2f3;
+        }
+
+        .editar-consejo-form {
+            display: none;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee7eb;
+        }
+
+        .editar-consejo-form input {
+            margin-bottom: 10px;
+        }
+
+        .editar-consejo-form textarea {
+            min-height: 100px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .editar-botones {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-guardar-consejo {
+            border: none;
+            border-radius: 9px;
+            padding: 9px 14px;
+            background: #e85d8c;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancelar-consejo {
+            border: none;
+            border-radius: 9px;
+            padding: 9px 14px;
+            background: #f2eff1;
+            color: #666064;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .consejo-alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 13px;
+        }
+
+        .consejo-alert-success {
+            background: #edf9f2;
+            color: #318153;
+            border: 1px solid #d7efdf;
+        }
+
+        .consejo-alert-error {
+            background: #fff1f2;
+            color: #c44f5b;
+            border: 1px solid #f5d8db;
+        }
+
+        .sin-consejos {
+            text-align: center;
+            padding: 45px 20px;
+            color: #989095;
+        }
+
+        .sin-consejos i {
+            display: block;
+            font-size: 35px;
+            margin-bottom: 12px;
+            color: #ddd5da;
+        }
+
+        @media (max-width: 1000px) {
+
+            .consejos-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="BackHome">
+
+            <div>
+
+                <strong>BackHome</strong>
+
+                <span>Panel administrativo</span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+
+            <a th:href="@{/admin/dashboard}"
+               class="menu-item">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/usuarios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>Usuarios</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/seguimientos}"
+               class="menu-item">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>Seguimientos</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/refugios}"
+               class="menu-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Refugios</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/donaciones}"
+               class="menu-item">
+
+                <i class="fa-solid fa-hand-holding-heart"></i>
+
+                <span>Donaciones</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/consejos}"
+               class="menu-item active">
+
+                <i class="fa-solid fa-lightbulb"></i>
+
+                <span>Consejos</span>
+
+            </a>
+
+
+            <a th:href="@{/admin/reportes}"
+               class="menu-item">
+
+                <i class="fa-solid fa-file-pdf"></i>
+
+                <span>Reportes</span>
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <form th:action="@{/logout}"
+                  method="post">
+
+                <input type="hidden"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}">
+
+                <button type="submit"
+                        class="logout-button">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Cerrar sesión
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Administración
+                </p>
+
+                <h1>
+                    Gestión de consejos
+                </h1>
+
+                <p class="welcome-description">
+                    Consulta, crea y administra los consejos de BackHome.
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div class="profile-icon">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Administrador</strong>
+
+                    <span>Cuenta administrativa</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- MENSAJES -->
+
+        <div th:if="${success}"
+             class="consejo-alert consejo-alert-success"
+             th:text="${success}">
+        </div>
+
+
+        <div th:if="${error}"
+             class="consejo-alert consejo-alert-error"
+             th:text="${error}">
+        </div>
+
+
+        <!-- =====================================================
+             GESTIÓN DE CONSEJOS
+        ====================================================== -->
+
+        <section class="content-section">
+
+
+            <div class="consejos-grid">
+
+
+                <!-- =================================================
+                     CREAR CONSEJO
+                ================================================== -->
+
+                <div class="consejo-form-card">
+
+                    <div class="consejo-card-header">
+
+                        <div class="consejo-card-icon">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Nuevo consejo</h2>
+
+                            <p>
+                                Agrega un consejo para BackHome.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form th:action="@{/admin/consejos/crear}"
+                          method="post">
+
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
+
+                        <div class="consejo-form-group">
+
+                            <label for="titulo">
+                                Título
+                            </label>
+
+                            <input type="text"
+                                   id="titulo"
+                                   name="titulo"
+                                   maxlength="255"
+                                   placeholder="Ej. Hidratación"
+                                   required>
+
+                        </div>
+
+
+                        <div class="consejo-form-group">
+
+                            <label for="descripcion">
+                                Descripción
+                            </label>
+
+                            <textarea id="descripcion"
+                                      name="descripcion"
+                                      placeholder="Escribe el consejo..."
+                                      required></textarea>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn-crear-consejo">
+
+                            <i class="fa-solid fa-plus"></i>
+
+                            Crear consejo
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     CONSEJOS REGISTRADOS
+                ================================================== -->
+
+                <div class="consejos-list-card">
+
+
+                    <div class="consejo-card-header">
+
+                        <div class="consejo-card-icon">
+
+                            <i class="fa-solid fa-lightbulb"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Consejos registrados</h2>
+
+                            <p>
+                                Consulta y administra los consejos existentes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LISTA -->
+
+                    <div th:if="${not #lists.isEmpty(consejos)}">
+
+
+                        <div class="consejo-item"
+                             th:each="consejo : ${consejos}">
+
+
+                            <div class="consejo-item-top">
+
+
+                                <div class="consejo-item-info">
+
+                                    <div class="consejo-numero">
+
+                                        Consejo #
+
+                                        <span th:text="${consejo.id}">
+                                            1
+                                        </span>
+
+                                    </div>
+
+
+                                    <h3 class="consejo-titulo"
+                                        th:text="${consejo.titulo}">
+
+                                        Título
+
+                                    </h3>
+
+
+                                    <p class="consejo-descripcion"
+                                       th:text="${consejo.descripcion}">
+
+                                        Descripción
+
+                                    </p>
+
+                                </div>
+
+
+                                <div class="consejo-acciones">
+
+
+                                    <!-- EDITAR -->
+
+                                    <button type="button"
+                                            class="btn-consejo btn-editar-consejo"
+                                            th:attr="onclick=|mostrarEdicion(${consejo.id})|">
+
+                                        <i class="fa-solid fa-pen"></i>
+
+                                        Editar
+
+                                    </button>
+
+
+                                    <!-- ELIMINAR -->
+
+                                    <form th:action="@{/admin/consejos/{id}/eliminar(id=${consejo.id})}"
+                                          method="post"
+                                          onsubmit="return confirm('¿Está seguro de eliminar este consejo?');">
+
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}">
+
+
+                                        <button type="submit"
+                                                class="btn-consejo btn-eliminar-consejo">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                            Eliminar
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 EDITAR
+                            ================================================== -->
+
+                            <div class="editar-consejo-form"
+                                 th:id="'editar-' + ${consejo.id}">
+
+
+                                <form th:action="@{/admin/consejos/{id}/editar(id=${consejo.id})}"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+
+
+                                    <input type="text"
+                                           name="titulo"
+                                           maxlength="255"
+                                           th:value="${consejo.titulo}"
+                                           required>
+
+
+                                    <textarea name="descripcion"
+                                              th:text="${consejo.descripcion}"
+                                              required></textarea>
+
+
+                                    <div class="editar-botones">
+
+                                        <button type="submit"
+                                                class="btn-guardar-consejo">
+
+                                            <i class="fa-solid fa-check"></i>
+
+                                            Guardar cambios
+
+                                        </button>
+
+
+                                        <button type="button"
+                                                class="btn-cancelar-consejo"
+                                                th:attr="onclick=|ocultarEdicion(${consejo.id})|">
+
+                                            Cancelar
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SIN CONSEJOS -->
+
+                    <div class="sin-consejos"
+                         th:if="${#lists.isEmpty(consejos)}">
+
+                        <i class="fa-solid fa-lightbulb"></i>
+
+                        <p>
+                            No hay consejos registrados todavía.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script>
+
+    function mostrarEdicion(id) {
+
+        const elemento =
+            document.getElementById("editar-" + id);
+
+        if (elemento) {
+
+            elemento.style.display = "block";
+
+        }
+
+    }
+
+
+    function ocultarEdicion(id) {
+
+        const elemento =
+            document.getElementById("editar-" + id);
+
+        if (elemento) {
+
+            elemento.style.display = "none";
+
+        }
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

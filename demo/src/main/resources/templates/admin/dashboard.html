@@ -54,7 +54,7 @@
             </a>
 
             <a th:href="@{/admin/usuarios}"
-               class="menu-item">
+               class="menu-item active">
 
                 <i class="fa-solid fa-users"></i>
 
@@ -63,7 +63,7 @@
             </a>
 
             <a th:href="@{/admin/seguimientos}"
-               class="menu-item">
+               class="menu-item active">
 
                 <i class="fa-solid fa-magnifying-glass"></i>
 
@@ -74,7 +74,7 @@
             <!-- ÚNICO CAMBIO 1: REFUGIOS -->
 
             <a th:href="@{/admin/refugios}"
-               class="menu-item">
+               class="menu-item active">
 
                 <i class="fa-solid fa-house"></i>
 
@@ -82,36 +82,32 @@
 
             </a>
 
-            <a href="#"
-               class="menu-item disabled">
+            <a th:href="@{/admin/donaciones}"
+               class="menu-item active">
 
                 <i class="fa-solid fa-hand-holding-heart"></i>
 
                 <span>Donaciones</span>
 
-                <small>Próximamente</small>
 
             </a>
 
-            <a href="#"
-               class="menu-item disabled">
+            <a th:href="@{/admin/consejos}"
+               class="menu-item active ">
 
                 <i class="fa-solid fa-lightbulb"></i>
 
                 <span>Consejos</span>
 
-                <small>Próximamente</small>
 
             </a>
 
-            <a href="#"
-               class="menu-item disabled">
+            <a th:href="@{/admin/reportes}"
+               class="menu-item active">
 
                 <i class="fa-solid fa-file-pdf"></i>
 
                 <span>Reportes</span>
-
-                <small>Próximamente</small>
 
             </a>
 

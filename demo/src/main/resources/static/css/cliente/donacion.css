@@ -1,0 +1,1165 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+:root {
+    --verde: #185c50;
+    --verde-oscuro: #12483f;
+    --verde-claro: #e7f3ef;
+
+    --coral: #ef8b7b;
+    --coral-claro: #fff0ed;
+
+    --crema: #faf8f4;
+    --blanco: #ffffff;
+
+    --texto: #263a36;
+    --gris: #71807c;
+
+    --borde: #e5eae7;
+}
+
+
+body {
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: var(--crema);
+
+    color: var(--texto);
+
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    height: 76px;
+
+    padding: 0 7%;
+
+    background: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #edf0ee;
+
+    position: relative;
+
+    z-index: 10;
+}
+
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    text-decoration: none;
+
+    font-size: 25px;
+
+    font-weight: 800;
+
+    color: var(--verde);
+}
+
+
+.logo > span:last-child > span {
+
+    color: var(--coral);
+}
+
+
+.logo-paw {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--verde-claro);
+
+    border-radius: 12px;
+
+    font-size: 21px;
+}
+
+
+.volver {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    text-decoration: none;
+
+    color: #596863;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+}
+
+
+.volver span {
+
+    font-size: 20px;
+
+    transition: 0.25s;
+}
+
+
+.volver:hover {
+
+    color: var(--verde);
+}
+
+
+.volver:hover span {
+
+    transform: translateX(-4px);
+}
+
+
+/* =====================================================
+   PÁGINA
+===================================================== */
+
+.donacion-page {
+
+    min-height: calc(100vh - 76px);
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 60px 25px;
+}
+
+
+/* =====================================================
+   DECORACIÓN
+===================================================== */
+
+.decor {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+.decor-1 {
+
+    width: 420px;
+
+    height: 420px;
+
+    background: #eaf4ef;
+
+    top: -190px;
+
+    left: -130px;
+}
+
+
+.decor-2 {
+
+    width: 280px;
+
+    height: 280px;
+
+    background: #fff0ed;
+
+    right: -90px;
+
+    bottom: -110px;
+}
+
+
+.decor-3 {
+
+    width: 110px;
+
+    height: 110px;
+
+    border: 22px solid #edf5f1;
+
+    right: 9%;
+
+    top: 13%;
+
+    background: transparent;
+}
+
+
+/* =====================================================
+   CONTENEDOR PRINCIPAL
+===================================================== */
+
+.donacion-wrapper {
+
+    width: 100%;
+
+    max-width: 1120px;
+
+    display: grid;
+
+    grid-template-columns: 0.9fr 1.1fr;
+
+    gap: 70px;
+
+    align-items: center;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =====================================================
+   INFORMACIÓN
+===================================================== */
+
+.donacion-info {
+
+    padding-left: 10px;
+}
+
+
+.badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: 30px;
+
+    background: var(--coral-claro);
+
+    color: #b95e50;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    margin-bottom: 23px;
+}
+
+
+.donacion-info h1 {
+
+    font-size: clamp(40px, 4.2vw, 58px);
+
+    line-height: 1.05;
+
+    letter-spacing: -2px;
+
+    color: var(--verde-oscuro);
+
+    margin-bottom: 22px;
+}
+
+
+.donacion-info h1 span {
+
+    color: var(--coral);
+}
+
+
+.descripcion {
+
+    max-width: 500px;
+
+    color: var(--gris);
+
+    font-size: 16px;
+
+    line-height: 1.75;
+
+    margin-bottom: 35px;
+}
+
+
+/* =====================================================
+   BENEFICIOS
+===================================================== */
+
+.beneficios {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+.beneficio {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+.beneficio-icono {
+
+    min-width: 48px;
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 6px 20px rgba(31, 73, 64, 0.08);
+
+    font-size: 21px;
+}
+
+
+.beneficio strong {
+
+    display: block;
+
+    font-size: 14px;
+
+    color: var(--verde-oscuro);
+
+    margin-bottom: 3px;
+}
+
+
+.beneficio p {
+
+    color: #82908c;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+}
+
+
+/* =====================================================
+   TARJETA
+===================================================== */
+
+.donacion-card {
+
+    background: #ffffff;
+
+    border: 1px solid rgba(222, 230, 226, 0.8);
+
+    border-radius: 28px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 25px 70px rgba(28, 67, 58, 0.12);
+
+    position: relative;
+}
+
+
+.card-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+
+.mini-label {
+
+    color: #8b9894;
+
+    font-size: 10px;
+
+    letter-spacing: 1.7px;
+
+    font-weight: 800;
+}
+
+
+.card-top h2 {
+
+    margin-top: 5px;
+
+    font-size: 27px;
+
+    color: var(--verde-oscuro);
+}
+
+
+.heart {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--coral-claro);
+
+    color: var(--coral);
+
+    font-size: 21px;
+}
+
+
+/* =====================================================
+   CLIENTE
+===================================================== */
+
+.cliente-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    background: #f7faf8;
+
+    border: 1px solid #edf1ee;
+
+    border-radius: 16px;
+
+    margin-bottom: 27px;
+}
+
+
+.cliente-avatar {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--verde-claro);
+
+    border-radius: 13px;
+
+    font-size: 18px;
+}
+
+
+.cliente-datos {
+
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.cliente-label {
+
+    font-size: 10px;
+
+    color: #8a9793;
+
+    font-weight: 600;
+}
+
+
+.cliente-datos strong {
+
+    color: var(--texto);
+
+    font-size: 14px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.cliente-datos small {
+
+    color: #899590;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.check {
+
+    width: 23px;
+
+    height: 23px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #dff2e8;
+
+    color: #32815f;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   FORMULARIO
+===================================================== */
+
+.form-group {
+
+    margin-bottom: 24px;
+}
+
+
+.form-group > label,
+.label-row label {
+
+    display: block;
+
+    color: var(--texto);
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    margin-bottom: 11px;
+}
+
+
+/* =====================================================
+   MONTOS
+===================================================== */
+
+.montos {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+
+.monto-btn {
+
+    border: 1px solid var(--borde);
+
+    background: #ffffff;
+
+    color: #586762;
+
+    border-radius: 11px;
+
+    padding: 11px 5px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.monto-btn:hover {
+
+    border-color: #a9c8bf;
+
+    background: #f5faf8;
+}
+
+
+.monto-btn.activo {
+
+    border-color: var(--verde);
+
+    background: var(--verde);
+
+    color: white;
+
+    box-shadow:
+        0 5px 14px rgba(24, 92, 80, 0.18);
+}
+
+
+/* =====================================================
+   MONTO PERSONALIZADO
+===================================================== */
+
+.monto-personalizado {
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    border: 1.5px solid var(--borde);
+
+    border-radius: 13px;
+
+    overflow: hidden;
+
+    transition: 0.2s;
+}
+
+
+.monto-personalizado:focus-within {
+
+    border-color: var(--verde);
+
+    box-shadow:
+        0 0 0 4px rgba(24, 92, 80, 0.07);
+}
+
+
+.monto-personalizado > span:first-child {
+
+    padding-left: 16px;
+
+    color: var(--verde);
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+
+.monto-personalizado input {
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    padding: 0 10px;
+
+    font-size: 18px;
+
+    color: var(--texto);
+
+    font-weight: 700;
+}
+
+
+.monto-personalizado .cop {
+
+    padding-right: 15px;
+
+    color: #9aa5a1;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   MENSAJE
+===================================================== */
+
+.label-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+}
+
+
+.label-row span {
+
+    color: #a1aaa7;
+
+    font-size: 11px;
+}
+
+
+textarea {
+
+    width: 100%;
+
+    border: 1.5px solid var(--borde);
+
+    border-radius: 13px;
+
+    background: #ffffff;
+
+    color: var(--texto);
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    padding: 13px 14px;
+
+    resize: none;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+textarea:focus {
+
+    border-color: var(--verde);
+
+    box-shadow:
+        0 0 0 4px rgba(24, 92, 80, 0.07);
+}
+
+
+textarea::placeholder {
+
+    color: #adb6b3;
+}
+
+
+/* =====================================================
+   SEGURIDAD
+===================================================== */
+
+.seguridad {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px 13px;
+
+    background: #f8fbf9;
+
+    border-radius: 13px;
+
+    margin-bottom: 18px;
+}
+
+
+.seguridad-icono {
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+}
+
+
+.seguridad strong {
+
+    display: block;
+
+    color: #52615d;
+
+    font-size: 11px;
+
+    margin-bottom: 2px;
+}
+
+
+.seguridad p {
+
+    color: #929d99;
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+
+/* =====================================================
+   BOTÓN
+===================================================== */
+
+.btn-donar {
+
+    width: 100%;
+
+    min-height: 54px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: var(--verde);
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 22px rgba(24, 92, 80, 0.20);
+
+    transition: all 0.25s ease;
+}
+
+
+.btn-donar:hover {
+
+    background: var(--verde-oscuro);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 28px rgba(24, 92, 80, 0.25);
+}
+
+
+.btn-donar:active {
+
+    transform: translateY(0);
+}
+
+
+.btn-arrow {
+
+    width: 27px;
+
+    height: 27px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255,255,255,0.14);
+
+    font-size: 17px;
+
+    transition: 0.2s;
+}
+
+
+.btn-donar:hover .btn-arrow {
+
+    transform: translateX(4px);
+}
+
+
+/* =====================================================
+   NOTA
+===================================================== */
+
+.nota {
+
+    text-align: center;
+
+    color: #a0aaa6;
+
+    font-size: 10px;
+
+    margin-top: 12px;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.monto-personalizado.error {
+
+    border-color: #e27669;
+
+    animation: shake 0.3s ease;
+}
+
+
+@keyframes shake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .donacion-wrapper {
+
+        grid-template-columns: 1fr;
+
+        max-width: 600px;
+
+        gap: 40px;
+    }
+
+
+    .donacion-info {
+
+        text-align: center;
+
+        padding: 0;
+    }
+
+
+    .descripcion {
+
+        margin-left: auto;
+
+        margin-right: auto;
+    }
+
+
+    .beneficios {
+
+        text-align: left;
+    }
+
+
+    .donacion-info h1 {
+
+        font-size: 45px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .navbar {
+
+        height: 68px;
+
+        padding: 0 20px;
+    }
+
+
+    .logo {
+
+        font-size: 21px;
+    }
+
+
+    .logo-paw {
+
+        width: 34px;
+
+        height: 34px;
+
+        font-size: 18px;
+    }
+
+
+    .volver {
+
+        font-size: 12px;
+    }
+
+
+    .donacion-page {
+
+        padding: 40px 15px;
+    }
+
+
+    .donacion-info h1 {
+
+        font-size: 38px;
+
+        letter-spacing: -1.5px;
+    }
+
+
+    .descripcion {
+
+        font-size: 14px;
+    }
+
+
+    .donacion-card {
+
+        padding: 24px 20px;
+
+        border-radius: 22px;
+    }
+
+
+    .card-top h2 {
+
+        font-size: 24px;
+    }
+
+
+    .montos {
+
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .beneficio p {
+
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .volver {
+
+        font-size: 0;
+    }
+
+
+    .volver span {
+
+        font-size: 21px;
+    }
+
+
+    .donacion-info h1 {
+
+        font-size: 34px;
+    }
+
+}
