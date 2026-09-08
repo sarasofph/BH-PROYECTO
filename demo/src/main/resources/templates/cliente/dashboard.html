@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org">
-       <link rel="stylesheet" th:href="@{/css/cliente/perfil.css}">
 
 <head>
 
@@ -11,6 +10,86 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>Mi cuenta | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/cliente/perfil.css}">
+
+    <style>
+
+        .donar-card {
+            background: linear-gradient(
+                135deg,
+                #fff5f8,
+                #ffffff
+            );
+
+            border: 1px solid #f1dce4;
+            border-radius: 18px;
+
+            padding: 25px;
+
+            margin-top: 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 25px;
+        }
+
+        .donar-info h3 {
+            margin-bottom: 8px;
+            color: #38353a;
+        }
+
+        .donar-info p {
+            color: #777178;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .boton-donar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+
+            background: #d65b83;
+            color: white;
+
+            border: none;
+            border-radius: 11px;
+
+            padding: 13px 20px;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            transition: .2s ease;
+        }
+
+        .boton-donar:hover {
+            background: #c94d77;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 650px) {
+
+            .donar-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .boton-donar {
+                width: 100%;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -25,8 +104,9 @@
     <div class="usuario">
 
         Hola,
-        <strong
-            th:text="${persona.primerNombre}">
+
+        <strong th:text="${persona.primerNombre}">
+            Usuario
         </strong>
 
     </div>
@@ -39,15 +119,20 @@
     <section class="bienvenida">
 
         <h1>
+
             ¡Bienvenido,
+
             <span th:text="${persona.primerNombre}">
             </span>! 🐾
+
         </h1>
 
         <p>
+
             Este es tu espacio personal en BackHome.
             Desde aquí podrás gestionar la información
             relacionada con tus mascotas.
+
         </p>
 
     </section>
@@ -56,13 +141,21 @@
     <section class="tarjetas">
 
 
+        <!-- =================================================
+             MIS DATOS
+        ================================================== -->
+
         <div class="tarjeta">
 
-            <h3>👤 Mis datos</h3>
+            <h3>
+                👤 Mis datos
+            </h3>
 
             <div class="dato">
 
-                <strong>Nombre</strong>
+                <strong>
+                    Nombre
+                </strong>
 
                 <span
                     th:text="${persona.primerNombre + ' ' +
@@ -74,7 +167,9 @@
 
             <div class="dato">
 
-                <strong>Documento</strong>
+                <strong>
+                    Documento
+                </strong>
 
                 <span
                     th:text="${persona.numeroDocumento}">
@@ -85,7 +180,9 @@
 
             <div class="dato">
 
-                <strong>Correo electrónico</strong>
+                <strong>
+                    Correo electrónico
+                </strong>
 
                 <span
                     th:text="${persona.email}">
@@ -96,7 +193,9 @@
 
             <div class="dato">
 
-                <strong>Teléfono</strong>
+                <strong>
+                    Teléfono
+                </strong>
 
                 <span
                     th:text="${persona.numeroTel}">
@@ -107,13 +206,21 @@
         </div>
 
 
+        <!-- =================================================
+             MI CUENTA
+        ================================================== -->
+
         <div class="tarjeta">
 
-            <h3>🐾 Mi cuenta</h3>
+            <h3>
+                🐾 Mi cuenta
+            </h3>
 
             <div class="dato">
 
-                <strong>Estado</strong>
+                <strong>
+                    Estado
+                </strong>
 
                 <span
                     class="estado"
@@ -123,24 +230,36 @@
             </div>
 
             <p>
+
                 Tu cuenta está activa y lista
                 para utilizar BackHome.
+
             </p>
 
         </div>
 
 
+        <!-- =================================================
+             MIS MASCOTAS
+        ================================================== -->
+
         <div class="tarjeta">
 
-            <h3>🐶 Mis mascotas</h3>
+            <h3>
+                🐶 Mis mascotas
+            </h3>
 
             <p>
+
                 Aquí podrás consultar y gestionar
                 las mascotas asociadas a tu cuenta.
+
             </p>
 
             <button class="boton">
+
                 Ver mis mascotas
+
             </button>
 
         </div>
@@ -148,8 +267,45 @@
 
     </section>
 
+
+    <!-- =====================================================
+         DONACIONES
+    ====================================================== -->
+
+    <section class="donar-card">
+
+        <div class="donar-info">
+
+            <h3>
+                💗 ¿Quieres ayudar a BackHome?
+            </h3>
+
+            <p>
+
+                Realiza una donación y contribuye
+                con la misión de apoyar a las mascotas
+                y sus familias.
+
+            </p>
+
+        </div>
+
+
+        <a th:href="@{/cliente/donar}"
+           class="boton-donar">
+
+            💗 Donar ahora
+
+        </a>
+
+    </section>
+
 </main>
 
+
+<!-- =====================================================
+     CERRAR SESIÓN
+====================================================== -->
 
 <form
     th:action="@{/logout}"

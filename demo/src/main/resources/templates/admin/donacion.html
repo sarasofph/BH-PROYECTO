@@ -20,242 +20,210 @@
 
     <style>
 
-        .donations-stats {
+        .donation-page {
+            padding: 10px 0 40px;
+        }
+
+        .donation-stats {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 18px;
-            margin-bottom: 32px;
+            margin: 25px 0;
         }
 
-        .donations-table-container {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 27px;
-            box-shadow: var(--shadow);
+        .donation-stat {
+            background: #fff;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+            border: 1px solid #eee;
         }
 
-        .donations-table-header {
+        .donation-stat .icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 22px;
+            justify-content: center;
+            background: #f4f4f4;
+            margin-bottom: 12px;
+            font-size: 19px;
         }
 
-        .donations-table-header h2 {
-            font-size: 21px;
-            color: #38353a;
+        .donation-stat strong {
+            display: block;
+            font-size: 25px;
+            margin-bottom: 4px;
         }
 
-        .donations-table-header p {
-            color: var(--text-light);
-            font-size: 13px;
-            margin-top: 6px;
+        .donation-stat span {
+            color: #777;
+            font-size: 14px;
         }
 
-        .donations-table-wrapper {
+        .donation-table-container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.06);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .donation-table-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .donation-table-header h2 {
+            margin: 0 0 5px;
+        }
+
+        .donation-table-header p {
+            margin: 0;
+            color: #777;
+        }
+
+        .donation-table-wrapper {
             overflow-x: auto;
         }
 
-        .donations-table {
+        .donation-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 950px;
         }
 
-        .donations-table th {
+        .donation-table th {
             text-align: left;
-            padding: 14px 12px;
-            font-size: 11px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
+            padding: 15px 18px;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
         }
 
-        .donations-table td {
-            padding: 17px 12px;
-            border-bottom: 1px solid #f1edef;
-            font-size: 13px;
-            color: #4a464a;
+        .donation-table td {
+            padding: 17px 18px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
             vertical-align: middle;
         }
 
-        .donations-table tbody tr:hover {
-            background: #fdf9fb;
+        .donation-table tbody tr:hover {
+            background: #fafafa;
         }
 
         .donation-id {
             font-weight: 700;
-            color: var(--pink-dark);
         }
 
         .donor-name {
-            font-weight: 700;
-            color: #38353a;
+            font-weight: 600;
         }
 
         .donor-email {
-            color: var(--text-light);
-            font-size: 11px;
-            margin-top: 4px;
+            color: #777;
+            font-size: 12px;
+            margin-top: 3px;
         }
 
-        .donation-amount {
+        .amount {
             font-weight: 700;
-            color: #38353a;
-            white-space: nowrap;
+            font-size: 16px;
         }
 
-        .donation-message {
-            max-width: 230px;
-            line-height: 1.5;
+        .message {
+            padding: 13px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        .donation-date {
-            white-space: nowrap;
-            color: var(--text-light);
+        .message-success {
+            background: #e4f7e9;
+            color: #246b37;
         }
 
-        .donation-actions {
+        .message-error {
+            background: #fde5e5;
+            color: #9c2929;
+        }
+
+        .message i {
+            margin-right: 7px;
+        }
+
+        .action-buttons {
             display: flex;
-            gap: 7px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .donation-button {
+        .donation-action {
             border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            padding: 8px 11px;
-            border-radius: 9px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: .2s ease;
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        .edit-button {
-            background: var(--pink-light);
-            color: var(--pink-dark);
+        .btn-edit {
+            background: #eee8ff;
+            color: #5d3fd3;
         }
 
-        .edit-button:hover {
-            transform: translateY(-1px);
-        }
-
-        .delete-button {
-            background: var(--red-light);
-            color: var(--red);
-        }
-
-        .delete-button:hover {
-            transform: translateY(-1px);
+        .btn-delete {
+            background: #fde5e5;
+            color: #a52a2a;
         }
 
         .edit-form {
-            display: none;
-            min-width: 260px;
-            padding: 14px;
-            margin-top: 10px;
-            background: #fcfafb;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-        }
-
-        .edit-form.open {
-            display: block;
-        }
-
-        .edit-form label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #555;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 190px;
         }
 
         .edit-form input,
         .edit-form textarea {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 10px;
-            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            padding: 8px;
             font-family: inherit;
             font-size: 12px;
-            outline: none;
-            background: #fff;
         }
 
         .edit-form textarea {
             resize: vertical;
-            min-height: 65px;
+            min-height: 55px;
         }
 
-        .edit-form input:focus,
-        .edit-form textarea:focus {
-            border-color: var(--pink);
-        }
-
-        .save-button {
-            background: var(--pink);
+        .btn-save {
+            border: none;
+            background: #6b4eff;
             color: white;
-        }
-
-        .cancel-button {
-            background: #eee;
-            color: #555;
+            padding: 8px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .empty-donations {
             text-align: center;
-            padding: 55px 20px;
-            color: var(--text-light);
+            padding: 60px 20px;
+            color: #777;
         }
 
         .empty-donations i {
-            font-size: 38px;
-            margin-bottom: 14px;
-            color: var(--pink);
+            font-size: 45px;
+            margin-bottom: 15px;
+            color: #ccc;
         }
 
-        .empty-donations h3 {
-            color: #38353a;
-            margin-bottom: 7px;
-        }
+        @media (max-width: 700px) {
 
-        .empty-donations p {
-            font-size: 13px;
-        }
-
-        .alert {
-            padding: 14px 17px;
-            border-radius: 13px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .success-alert {
-            background: var(--green-light);
-            color: #5e9675;
-            border: 1px solid #d7eedf;
-        }
-
-        .error-alert {
-            background: var(--red-light);
-            color: var(--red);
-            border: 1px solid #f4d5da;
-        }
-
-        @media (max-width: 900px) {
-
-            .donations-stats {
+            .donation-stats {
                 grid-template-columns: 1fr;
             }
 
@@ -281,20 +249,16 @@
                  alt="BackHome">
 
             <div>
-
                 <strong>BackHome</strong>
-
                 <span>Panel administrativo</span>
-
             </div>
 
         </div>
 
-
         <nav class="sidebar-menu">
 
             <a th:href="@{/admin/dashboard}"
-               class="menu-item active">
+               class="menu-item">
 
                 <i class="fa-solid fa-chart-pie"></i>
 
@@ -302,9 +266,8 @@
 
             </a>
 
-
             <a th:href="@{/admin/usuarios}"
-               class="menu-item active">
+               class="menu-item">
 
                 <i class="fa-solid fa-users"></i>
 
@@ -312,9 +275,8 @@
 
             </a>
 
-
             <a th:href="@{/admin/seguimientos}"
-               class="menu-item active">
+               class="menu-item">
 
                 <i class="fa-solid fa-magnifying-glass"></i>
 
@@ -322,16 +284,14 @@
 
             </a>
 
-
             <a th:href="@{/admin/refugios}"
-               class="menu-item active">
+               class="menu-item">
 
                 <i class="fa-solid fa-house"></i>
 
                 <span>Refugios</span>
 
             </a>
-
 
             <a th:href="@{/admin/donaciones}"
                class="menu-item active">
@@ -342,30 +302,29 @@
 
             </a>
 
-
-            <a hth:href="@{/admin/consejos}"
-               class="menu-item active">
+            <a href="#"
+               class="menu-item disabled">
 
                 <i class="fa-solid fa-lightbulb"></i>
 
                 <span>Consejos</span>
 
+                <small>Próximamente</small>
 
             </a>
 
-
-            <a th:href="@{/admin/reportes}"
-               class="menu-item active">
+            <a href="#"
+               class="menu-item disabled">
 
                 <i class="fa-solid fa-file-pdf"></i>
 
                 <span>Reportes</span>
 
+                <small>Próximamente</small>
 
             </a>
 
         </nav>
-
 
         <div class="sidebar-bottom">
 
@@ -411,11 +370,11 @@
                 </h1>
 
                 <p class="welcome-description">
-                    Consulta y administra las donaciones realizadas en BackHome.
+                    Consulta y administra las donaciones realizadas
+                    en BackHome.
                 </p>
 
             </div>
-
 
             <div class="admin-profile">
 
@@ -429,7 +388,7 @@
 
                     <strong>Administrador</strong>
 
-                    <span>Gestión de donaciones</span>
+                    <span>Panel administrativo</span>
 
                 </div>
 
@@ -438,427 +397,372 @@
         </header>
 
 
-        <!-- =================================================
-             ALERTAS
-        ================================================== -->
-
-        <div th:if="${success}"
-             class="alert success-alert">
-
-            <i class="fa-solid fa-circle-check"></i>
-
-            <span th:text="${success}">
-                Operación realizada correctamente.
-            </span>
-
-        </div>
+        <div class="donation-page">
 
 
-        <div th:if="${error}"
-             class="alert error-alert">
+            <!-- =================================================
+                 MENSAJES
+            ================================================== -->
 
-            <i class="fa-solid fa-circle-exclamation"></i>
+            <div th:if="${success}"
+                 class="message message-success">
 
-            <span th:text="${error}">
-                Ocurrió un error.
-            </span>
+                <i class="fa-solid fa-circle-check"></i>
 
-        </div>
+                <span th:text="${success}">
+                    Donación actualizada correctamente.
+                </span>
+
+            </div>
 
 
-        <!-- =================================================
-             ESTADÍSTICAS
-        ================================================== -->
+            <div th:if="${error}"
+                 class="message message-error">
 
-        <section class="donations-stats">
+                <i class="fa-solid fa-circle-exclamation"></i>
 
-            <article class="stat-card">
+                <span th:text="${error}">
+                    Ocurrió un error.
+                </span>
 
-                <div class="stat-icon pink">
+            </div>
 
-                    <i class="fa-solid fa-hand-holding-heart"></i>
 
-                </div>
+            <!-- =================================================
+                 ESTADÍSTICAS
+            ================================================== -->
 
-                <div>
+            <div class="donation-stats">
 
-                    <span>Total donaciones</span>
+                <div class="donation-stat">
+
+                    <div class="icon">
+
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+
+                    </div>
 
                     <strong th:text="${totalDonaciones}">
                         0
                     </strong>
 
-                    <small>
-                        Donaciones registradas
-                    </small>
+                    <span>
+                        Total de donaciones
+                    </span>
 
                 </div>
 
-            </article>
 
+                <div class="donation-stat">
 
-            <article class="stat-card">
+                    <div class="icon">
 
-                <div class="stat-icon green">
+                        <i class="fa-solid fa-dollar-sign"></i>
 
-                    <i class="fa-solid fa-dollar-sign"></i>
-
-                </div>
-
-                <div>
-
-                    <span>Total donado</span>
+                    </div>
 
                     <strong>
 
-                        $<span th:text="${totalDonado}">
+                        $
+                        <span th:text="${totalDonado}">
                             0.00
                         </span>
 
                     </strong>
 
-                    <small>
-                        Valor acumulado
-                    </small>
+                    <span>
+                        Total recaudado
+                    </span>
 
                 </div>
 
-            </article>
-
-        </section>
+            </div>
 
 
-        <!-- =================================================
-             TABLA
-        ================================================== -->
+            <!-- =================================================
+                 TABLA
+            ================================================== -->
 
-        <section class="donations-table-container">
+            <div class="donation-table-container">
 
-            <div class="donations-table-header">
-
-                <div>
+                <div class="donation-table-header">
 
                     <h2>
                         Donaciones registradas
                     </h2>
 
                     <p>
-                        Administra la información de cada donación.
+                        Consulta, edita o elimina las donaciones
+                        registradas por los clientes.
                     </p>
 
                 </div>
 
-            </div>
 
+                <div class="donation-table-wrapper">
 
-            <div class="donations-table-wrapper">
+                    <table class="donation-table">
 
-                <table class="donations-table">
+                        <thead>
 
-                    <thead>
+                        <tr>
 
-                    <tr>
+                            <th>
+                                ID
+                            </th>
 
-                        <th>ID</th>
-
-                        <th>Donante</th>
-
-                        <th>Monto</th>
-
-                        <th>Fecha</th>
-
-                        <th>Mensaje</th>
-
-                        <th>Acciones</th>
-
-                    </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                    <tr th:each="donacion : ${donaciones}">
-
-                        <!-- ID -->
-
-                        <td>
-
-                            <span class="donation-id"
-                                  th:text="'#' + ${donacion.idDonacion}">
-                                #1
-                            </span>
-
-                        </td>
-
-
-                        <!-- DONANTE -->
-
-                        <td>
-
-                            <div class="donor-name"
-                                 th:text="${donacion.cliente.persona.primerNombre
-                                 + ' '
-                                 + donacion.cliente.persona.primerApellido}">
-
+                            <th>
                                 Donante
+                            </th>
 
-                            </div>
+                            <th>
+                                Monto
+                            </th>
 
-                            <div class="donor-email"
-                                 th:text="${donacion.cliente.persona.email}">
+                            <th>
+                                Fecha
+                            </th>
 
-                                correo@email.com
+                            <th>
+                                Mensaje
+                            </th>
 
-                            </div>
+                            <th>
+                                Acciones
+                            </th>
 
-                        </td>
+                        </tr>
+
+                        </thead>
 
 
-                        <!-- MONTO -->
+                        <tbody>
 
-                        <td>
 
-                            <span class="donation-amount">
+                        <!-- =================================================
+                             DONACIONES
+                        ================================================== -->
 
-                                $
-                                <span th:text="${donacion.monto}">
-                                    0.00
+                        <tr th:each="donacion : ${donaciones}">
+
+
+                            <!-- ID -->
+
+                            <td>
+
+                                <span class="donation-id"
+                                      th:text="'#' + ${donacion.idDonacion}">
+
+                                    #1
+
                                 </span>
 
-                            </span>
-
-                        </td>
+                            </td>
 
 
-                        <!-- FECHA -->
+                            <!-- DONANTE -->
 
-                        <td>
+                            <td>
 
-                            <span class="donation-date"
-                                  th:if="${donacion.fechaDonacion != null}"
-                                  th:text="${#temporals.format(
-                                  donacion.fechaDonacion,
-                                  'dd/MM/yyyy HH:mm')}">
+                                <div class="donor-name">
 
-                                01/01/2026 12:00
+                                    <span
+                                        th:text="${donacion.cliente.persona.primerNombre + ' ' + donacion.cliente.persona.primerApellido}">
 
-                            </span>
+                                        Donante
 
-                            <span th:if="${donacion.fechaDonacion == null}">
-                                -
-                            </span>
+                                    </span>
 
-                        </td>
+                                </div>
 
 
-                        <!-- MENSAJE -->
+                                <div class="donor-email"
+                                     th:text="${donacion.cliente.persona.email}">
 
-                        <td>
+                                    correo@correo.com
 
-                            <div class="donation-message">
+                                </div>
 
-                                <span th:if="${donacion.mensaje != null
-                                             and !#strings.isEmpty(donacion.mensaje)}"
-                                      th:text="${donacion.mensaje}">
+                            </td>
+
+
+                            <!-- MONTO -->
+
+                            <td>
+
+                                <span class="amount"
+                                      th:text="'$' + ${donacion.monto}">
+
+                                    $0.00
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- FECHA -->
+
+                            <td>
+
+                                <span
+                                    th:if="${donacion.fechaDonacion != null}"
+                                    th:text="${#temporals.format(donacion.fechaDonacion, 'dd/MM/yyyy HH:mm')}">
+
+                                    Fecha
+
+                                </span>
+
+                                <span
+                                    th:if="${donacion.fechaDonacion == null}">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- MENSAJE -->
+
+                            <td>
+
+                                <span
+                                    th:if="${donacion.mensaje != null and !#strings.isEmpty(donacion.mensaje)}"
+                                    th:text="${donacion.mensaje}">
 
                                     Mensaje
 
                                 </span>
 
-                                <span th:if="${donacion.mensaje == null
-                                             or #strings.isEmpty(donacion.mensaje)}">
+                                <span
+                                    th:if="${donacion.mensaje == null or #strings.isEmpty(donacion.mensaje)}">
 
                                     Sin mensaje
 
                                 </span>
 
-                            </div>
-
-                        </td>
+                            </td>
 
 
-                        <!-- ACCIONES -->
+                            <!-- ACCIONES -->
 
-                        <td>
+                            <td>
 
-                            <div class="donation-actions">
-
-                                <!-- EDITAR -->
-
-                                <button type="button"
-                                        class="donation-button edit-button"
-                                        th:attr="onclick=|mostrarEdicion(${donacion.idDonacion})|">
-
-                                    <i class="fa-solid fa-pen"></i>
-
-                                    Editar
-
-                                </button>
+                                <div class="action-buttons">
 
 
-                                <!-- ELIMINAR -->
+                                    <!-- EDITAR -->
 
-                                <form th:action="@{'/admin/donaciones/'
-                                          + ${donacion.idDonacion}
-                                          + '/eliminar'}"
-                                      method="post"
-                                      onsubmit="return confirmarEliminacion();">
+                                    <form
+                                        th:action="@{'/admin/donaciones/' + ${donacion.idDonacion} + '/editar'}"
+                                        method="post"
+                                        class="edit-form">
 
-                                    <input type="hidden"
-                                           th:name="${_csrf.parameterName}"
-                                           th:value="${_csrf.token}">
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}">
 
-                                    <button type="submit"
-                                            class="donation-button delete-button">
+                                        <input
+                                            type="number"
+                                            name="monto"
+                                            min="0.01"
+                                            step="0.01"
+                                            required
+                                            th:value="${donacion.monto}"
+                                            placeholder="Monto">
 
-                                        <i class="fa-solid fa-trash"></i>
+                                        <textarea
+                                            name="mensaje"
+                                            maxlength="255"
+                                            placeholder="Mensaje"
+                                            th:text="${donacion.mensaje}">
+                                        </textarea>
 
-                                        Eliminar
+                                        <button
+                                            type="submit"
+                                            class="donation-action btn-edit">
 
-                                    </button>
+                                            <i class="fa-solid fa-pen"></i>
 
-                                </form>
+                                            Guardar cambios
 
-                            </div>
+                                        </button>
 
-
-                            <!-- FORMULARIO EDITAR -->
-
-                            <form th:id="'edit-' + ${donacion.idDonacion}"
-                                  class="edit-form"
-                                  th:action="@{'/admin/donaciones/'
-                                  + ${donacion.idDonacion}
-                                  + '/editar'}"
-                                  method="post">
-
-                                <input type="hidden"
-                                       th:name="${_csrf.parameterName}"
-                                       th:value="${_csrf.token}">
-
-
-                                <label>
-                                    Monto
-                                </label>
-
-                                <input type="number"
-                                       name="monto"
-                                       step="0.01"
-                                       min="0.01"
-                                       required
-                                       th:value="${donacion.monto}">
+                                    </form>
 
 
-                                <label>
-                                    Mensaje
-                                </label>
+                                    <!-- ELIMINAR -->
 
-                                <textarea name="mensaje"
-                                          maxlength="255"
-                                          th:text="${donacion.mensaje}">
-                                </textarea>
+                                    <form
+                                        th:action="@{'/admin/donaciones/' + ${donacion.idDonacion} + '/eliminar'}"
+                                        method="post"
+                                        onsubmit="return confirm('¿Seguro que deseas eliminar esta donación?');">
 
+                                        <input type="hidden"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}">
 
-                                <div class="donation-actions">
+                                        <button
+                                            type="submit"
+                                            class="donation-action btn-delete">
 
-                                    <button type="submit"
-                                            class="donation-button save-button">
+                                            <i class="fa-solid fa-trash"></i>
 
-                                        <i class="fa-solid fa-check"></i>
+                                            Eliminar
 
-                                        Guardar
+                                        </button>
 
-                                    </button>
+                                    </form>
 
-
-                                    <button type="button"
-                                            class="donation-button cancel-button"
-                                            th:attr="onclick=|ocultarEdicion(${donacion.idDonacion})|">
-
-                                        Cancelar
-
-                                    </button>
 
                                 </div>
 
-                            </form>
+                            </td>
 
-                        </td>
-
-                    </tr>
+                        </tr>
 
 
-                    <!-- SIN DONACIONES -->
+                        <!-- =================================================
+                             SIN DONACIONES
+                        ================================================== -->
 
-                    <tr th:if="${#lists.isEmpty(donaciones)}">
+                        <tr th:if="${#lists.isEmpty(donaciones)}">
 
-                        <td colspan="6">
+                            <td colspan="6">
 
-                            <div class="empty-donations">
+                                <div class="empty-donations">
 
-                                <i class="fa-solid fa-hand-holding-heart"></i>
+                                    <i class="fa-solid fa-hand-holding-heart"></i>
 
-                                <h3>
-                                    No hay donaciones registradas
-                                </h3>
+                                    <h3>
+                                        No hay donaciones registradas
+                                    </h3>
 
-                                <p>
-                                    Cuando un usuario realice una donación,
-                                    aparecerá aquí.
-                                </p>
+                                    <p>
+                                        Cuando un cliente realice una
+                                        donación, aparecerá aquí.
+                                    </p>
 
-                            </div>
+                                </div>
 
-                        </td>
+                            </td>
 
-                    </tr>
+                        </tr>
 
-                    </tbody>
 
-                </table>
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
-        </section>
+        </div>
 
     </main>
 
 </div>
-
-
-<script>
-
-    function mostrarEdicion(id) {
-
-        const formulario =
-            document.getElementById("edit-" + id);
-
-        if (formulario) {
-            formulario.classList.add("open");
-        }
-    }
-
-
-    function ocultarEdicion(id) {
-
-        const formulario =
-            document.getElementById("edit-" + id);
-
-        if (formulario) {
-            formulario.classList.remove("open");
-        }
-    }
-
-
-    function confirmarEliminacion() {
-
-        return confirm(
-            "¿Está seguro de que desea eliminar esta donación?"
-        );
-
-    }
-
-</script>
 
 </body>
 
