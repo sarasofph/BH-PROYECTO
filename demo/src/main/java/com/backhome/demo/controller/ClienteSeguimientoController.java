@@ -3,6 +3,7 @@ package com.backhome.demo.controller;
 import com.backhome.demo.model.ActualizacionSeguimiento;
 import com.backhome.demo.model.Cliente;
 import com.backhome.demo.model.EstadoCustodia;
+import com.backhome.demo.model.ImagenSeguimiento;
 import com.backhome.demo.model.Prioridad;
 import com.backhome.demo.model.Seguimiento;
 import com.backhome.demo.model.SeguimientoEncontrado;
@@ -14,24 +15,32 @@ import com.backhome.demo.model.TipoSeguimiento;
 import com.backhome.demo.repository.ActualizacionSeguimientoRepository;
 import com.backhome.demo.repository.ClienteRepository;
 import com.backhome.demo.repository.EstadoCustodiaRepository;
+import com.backhome.demo.repository.ImagenSeguimientoRepository;
 import com.backhome.demo.repository.LocalidadRepository;
 import com.backhome.demo.repository.PrioridadRepository;
 import com.backhome.demo.repository.SeguimientoEncontradoRepository;
 import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
 
+import com.backhome.demo.service.ImagenSeguimientoService;
 import com.backhome.demo.service.SeguimientoService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class ClienteSeguimientoController {
@@ -45,6 +54,8 @@ public class ClienteSeguimientoController {
     private final EstadoCustodiaRepository estadoCustodiaRepository;
     private final SeguimientoPerdidoRepository seguimientoPerdidoRepository;
     private final SeguimientoEncontradoRepository seguimientoEncontradoRepository;
+    private final ImagenSeguimientoRepository imagenSeguimientoRepository;
+    private final ImagenSeguimientoService imagenSeguimientoService;
 
 
     // =========================================================
@@ -60,17 +71,26 @@ public class ClienteSeguimientoController {
             PrioridadRepository prioridadRepository,
             EstadoCustodiaRepository estadoCustodiaRepository,
             SeguimientoPerdidoRepository seguimientoPerdidoRepository,
-            SeguimientoEncontradoRepository seguimientoEncontradoRepository) {
+            SeguimientoEncontradoRepository seguimientoEncontradoRepository,
+            ImagenSeguimientoRepository imagenSeguimientoRepository,
+            ImagenSeguimientoService imagenSeguimientoService) {
 
         this.seguimientoRepository = seguimientoRepository;
-        this.actualizacionSeguimientoRepository = actualizacionSeguimientoRepository;
+        this.actualizacionSeguimientoRepository =
+                actualizacionSeguimientoRepository;
         this.clienteRepository = clienteRepository;
         this.seguimientoService = seguimientoService;
         this.localidadRepository = localidadRepository;
         this.prioridadRepository = prioridadRepository;
         this.estadoCustodiaRepository = estadoCustodiaRepository;
-        this.seguimientoPerdidoRepository = seguimientoPerdidoRepository;
-        this.seguimientoEncontradoRepository = seguimientoEncontradoRepository;
+        this.seguimientoPerdidoRepository =
+                seguimientoPerdidoRepository;
+        this.seguimientoEncontradoRepository =
+                seguimientoEncontradoRepository;
+        this.imagenSeguimientoRepository =
+                imagenSeguimientoRepository;
+        this.imagenSeguimientoService =
+                imagenSeguimientoService;
     }
 
 
@@ -170,7 +190,17 @@ public class ClienteSeguimientoController {
             // -------------------------
 
             @RequestParam(required = false) String fechaEncontrado,
-            @RequestParam(required = false) Integer estadoCustodiaId) {
+            @RequestParam(required = false) Integer estadoCustodiaId,
+
+            // -------------------------
+            // IMÁGENES
+            // -------------------------
+
+            @RequestParam(
+                    value = "imagenes",
+                    required = false
+            )
+            MultipartFile[] imagenes) {
 
         try {
 
@@ -184,33 +214,48 @@ public class ClienteSeguimientoController {
                     convertirFecha(fechaEncontrado);
 
 
-            seguimientoService.crearSeguimiento(
+            // =================================================
+            // CREAR SEGUIMIENTO
+            // =================================================
 
-                    authentication.getName(),
+            Seguimiento seguimiento =
+                    seguimientoService.crearSeguimiento(
 
-                    titulo,
-                    descripcion,
-                    tipoSeguimiento,
-                    prioridadId,
+                            authentication.getName(),
 
-                    nombreAnimal,
-                    sexo,
-                    color,
-                    tamano,
-                    descripcionAnimal,
+                            titulo,
+                            descripcion,
+                            tipoSeguimiento,
+                            prioridadId,
 
-                    tipoAnimal,
-                    especie,
-                    raza,
+                            nombreAnimal,
+                            sexo,
+                            color,
+                            tamano,
+                            descripcionAnimal,
 
-                    direccion,
-                    localidadId,
+                            tipoAnimal,
+                            especie,
+                            raza,
 
-                    fechaPerdidaDate,
-                    fechaUltimaVezVistoDate,
+                            direccion,
+                            localidadId,
 
-                    fechaEncontradoDate,
-                    estadoCustodiaId
+                            fechaPerdidaDate,
+                            fechaUltimaVezVistoDate,
+
+                            fechaEncontradoDate,
+                            estadoCustodiaId
+                    );
+
+
+            // =================================================
+            // GUARDAR IMÁGENES
+            // =================================================
+
+            imagenSeguimientoService.guardarImagenes(
+                    seguimiento,
+                    imagenes
             );
 
 
@@ -315,6 +360,20 @@ public class ClienteSeguimientoController {
                             .findBySeguimiento_IdSeguimientoOrderByCreatedAtDesc(
                                     id
                             )
+            );
+
+
+            // -------------------------
+            // IMÁGENES
+            // -------------------------
+
+            List<ImagenSeguimiento> imagenes =
+                    imagenSeguimientoRepository
+                            .findBySeguimiento_IdSeguimiento(id);
+
+            model.addAttribute(
+                    "imagenes",
+                    imagenes
             );
 
 

@@ -331,7 +331,8 @@
 
 
         <form th:action="@{/cliente/seguimientos}"
-              method="post">
+      method="post"
+      enctype="multipart/form-data">
 
 
             <!-- =====================================================
@@ -658,6 +659,36 @@
                 </div>
 
             </section>
+
+            <div class="form-section">
+
+    <div class="section-title">
+        <i class="fa-solid fa-camera"></i>
+        Fotografías
+    </div>
+
+    <div class="form-group">
+
+        <label for="imagenes">
+            Fotos de la mascota
+        </label>
+
+        <input
+            type="file"
+            id="imagenes"
+            name="imagenes"
+            accept="image/*"
+            multiple
+        >
+
+        <small class="form-help">
+            Puedes seleccionar varias fotografías.
+            La primera será utilizada como imagen principal.
+        </small>
+
+    </div>
+
+</div>
 
 
             <!-- =====================================================
