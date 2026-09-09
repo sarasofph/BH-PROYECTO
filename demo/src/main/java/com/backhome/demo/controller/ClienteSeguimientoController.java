@@ -31,6 +31,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -605,4 +606,53 @@ public class ClienteSeguimientoController {
 
         return LocalDateTime.parse(fecha);
     }
+
+  /* =====================================================
+   ELIMINAR SEGUIMIENTO
+===================================================== */
+
+@PostMapping("/cliente/seguimientos/{id}/eliminar")
+@Transactional
+public String eliminarSeguimiento(
+        @PathVariable Integer id,
+        Authentication authentication,
+        RedirectAttributes redirectAttributes) {
+
+    String email = authentication.getName();
+
+    Cliente cliente = clienteRepository
+            .findByPersonaEmailIgnoreCase(email)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Cliente no encontrado")
+            );
+
+    Seguimiento seguimiento = seguimientoRepository
+            .findById(id)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Seguimiento no encontrado")
+            );
+
+    // Verificar que el seguimiento pertenezca al cliente autenticado
+    if (seguimiento.getCliente() == null ||
+            !seguimiento.getCliente()
+                    .getIdCliente()
+                    .equals(cliente.getIdCliente())) {
+
+        redirectAttributes.addFlashAttribute(
+                "error",
+                "No tienes permiso para eliminar este seguimiento."
+        );
+
+        return "redirect:/cliente/seguimientos";
+    }
+
+    seguimientoRepository.delete(seguimiento);
+
+    redirectAttributes.addFlashAttribute(
+            "exito",
+            "El seguimiento fue eliminado correctamente."
+    );
+
+    return "redirect:/cliente/seguimientos";
+}
 }

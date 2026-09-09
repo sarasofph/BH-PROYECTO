@@ -776,26 +776,21 @@
                                       seguimiento.animal.nombre + ' ' +
                                       seguimiento.animal.color}">
 
-                                      <div class="card-image">
+<div class="card-image">
 
-    <th:block
-        th:with="imagenPrincipal=${imagenRepository.findBySeguimiento_IdSeguimientoAndImagenPrincipalTrue(seguimiento.idSeguimiento)}">
+    <img
+        th:if="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
+        th:src="${imagenesPrincipales[seguimiento.idSeguimiento].rutaImagen}"
+        alt="Fotografía de la mascota"
+    >
 
-        <img
-            th:if="${imagenPrincipal.isPresent()}"
-            th:src="${imagenPrincipal.get().rutaImagen}"
-            alt="Fotografía de la mascota"
-        >
-
-        <div
-            th:unless="${imagenPrincipal.isPresent()}"
-            class="no-image"
-        >
-            <i class="fa-solid fa-paw"></i>
-            <span>Sin fotografía</span>
-        </div>
-
-    </th:block>
+    <div
+        th:unless="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
+        class="no-image"
+    >
+        <i class="fa-solid fa-paw"></i>
+        <span>Sin fotografía</span>
+    </div>
 
 </div>
 

@@ -11,6 +11,7 @@ import com.backhome.demo.repository.PersonaRepository;
 import com.backhome.demo.repository.SeguimientoEncontradoRepository;
 import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
+import com.backhome.demo.repository.ImagenSeguimientoRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Controller
 @RequestMapping("/admin/seguimientos")
 public class AdminSeguimientoController {
@@ -36,6 +38,7 @@ public class AdminSeguimientoController {
     private final PersonaRepository personaRepository;
     private final AdministradorRepository administradorRepository;
     private final GestionSeguimientoRepository gestionSeguimientoRepository;
+    private final ImagenSeguimientoRepository imagenSeguimientoRepository;
 
     public AdminSeguimientoController(
             SeguimientoRepository seguimientoRepository,
@@ -43,7 +46,8 @@ public class AdminSeguimientoController {
             SeguimientoEncontradoRepository seguimientoEncontradoRepository,
             PersonaRepository personaRepository,
             AdministradorRepository administradorRepository,
-            GestionSeguimientoRepository gestionSeguimientoRepository) {
+            GestionSeguimientoRepository gestionSeguimientoRepository,
+            ImagenSeguimientoRepository imagenSeguimientoRepository) {
 
         this.seguimientoRepository = seguimientoRepository;
         this.seguimientoPerdidoRepository = seguimientoPerdidoRepository;
@@ -51,6 +55,7 @@ public class AdminSeguimientoController {
         this.personaRepository = personaRepository;
         this.administradorRepository = administradorRepository;
         this.gestionSeguimientoRepository = gestionSeguimientoRepository;
+        this.imagenSeguimientoRepository = imagenSeguimientoRepository;
     }
 
     @GetMapping
@@ -88,6 +93,13 @@ public class AdminSeguimientoController {
                 "seguimiento",
                 seguimiento
         );
+
+        List<com.backhome.demo.model.ImagenSeguimiento> imagenes =
+        imagenSeguimientoRepository
+                .findBySeguimiento_IdSeguimiento(id);
+
+model.addAttribute("imagenes", imagenes);
+
 
         if (seguimiento.getTipoSeguimiento()
                 == com.backhome.demo.model.TipoSeguimiento.perdido) {

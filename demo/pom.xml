@@ -19,7 +19,7 @@
     <name>BackHome</name>
     <description>Sistema de seguimiento de mascotas BackHome</description>
 
- 
+    <dependencies>
 
         <!-- =====================================================
              SPRING WEB

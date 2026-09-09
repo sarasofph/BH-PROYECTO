@@ -217,7 +217,23 @@
 
     </section>
 
+    <!-- =====================================================
+     ELIMINAR SEGUIMIENTO
+====================================================== -->
 
+<form th:action="@{/cliente/seguimientos/{id}/eliminar(id=${seguimiento.idSeguimiento})}"
+      method="post"
+      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este seguimiento? Esta acción no se puede deshacer.');">
+
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}">
+
+    <button type="submit">
+        Eliminar seguimiento
+    </button>
+
+</form>
     <!-- =====================================================
          INFORMACIÓN DEL ANIMAL
     ====================================================== -->
