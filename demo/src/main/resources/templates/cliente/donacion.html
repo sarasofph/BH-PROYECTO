@@ -5,132 +5,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Donar - BackHome</title>
+    <title>Donaciones | BackHome</title>
 
     <link rel="stylesheet" th:href="@{/css/cliente/donacion.css}">
 </head>
 
 <body>
 
-<nav class="navbar">
+<header class="navbar">
 
-    <div class="logo">
-        BackHome
-    </div>
-
-    <a th:href="@{/}" class="volver">
-        ← Volver al inicio
+    <a th:href="@{/cliente/dashboard}" class="logo">
+        <span class="logo-paw">🐾</span>
+        <span>Back<span>Home</span></span>
     </a>
 
-</nav>
+    <a th:href="@{/}" class="volver">
+        <span>←</span>
+        Volver al inicio
+    </a>
+
+</header>
 
 
-<main class="donacion-container">
+<main class="donacion-page">
 
-    <section class="donacion-card">
+    <div class="decor decor-1"></div>
+    <div class="decor decor-2"></div>
+    <div class="decor decor-3"></div>
 
-        <div class="donacion-header">
 
-            <div class="icono">
-                💗
+    <section class="donacion-wrapper">
+
+
+        <!-- =====================================================
+             INFORMACIÓN
+        ====================================================== -->
+
+        <div class="donacion-info">
+
+            <div class="badge">
+                <span>💗</span>
+                Cada aporte cuenta
             </div>
 
             <h1>
-                Haz una donación
+                Ayuda a cambiar
+                <br>
+                <span>una vida.</span>
             </h1>
 
-            <p>
-                Tu aporte ayuda a BackHome a seguir apoyando
-                a mascotas y familias que lo necesitan.
+            <p class="descripcion">
+                Tu donación permite que BackHome continúe apoyando
+                a mascotas y familias que necesitan una segunda oportunidad.
             </p>
 
-        </div>
+
+            <div class="beneficios">
+
+                <div class="beneficio">
+
+                    <div class="beneficio-icono">
+                        🐶
+                    </div>
+
+                    <div>
+                        <strong>Ayuda a mascotas</strong>
+
+                        <p>
+                            Contribuye al bienestar de animales
+                            que necesitan apoyo.
+                        </p>
+                    </div>
+
+                </div>
 
 
-        <div class="cliente-info" th:if="${cliente}">
+                <div class="beneficio">
 
-            <span class="cliente-icono">
-                👤
-            </span>
+                    <div class="beneficio-icono">
+                        🏠
+                    </div>
 
-            <div>
+                    <div>
+                        <strong>Apoya nuestra misión</strong>
 
-                <strong>
-                    Donación a nombre de
-                </strong>
+                        <p>
+                            Tu aporte ayuda a mantener
+                            nuestro propósito activo.
+                        </p>
+                    </div>
 
-                <span th:text="${cliente.persona.primerNombre + ' ' + cliente.persona.primerApellido}">
-                    Cliente
-                </span>
+                </div>
 
-                <small th:text="${cliente.persona.email}">
-                    correo@email.com
-                </small>
+
+                <div class="beneficio">
+
+                    <div class="beneficio-icono">
+                        💚
+                    </div>
+
+                    <div>
+                        <strong>Genera un impacto</strong>
+
+                        <p>
+                            Cada contribución, sin importar
+                            el monto, suma.
+                        </p>
+                    </div>
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <div class="form-group">
+        <!-- =====================================================
+             TARJETA DE DONACIÓN
+        ====================================================== -->
 
-            <label for="monto">
-                ¿Cuánto deseas donar?
-            </label>
+        <section class="donacion-card">
 
-            <div class="monto-input">
+
+            <div class="card-top">
+
+                <div>
+
+                    <span class="mini-label">
+                        DONACIÓN
+                    </span>
+
+                    <h2>
+                        Haz tu aporte
+                    </h2>
+
+                </div>
+
+                <div class="heart">
+                    ♥
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 CLIENTE
+            ================================================== -->
+
+            <div
+                class="cliente-info"
+                th:if="${cliente}">
+
+                <div class="cliente-avatar">
+                    👤
+                </div>
+
+
+                <div class="cliente-datos">
+
+                    <span class="cliente-label">
+                        Donación a nombre de
+                    </span>
+
+                    <strong
+                        th:text="${cliente.persona.primerNombre + ' ' + cliente.persona.primerApellido}">
+                        Cliente
+                    </strong>
+
+                    <small
+                        th:text="${cliente.persona.email}">
+                        correo@email.com
+                    </small>
+
+                </div>
+
+
+                <div class="check">
+                    ✓
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MONTO
+            ================================================== -->
+
+            <div class="form-group">
+
+                <label>
+                    ¿Cuánto deseas donar?
+                </label>
+
+
+                <div class="montos">
+
+                    <button
+                        type="button"
+                        class="monto-btn"
+                        data-monto="10000">
+
+                        $10.000
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="monto-btn activo"
+                        data-monto="25000">
+
+                        $25.000
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="monto-btn"
+                        data-monto="50000">
+
+                        $50.000
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="monto-btn"
+                        data-monto="100000">
+
+                        $100.000
+
+                    </button>
+
+                </div>
+
+
+                <div class="monto-personalizado">
+
+                    <span>
+                        $
+                    </span>
+
+                    <input
+                        type="number"
+                        id="monto"
+                        min="1"
+                        step="1"
+                        value="25000"
+                        placeholder="Otro valor">
+
+                    <span class="cop">
+                        COP
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MENSAJE
+            ================================================== -->
+
+            <div class="form-group mensaje-group">
+
+                <div class="label-row">
+
+                    <label for="mensaje">
+                        Mensaje
+                    </label>
+
+                    <span>
+                        Opcional
+                    </span>
+
+                </div>
+
+
+                <textarea
+                    id="mensaje"
+                    maxlength="255"
+                    rows="3"
+                    placeholder="Escribe un mensaje para BackHome..."></textarea>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEGURIDAD
+            ================================================== -->
+
+            <div class="seguridad">
+
+                <div class="seguridad-icono">
+                    🔒
+                </div>
+
+                <div>
+
+                    <strong>
+                        Pago seguro
+                    </strong>
+
+                    <p>
+                        Serás dirigido a la página oficial
+                        de Wompi para realizar tu aporte.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOTÓN
+            ================================================== -->
+
+            <button
+                type="button"
+                class="btn-donar"
+                id="btnDonar"
+                onclick="irAWompi()">
 
                 <span>
-                    $
+                    Continuar con la donación
                 </span>
 
-                <input
-                    type="number"
-                    id="monto"
-                    min="1"
-                    step="0.01"
-                    placeholder="0.00"
-                >
+                <span class="btn-arrow">
+                    →
+                </span>
 
-            </div>
-
-            <small>
-                Al continuar serás enviado directamente a la página oficial de Wompi.
-            </small>
-
-        </div>
+            </button>
 
 
-        <div class="form-group">
-
-            <label for="mensaje">
-                Mensaje
-                <span>(opcional)</span>
-            </label>
-
-            <textarea
-                id="mensaje"
-                maxlength="255"
-                rows="4"
-                placeholder="Escribe un mensaje para BackHome..."
-            ></textarea>
-
-        </div>
+            <p class="nota">
+                Al continuar serás redirigido a Wompi.
+            </p>
 
 
-        <button
-            type="button"
-            class="btn-donar"
-            id="btnDonar"
-            onclick="irAWompi()"
-        >
-            💳 Ir a Wompi
-        </button>
-
-
-        <p class="nota">
-            Serás enviado directamente a la página oficial de Wompi. 🐾
-        </p>
+        </section>
 
     </section>
 
@@ -139,11 +354,71 @@
 
 <script>
 
-function irAWompi() {
+    const montoInput =
+        document.getElementById("monto");
 
-    window.location.href = "https://wompi.com/";
+    const botonesMonto =
+        document.querySelectorAll(".monto-btn");
 
-}
+
+    botonesMonto.forEach(function(boton) {
+
+        boton.addEventListener("click", function() {
+
+            botonesMonto.forEach(function(btn) {
+
+                btn.classList.remove("activo");
+
+            });
+
+
+            boton.classList.add("activo");
+
+            montoInput.value =
+                boton.dataset.monto;
+
+        });
+
+    });
+
+
+    montoInput.addEventListener("input", function() {
+
+        botonesMonto.forEach(function(btn) {
+
+            btn.classList.remove("activo");
+
+        });
+
+    });
+
+
+    function irAWompi() {
+
+        const monto =
+            Number(montoInput.value);
+
+
+        if (!monto || monto <= 0) {
+
+            montoInput.focus();
+
+            montoInput.parentElement.classList.add("error");
+
+            setTimeout(function() {
+
+                montoInput.parentElement.classList.remove("error");
+
+            }, 700);
+
+            return;
+        }
+
+
+        window.location.href =
+            "https://wompi.com/";
+
+    }
 
 </script>
 
