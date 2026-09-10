@@ -18,4 +18,8 @@ public interface GestionSeguimientoRepository
     List<GestionSeguimiento> findByAdministrador_IdAdminOrderByFechaSeguimientoDesc(
             Integer idAdmin
     );
+
+    GestionSeguimiento findFirstBySeguimiento_IdSeguimientoOrderByFechaSeguimientoDesc(
+            Integer idSeguimiento
+    );
 }

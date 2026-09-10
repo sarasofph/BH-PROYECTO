@@ -11,6 +11,13 @@ import com.backhome.demo.model.SeguimientoPerdido;
 import com.backhome.demo.model.Sexo;
 import com.backhome.demo.model.Tamano;
 import com.backhome.demo.model.TipoSeguimiento;
+import com.backhome.demo.model.EstadoSeguimiento;
+import com.backhome.demo.model.EstadoModeracion;
+import com.backhome.demo.model.Localidad;
+import com.backhome.demo.model.GestionSeguimiento;
+import com.backhome.demo.repository.GestionSeguimientoRepository;
+
+
 
 import com.backhome.demo.repository.ActualizacionSeguimientoRepository;
 import com.backhome.demo.repository.ClienteRepository;
@@ -57,6 +64,7 @@ public class ClienteSeguimientoController {
     private final SeguimientoEncontradoRepository seguimientoEncontradoRepository;
     private final ImagenSeguimientoRepository imagenSeguimientoRepository;
     private final ImagenSeguimientoService imagenSeguimientoService;
+    private final GestionSeguimientoRepository gestionSeguimientoRepository;
 
 
     // =========================================================
@@ -74,7 +82,8 @@ public class ClienteSeguimientoController {
             SeguimientoPerdidoRepository seguimientoPerdidoRepository,
             SeguimientoEncontradoRepository seguimientoEncontradoRepository,
             ImagenSeguimientoRepository imagenSeguimientoRepository,
-            ImagenSeguimientoService imagenSeguimientoService) {
+           ImagenSeguimientoService imagenSeguimientoService,
+GestionSeguimientoRepository gestionSeguimientoRepository) {
 
         this.seguimientoRepository = seguimientoRepository;
         this.actualizacionSeguimientoRepository =
@@ -89,9 +98,13 @@ public class ClienteSeguimientoController {
         this.seguimientoEncontradoRepository =
                 seguimientoEncontradoRepository;
         this.imagenSeguimientoRepository =
-                imagenSeguimientoRepository;
-        this.imagenSeguimientoService =
-                imagenSeguimientoService;
+        imagenSeguimientoRepository;
+
+this.imagenSeguimientoService =
+        imagenSeguimientoService;
+
+this.gestionSeguimientoRepository =
+        gestionSeguimientoRepository;
     }
 
 
@@ -100,31 +113,42 @@ public class ClienteSeguimientoController {
     // =========================================================
 
     @GetMapping("/cliente/seguimientos")
-    public String listarSeguimientos(
-            Authentication authentication,
-            Model model) {
+public String listarSeguimientos(
+        Authentication authentication,
+        Model model) {
 
-        String email = authentication.getName();
+    // =========================================================
+    // CLIENTE AUTENTICADO
+    // =========================================================
 
-        Cliente cliente = clienteRepository
-                .findByPersonaEmailIgnoreCase(email)
-                .orElseThrow(() ->
-                        new IllegalStateException(
-                                "No se encontró el cliente asociado al usuario."
-                        )
-                );
+    String email = authentication.getName();
 
-        model.addAttribute(
-                "seguimientos",
-                seguimientoRepository
-                        .findByCliente_IdClienteOrderByIdSeguimientoDesc(
-                                cliente.getIdCliente()
-                        )
-        );
+    Cliente cliente = clienteRepository
+            .findByPersonaEmailIgnoreCase(email)
+            .orElseThrow(() ->
+                    new IllegalStateException(
+                            "No se encontró el cliente asociado al usuario."
+                    )
+            );
 
-        return "cliente/seguimientos";
-    }
 
+    // =========================================================
+    // OBTENER SEGUIMIENTOS DEL CLIENTE
+    // =========================================================
+
+    List<Seguimiento> seguimientos =
+            seguimientoRepository
+                    .findByCliente_IdClienteOrderByIdSeguimientoDesc(
+                            cliente.getIdCliente()
+                    );
+
+    model.addAttribute(
+            "seguimientos",
+            seguimientos
+    );
+
+    return "cliente/seguimientos";
+}
 
     // =========================================================
     // MOSTRAR FORMULARIO DE NUEVO SEGUIMIENTO
@@ -362,6 +386,23 @@ public class ClienteSeguimientoController {
                                     id
                             )
             );
+
+
+            // -------------------------
+// GESTIÓN DEL ADMINISTRADOR
+// -------------------------
+
+List<GestionSeguimiento> gestionesAdmin =
+        gestionSeguimientoRepository
+                .findBySeguimiento_IdSeguimientoOrderByFechaSeguimientoDesc(
+                        id
+                );
+
+model.addAttribute(
+        "gestionesAdmin",
+        gestionesAdmin
+);
+
 
 
             // -------------------------
@@ -606,6 +647,343 @@ public class ClienteSeguimientoController {
 
         return LocalDateTime.parse(fecha);
     }
+
+
+ /* =====================================================
+   FORMULARIO EDITAR SEGUIMIENTO
+===================================================== */
+
+@GetMapping("/cliente/seguimientos/{id}/editar")
+public String editarFormulario(
+        @PathVariable Integer id,
+        Authentication authentication,
+        Model model,
+        RedirectAttributes redirectAttributes) {
+
+    String email = authentication.getName();
+
+    Cliente cliente = clienteRepository
+            .findByPersonaEmailIgnoreCase(email)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Cliente no encontrado")
+            );
+
+    Seguimiento seguimiento = seguimientoRepository
+            .findById(id)
+            .orElseThrow(() ->
+                    new IllegalArgumentException("Seguimiento no encontrado")
+            );
+
+    // Verificar que pertenece al cliente autenticado
+    if (seguimiento.getCliente() == null ||
+            !seguimiento.getCliente()
+                    .getIdCliente()
+                    .equals(cliente.getIdCliente())) {
+
+        redirectAttributes.addFlashAttribute(
+                "error",
+                "No tienes permiso para editar este seguimiento."
+        );
+
+        return "redirect:/cliente/seguimientos";
+    }
+
+    // No permitir editar casos cerrados o reunidos
+    if (seguimiento.getEstadoSeguimiento() == EstadoSeguimiento.cerrado ||
+            seguimiento.getEstadoSeguimiento() == EstadoSeguimiento.reunido) {
+
+        redirectAttributes.addFlashAttribute(
+                "error",
+                "Este seguimiento ya no puede ser editado."
+        );
+
+        return "redirect:/cliente/seguimientos/" + id;
+    }
+
+    model.addAttribute("seguimiento", seguimiento);
+
+    cargarDatosFormulario(model);
+
+    return "cliente/seguimiento-editar";
+}
+/* =====================================================
+   GUARDAR CAMBIOS DEL SEGUIMIENTO
+===================================================== */
+
+@PostMapping("/cliente/seguimientos/{id}/editar")
+@Transactional
+public String guardarEdicion(
+        @PathVariable Integer id,
+        Authentication authentication,
+        @RequestParam String titulo,
+        @RequestParam String descripcion,
+        @RequestParam(required = false) Integer prioridadId,
+        @RequestParam String direccion,
+        @RequestParam Integer localidadId,
+        @RequestParam String nombreAnimal,
+        @RequestParam Sexo sexo,
+        @RequestParam String color,
+        @RequestParam Tamano tamano,
+        @RequestParam(required = false) String descripcionFisica,
+        @RequestParam(required = false) String fechaPerdida,
+        @RequestParam(required = false) String fechaUltimaVezVisto,
+        @RequestParam(required = false) String fechaEncontrado,
+        @RequestParam(required = false) Integer estadoCustodiaId,
+        RedirectAttributes redirectAttributes) {
+
+    try {
+
+        String email = authentication.getName();
+
+        Cliente cliente = clienteRepository
+                .findByPersonaEmailIgnoreCase(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Cliente no encontrado")
+                );
+
+        Seguimiento seguimiento = seguimientoRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Seguimiento no encontrado")
+                );
+
+
+        /* =================================================
+           VERIFICAR PROPIETARIO
+        ================================================== */
+
+        if (seguimiento.getCliente() == null ||
+                !seguimiento.getCliente()
+                        .getIdCliente()
+                        .equals(cliente.getIdCliente())) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "No tienes permiso para editar este seguimiento."
+            );
+
+            return "redirect:/cliente/seguimientos";
+        }
+
+
+        /* =================================================
+           VERIFICAR ESTADO
+        ================================================== */
+
+        if (seguimiento.getEstadoSeguimiento() == EstadoSeguimiento.cerrado ||
+                seguimiento.getEstadoSeguimiento() == EstadoSeguimiento.reunido) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Este seguimiento ya no puede ser editado."
+            );
+
+            return "redirect:/cliente/seguimientos/" + id;
+        }
+
+
+        /* =================================================
+           VALIDACIONES BÁSICAS
+        ================================================== */
+
+        if (titulo == null || titulo.trim().isEmpty() ||
+                descripcion == null || descripcion.trim().isEmpty() ||
+                direccion == null || direccion.trim().isEmpty() ||
+                color == null || color.trim().isEmpty()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Completa todos los campos obligatorios."
+            );
+
+            return "redirect:/cliente/seguimientos/" + id + "/editar";
+        }
+
+
+        /* =================================================
+           ACTUALIZAR SEGUIMIENTO
+        ================================================== */
+
+        seguimiento.setTitulo(titulo.trim());
+        seguimiento.setDescripcion(descripcion.trim());
+
+
+        /* =================================================
+           PRIORIDAD
+        ================================================== */
+
+        if (prioridadId != null) {
+
+            Prioridad prioridad = prioridadRepository
+                    .findById(prioridadId)
+                    .orElseThrow(() ->
+                            new IllegalArgumentException("Prioridad no encontrada")
+                    );
+
+            seguimiento.setPrioridad(prioridad);
+
+        } else {
+
+            seguimiento.setPrioridad(null);
+        }
+
+
+        /* =================================================
+           ACTUALIZAR ANIMAL
+        ================================================== */
+
+        seguimiento.getAnimal().setNombre(
+                nombreAnimal != null && !nombreAnimal.trim().isEmpty()
+                        ? nombreAnimal.trim()
+                        : null
+        );
+
+        seguimiento.getAnimal().setSexo(sexo);
+
+        seguimiento.getAnimal().setColor(color.trim());
+
+        seguimiento.getAnimal().setTamano(tamano);
+
+        seguimiento.getAnimal().setDescripcion(
+                descripcionFisica != null &&
+                        !descripcionFisica.trim().isEmpty()
+                        ? descripcionFisica.trim()
+                        : null
+        );
+
+
+        /* =================================================
+           ACTUALIZAR LUGAR
+        ================================================== */
+
+        Localidad localidad = localidadRepository
+                .findById(localidadId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Localidad no encontrada")
+                );
+
+        seguimiento.getLugar().setDireccion(direccion.trim());
+        seguimiento.getLugar().setLocalidad(localidad);
+
+
+        /* =================================================
+           ACTUALIZAR DATOS SEGÚN TIPO
+        ================================================== */
+
+        if (seguimiento.getTipoSeguimiento() == TipoSeguimiento.perdido) {
+
+            SeguimientoPerdido perdido =
+                    seguimientoPerdidoRepository
+                            .findBySeguimiento_IdSeguimiento(id)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException(
+                                            "Información de pérdida no encontrada"
+                                    )
+                            );
+
+            if (fechaPerdida != null &&
+                    !fechaPerdida.trim().isEmpty()) {
+
+                perdido.setFechaPerdida(
+                        convertirFecha(fechaPerdida)
+                );
+            }
+
+            if (fechaUltimaVezVisto != null &&
+                    !fechaUltimaVezVisto.trim().isEmpty()) {
+
+                perdido.setFechaUltimaVezVisto(
+                        convertirFecha(fechaUltimaVezVisto)
+                );
+
+            } else {
+
+                perdido.setFechaUltimaVezVisto(null);
+            }
+
+            seguimientoPerdidoRepository.save(perdido);
+
+        } else {
+
+            SeguimientoEncontrado encontrado =
+                    seguimientoEncontradoRepository
+                            .findBySeguimiento_IdSeguimiento(id)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException(
+                                            "Información del hallazgo no encontrada"
+                                    )
+                            );
+
+            if (fechaEncontrado != null &&
+                    !fechaEncontrado.trim().isEmpty()) {
+
+                encontrado.setFechaEncontrado(
+                        convertirFecha(fechaEncontrado)
+                );
+            }
+
+            if (estadoCustodiaId != null) {
+
+                EstadoCustodia estadoCustodia =
+                        estadoCustodiaRepository
+                                .findById(estadoCustodiaId)
+                                .orElseThrow(() ->
+                                        new IllegalArgumentException(
+                                                "Estado de custodia no encontrado"
+                                        )
+                                );
+
+                encontrado.setEstadoCustodia(estadoCustodia);
+            }
+
+            seguimientoEncontradoRepository.save(encontrado);
+        }
+
+
+        /* =================================================
+           MODERACIÓN
+        ================================================== */
+
+        /*
+         * Si el seguimiento estaba verificado y el cliente
+         * modifica información, vuelve a revisión.
+         */
+
+        if (seguimiento.getEstadoModeracion()
+                == EstadoModeracion.verificado) {
+
+            seguimiento.setEstadoModeracion(
+                    EstadoModeracion.pendiente
+            );
+        }
+
+
+        seguimientoRepository.save(seguimiento);
+
+
+        /* =================================================
+           MENSAJE
+        ================================================== */
+
+        redirectAttributes.addFlashAttribute(
+                "exito",
+                "El seguimiento fue actualizado correctamente."
+        );
+
+        return "redirect:/cliente/seguimientos/" + id;
+
+
+    } catch (Exception e) {
+
+        redirectAttributes.addFlashAttribute(
+                "error",
+                "No se pudieron guardar los cambios: "
+                        + e.getMessage()
+        );
+
+        return "redirect:/cliente/seguimientos/" + id + "/editar";
+    }
+}
 
   /* =====================================================
    ELIMINAR SEGUIMIENTO

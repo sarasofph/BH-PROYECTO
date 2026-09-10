@@ -690,20 +690,9 @@
             Inicio
         </a>
 
-        <a th:href="@{/#como-funciona}">
-            Cómo funciona
-        </a>
 
         <a th:href="@{/seguimientos}">
             Seguimientos
-        </a>
-
-        <a th:href="@{/#localidades-mapa}">
-            Localidades
-        </a>
-
-        <a th:href="@{/#apoyanos}">
-            Apóyanos
         </a>
 
     </nav>
@@ -724,7 +713,7 @@
 
         <div sec:authorize="isAuthenticated()">
 
-            <a th:href="@{/cliente/seguimientos}"
+            <a th:href="@{/cliente/perfil}"
                class="btn-account">
 
                 <i class="fa-solid fa-user"></i>

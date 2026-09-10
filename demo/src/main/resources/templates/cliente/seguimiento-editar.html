@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar seguimiento | BackHome</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/cliente/seguimientos.css}">
+</head>
+
+<body>
+
+<header class="site-header">
+
+    <div class="header-container">
+
+        <a th:href="@{/cliente/dashboard}"
+           class="header-brand-group">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="Logo BackHome"
+                 class="header-logo-img">
+
+            <span class="header-brand-title">
+                BackHome
+            </span>
+
+        </a>
+
+        <nav class="header-nav-menu">
+
+            <a th:href="@{/cliente/dashboard}">
+                Mi cuenta
+            </a>
+
+            <a th:href="@{/cliente/seguimientos}"
+               class="active">
+                Mis seguimientos
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main class="container detail-page">
+
+    <a th:href="@{/cliente/seguimientos/{id}(id=${seguimiento.idSeguimiento})}"
+       class="back-link">
+
+        ← Volver al seguimiento
+
+    </a>
+
+
+    <section class="detail-card">
+
+        <p class="eyebrow">
+            EDITAR
+        </p>
+
+        <h1>
+            Editar seguimiento
+        </h1>
+
+        <p class="description">
+            Modifica la información de tu reporte.
+        </p>
+
+
+        <!-- =====================================================
+             INFORMACIÓN PRINCIPAL
+        ====================================================== -->
+
+        <form th:action="@{/cliente/seguimientos/{id}/editar(id=${seguimiento.idSeguimiento})}"
+              method="post">
+
+
+            <div>
+
+                <label for="titulo">
+                    Título
+                </label>
+
+                <input type="text"
+                       id="titulo"
+                       name="titulo"
+                       maxlength="150"
+                       required
+                       th:value="${seguimiento.titulo}">
+
+            </div>
+
+
+            <div>
+
+                <label for="descripcion">
+                    Descripción
+                </label>
+
+                <textarea id="descripcion"
+                          name="descripcion"
+                          rows="6"
+                          maxlength="2000"
+                          required
+                          th:text="${seguimiento.descripcion}">
+                </textarea>
+
+            </div>
+
+
+            <!-- =================================================
+                 PRIORIDAD
+            ================================================== -->
+
+            <div>
+
+                <label for="prioridad">
+                    Prioridad
+                </label>
+
+                <select id="prioridad"
+                        name="prioridadId">
+
+                    <option value="">
+                        Sin prioridad
+                    </option>
+
+                    <option th:each="prioridad : ${prioridades}"
+                            th:value="${prioridad.idPrioridad}"
+                            th:text="${prioridad.nombre}"
+                            th:selected="${seguimiento.prioridad != null &&
+                                          seguimiento.prioridad.idPrioridad == prioridad.idPrioridad}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 DIRECCIÓN
+            ================================================== -->
+
+            <div>
+
+                <label for="direccion">
+                    Dirección
+                </label>
+
+                <input type="text"
+                       id="direccion"
+                       name="direccion"
+                       maxlength="255"
+                       required
+                       th:value="${seguimiento.lugar.direccion}">
+
+            </div>
+
+
+            <!-- =================================================
+                 LOCALIDAD
+            ================================================== -->
+
+            <div>
+
+                <label for="localidadId">
+                    Localidad
+                </label>
+
+                <select id="localidadId"
+                        name="localidadId"
+                        required>
+
+                    <option th:each="localidad : ${localidades}"
+                            th:value="${localidad.idLocalidad}"
+                            th:text="${localidad.nombre}"
+                            th:selected="${seguimiento.lugar.localidad.idLocalidad == localidad.idLocalidad}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMACIÓN DEL ANIMAL
+            ================================================== -->
+
+            <h2>
+                Información del animal 🐾
+            </h2>
+
+
+            <div>
+
+                <label for="nombreAnimal">
+                    Nombre
+                </label>
+
+                <input type="text"
+                       id="nombreAnimal"
+                       name="nombreAnimal"
+                       maxlength="100"
+                       th:value="${seguimiento.animal.nombre}">
+
+            </div>
+
+
+            <div>
+
+                <label for="sexo">
+                    Sexo
+                </label>
+
+                <select id="sexo"
+                        name="sexo"
+                        required>
+
+                    <option th:each="opcion : ${sexos}"
+                            th:value="${opcion}"
+                            th:text="${opcion}"
+                            th:selected="${seguimiento.animal.sexo == opcion}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="color">
+                    Color
+                </label>
+
+                <input type="text"
+                       id="color"
+                       name="color"
+                       maxlength="100"
+                       required
+                       th:value="${seguimiento.animal.color}">
+
+            </div>
+
+
+            <div>
+
+                <label for="tamano">
+                    Tamaño
+                </label>
+
+                <select id="tamano"
+                        name="tamano"
+                        required>
+
+                    <option th:each="opcion : ${tamanos}"
+                            th:value="${opcion}"
+                            th:text="${opcion}"
+                            th:selected="${seguimiento.animal.tamano == opcion}">
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="descripcionFisica">
+                    Descripción física
+                </label>
+
+                <textarea id="descripcionFisica"
+                          name="descripcionFisica"
+                          rows="5"
+                          maxlength="2000"
+                          th:text="${seguimiento.animal.descripcion}">
+                </textarea>
+
+            </div>
+
+
+            <!-- =================================================
+                 CAMPOS DE PERDIDO
+            ================================================== -->
+
+            <div th:if="${seguimiento.tipoSeguimiento.name() == 'perdido'}">
+
+                <h2>
+                    Información de pérdida
+                </h2>
+
+                <div th:if="${seguimientoPerdido != null}">
+
+                    <label for="fechaPerdida">
+                        Fecha de pérdida
+                    </label>
+
+                    <input type="datetime-local"
+                           id="fechaPerdida"
+                           name="fechaPerdida"
+                           th:value="${#temporals.format(
+                               seguimientoPerdido.fechaPerdida,
+                               'yyyy-MM-dd''T''HH:mm')}">
+
+                </div>
+
+                <div th:if="${seguimientoPerdido != null}">
+
+                    <label for="fechaUltimaVezVisto">
+                        Última vez visto
+                    </label>
+
+                    <input type="datetime-local"
+                           id="fechaUltimaVezVisto"
+                           name="fechaUltimaVezVisto"
+                           th:if="${seguimientoPerdido.fechaUltimaVezVisto != null}"
+                           th:value="${#temporals.format(
+                               seguimientoPerdido.fechaUltimaVezVisto,
+                               'yyyy-MM-dd''T''HH:mm')}">
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+     CAMPOS DE ENCONTRADO
+================================================== -->
+
+<div th:if="${seguimiento.tipoSeguimiento.name() == 'encontrado'}">
+
+    <h2>
+        Información del hallazgo
+    </h2>
+
+    <div th:if="${seguimientoEncontrado != null}">
+
+        <label for="fechaEncontrado">
+            Fecha de encontrado
+        </label>
+
+        <input type="datetime-local"
+               id="fechaEncontrado"
+               name="fechaEncontrado"
+               required
+               th:value="${#temporals.format(
+                   seguimientoEncontrado.fechaEncontrado,
+                   'yyyy-MM-dd''T''HH:mm')}">
+
+    </div>
+
+
+    <div th:if="${seguimientoEncontrado != null}">
+
+        <label for="estadoCustodiaId">
+            Estado de custodia
+        </label>
+
+        <select id="estadoCustodiaId"
+                name="estadoCustodiaId"
+                required>
+
+            <option th:each="estado : ${estadosCustodia}"
+                    th:value="${estado.idEstadoCustodia}"
+                    th:text="${estado.nombre}"
+                    th:selected="${seguimientoEncontrado.estadoCustodia != null &&
+                                  seguimientoEncontrado.estadoCustodia.idEstadoCustodia == estado.idEstadoCustodia}">
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+            <!-- =================================================
+                 BOTONES
+            ================================================== -->
+
+            <div>
+
+                <a th:href="@{/cliente/seguimientos/{id}(id=${seguimiento.idSeguimiento})}">
+                    Cancelar
+                </a>
+
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+            </div>
+
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

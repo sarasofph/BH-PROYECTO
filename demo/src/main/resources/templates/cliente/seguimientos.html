@@ -9,6 +9,11 @@
 
     <title>Mis seguimientos | BackHome</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+
     <link rel="stylesheet"
           th:href="@{/css/cliente/seguimientos.css}">
 </head>
@@ -35,7 +40,7 @@
 
         <nav class="header-nav-menu">
 
-            <a th:href="@{/cliente/dashboard}">
+            <a th:href="@{/cliente/perfil}">
                 Mi cuenta
             </a>
 
@@ -140,7 +145,9 @@
                 <!-- Tipo: perdido / encontrado -->
 
                 <span class="status"
-                      th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'} ? ' status-lost' : ' status-found'"
+                      th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'}
+                                      ? ' status-lost'
+                                      : ' status-found'"
                       th:text="${seguimiento.tipoSeguimiento}">
                     perdido
                 </span>
@@ -166,8 +173,16 @@
                     Moderación:
                 </strong>
 
-                <span th:text="${seguimiento.estadoModeracion}">
-                    pendiente
+                <span th:if="${seguimiento.estadoModeracion.name() == 'pendiente'}">
+                    En revisión
+                </span>
+
+                <span th:if="${seguimiento.estadoModeracion.name() == 'verificado'}">
+                    Verificado
+                </span>
+
+                <span th:if="${seguimiento.estadoModeracion.name() == 'rechazado'}">
+                    Rechazado
                 </span>
 
             </div>

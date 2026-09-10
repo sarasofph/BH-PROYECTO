@@ -40,6 +40,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
             <nav class="header-nav-menu">
                 <a href="#inicio">Inicio</a>
                 <a href="#proceso-seguimiento">Cómo Funciona</a>
+                <a th:href="@{/seguimientos}">
+        Seguimientos
+    </a>
                 <a href="#localidades-mapa">Localidades</a>
                 <a href="#apoyo-donaciones">Apóyanos</a>
             </nav>
@@ -62,7 +65,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div class="header-actions-group"
      sec:authorize="isAuthenticated()">
 
-    <a th:href="@{/cliente/dashboard}"
+    <a th:href="@{/cliente/perfil}"
        class="auth-link-login">
         Mi Cuenta
     </a>
@@ -160,7 +163,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <span aria-hidden="true">→</span>
 </a>
 
-<a th:href="@{/}"
+  <a th:href="@{/cliente/seguimientos/nuevo}"
    sec:authorize="isAuthenticated()"
    class="primary-action-cta">
     Reportar pérdida ahora
@@ -209,7 +212,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                         <span aria-hidden="true">→</span>
                     </a>
 
-                    <a th:href="@{/cliente/seguimientos}"
+                     <a th:href="@{/cliente/seguimientos/nuevo}"
                        sec:authorize="isAuthenticated()"
                        class="primary-action-cta">
                         Reportar hallazgo ahora
@@ -318,8 +321,6 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="case-file-cta">Seguir este caso <span aria-hidden="true">→</span></div>
                         </div>
                     </div>
                 </div>
@@ -341,7 +342,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                     <h3>Apóyanos y Sostenibilidad</h3>
                     <p>Tu aporte mantiene la plataforma activa y respalda a los hogares de paso que cuidan mascotas mientras encuentran su camino de regreso.</p>
                     <p class="support-microcopy">Cada aporte ayuda a un hogar de paso.</p>
-                    <a th:href="@{/donaciones}" class="btn-stub-action">Quiero ayudar <span aria-hidden="true">→</span></a>
+                    <a th:href="@{/cliente/donar}" class="btn-stub-action">Quiero ayudar <span aria-hidden="true">→</span></a>
                 </div>
             </div>
         </section>

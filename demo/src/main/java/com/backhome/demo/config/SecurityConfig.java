@@ -53,6 +53,7 @@ public class SecurityConfig {
                     "/css/**",
                     "/js/**",
                     "/images/**",
+                     "/uploads/**",
                     "/favicon.ico"
                 ).permitAll()
 
@@ -63,24 +64,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**")
                     .hasRole("ADMIN")
 
-                // =================================================
-                // DASHBOARD CLIENTE
-                // =================================================
-
-                .requestMatchers("/cliente/dashboard")
-                    .authenticated()
-
-                // =================================================
-                // DONACIONES
-                // =================================================
-                // Solo necesita que el usuario haya iniciado
-                // sesión. El controlador se encarga de buscar
-                // el Cliente relacionado con su Persona.
-                // =================================================
-
-                .requestMatchers("/cliente/donar")
-                    .authenticated()
-
+        
                 // =================================================
                 // RESTO DE RUTAS CLIENTE
                 // =================================================
@@ -118,32 +102,32 @@ public class SecurityConfig {
                 .passwordParameter("password")
 
                 .successHandler(
-                    (request, response, authentication) -> {
+    (request, response, authentication) -> {
 
-                        boolean esAdmin =
-                            authentication
-                                .getAuthorities()
-                                .stream()
-                                .anyMatch(authority ->
-                                    authority
-                                        .getAuthority()
-                                        .equals("ROLE_ADMIN")
-                                );
+        boolean esAdmin =
+            authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(authority ->
+                    authority
+                        .getAuthority()
+                        .equals("ROLE_ADMIN")
+                );
 
-                        if (esAdmin) {
+        if (esAdmin) {
 
-                            response.sendRedirect(
-                                "/admin/dashboard"
-                            );
+            response.sendRedirect(
+                "/admin/dashboard"
+            );
 
-                        } else {
+        } else {
 
-                            response.sendRedirect(
-                                "/cliente/dashboard"
-                            );
-                        }
-                    }
-                )
+            response.sendRedirect(
+                "/"
+            );
+        }
+    }
+)
 
                 .failureUrl("/login?error")
 
