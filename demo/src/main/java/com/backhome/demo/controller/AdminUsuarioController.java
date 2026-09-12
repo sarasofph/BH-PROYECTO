@@ -20,6 +20,8 @@ import com.backhome.demo.model.Persona;
 import com.backhome.demo.repository.AdministradorRepository;
 import com.backhome.demo.repository.ClienteRepository;
 import com.backhome.demo.repository.PersonaRepository;
+import com.backhome.demo.repository.TipoDocumentoRepository;
+import com.backhome.demo.service.AuthService;
 
 @Controller
 @RequestMapping("/admin/usuarios")
@@ -29,15 +31,21 @@ public class AdminUsuarioController {
     private final PersonaRepository personaRepository;
     private final ClienteRepository clienteRepository;
     private final AdministradorRepository administradorRepository;
+    private final TipoDocumentoRepository tipoDocumentoRepository;
+    private final AuthService authService;
 
     public AdminUsuarioController(
             PersonaRepository personaRepository,
             ClienteRepository clienteRepository,
-            AdministradorRepository administradorRepository) {
+            AdministradorRepository administradorRepository,
+            TipoDocumentoRepository tipoDocumentoRepository,
+            AuthService authService) {
 
         this.personaRepository = personaRepository;
         this.clienteRepository = clienteRepository;
         this.administradorRepository = administradorRepository;
+        this.tipoDocumentoRepository = tipoDocumentoRepository;
+        this.authService = authService;
     }
 
     // =========================================================
@@ -133,6 +141,10 @@ public class AdminUsuarioController {
                         EstadoPersona.suspendido
                 );
 
+        // =====================================================
+        // DATOS PARA LA VISTA
+        // =====================================================
+
         model.addAttribute(
                 "usuarios",
                 usuarios
@@ -178,7 +190,182 @@ public class AdminUsuarioController {
                 EstadoPersona.values()
         );
 
+        // =====================================================
+        // TIPOS DE DOCUMENTO PARA CREAR USUARIO
+        // =====================================================
+
+        model.addAttribute(
+                "tiposDocumento",
+                tipoDocumentoRepository.findAll()
+        );
+
         return "admin/usuarios";
+    }
+
+    // =========================================================
+    // CREAR USUARIO
+    // =========================================================
+
+    @PostMapping("/crear")
+    public String crearUsuario(
+
+            @RequestParam String tipoDocumentoId,
+
+            @RequestParam String numeroDocumento,
+
+            @RequestParam String primerNombre,
+
+            @RequestParam(required = false) String segundoNombre,
+
+            @RequestParam String primerApellido,
+
+            @RequestParam(required = false) String segundoApellido,
+
+            @RequestParam String email,
+
+            @RequestParam String numeroTel,
+
+            @RequestParam String password,
+
+            @RequestParam String confirmarPassword,
+
+            RedirectAttributes redirectAttributes) {
+
+        // =====================================================
+        // LIMPIAR DATOS
+        // =====================================================
+
+        tipoDocumentoId =
+                tipoDocumentoId == null
+                        ? ""
+                        : tipoDocumentoId.trim();
+
+        numeroDocumento =
+                numeroDocumento == null
+                        ? ""
+                        : numeroDocumento.trim();
+
+        primerNombre =
+                primerNombre == null
+                        ? ""
+                        : primerNombre.trim();
+
+        primerApellido =
+                primerApellido == null
+                        ? ""
+                        : primerApellido.trim();
+
+        email =
+                email == null
+                        ? ""
+                        : email.trim().toLowerCase();
+
+        numeroTel =
+                numeroTel == null
+                        ? ""
+                        : numeroTel.trim();
+
+        // =====================================================
+        // VALIDAR CAMPOS
+        // =====================================================
+
+        if (tipoDocumentoId.isEmpty()
+                || numeroDocumento.isEmpty()
+                || primerNombre.isEmpty()
+                || primerApellido.isEmpty()
+                || email.isEmpty()
+                || numeroTel.isEmpty()
+                || password == null
+                || password.isEmpty()
+                || confirmarPassword == null
+                || confirmarPassword.isEmpty()) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Completa todos los campos obligatorios."
+            );
+
+            return "redirect:/admin/usuarios";
+        }
+
+        // =====================================================
+        // VALIDAR CONTRASEÑA
+        // =====================================================
+
+        if (password.length() < 6) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "La contraseña debe tener mínimo 6 caracteres."
+            );
+
+            return "redirect:/admin/usuarios";
+        }
+
+        // =====================================================
+        // CONFIRMAR CONTRASEÑA
+        // =====================================================
+
+        if (!password.equals(confirmarPassword)) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Las contraseñas no coinciden."
+            );
+
+            return "redirect:/admin/usuarios";
+        }
+
+        // =====================================================
+        // CREAR USUARIO
+        // =====================================================
+
+        try {
+
+            authService.registrarCliente(
+
+                    tipoDocumentoId,
+
+                    numeroDocumento,
+
+                    primerNombre,
+
+                    segundoNombre,
+
+                    primerApellido,
+
+                    segundoApellido,
+
+                    email,
+
+                    numeroTel,
+
+                    null,
+
+                    password
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "success",
+                    "El usuario fue creado correctamente."
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    e.getMessage()
+            );
+
+        } catch (Exception e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "No fue posible crear el usuario."
+            );
+        }
+
+        return "redirect:/admin/usuarios";
     }
 
     // =========================================================
