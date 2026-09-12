@@ -217,6 +217,56 @@
 
     </section>
 
+ <!-- =====================================================
+     GALERÍA DE IMÁGENES
+====================================================== -->
+
+<section class="detail-card"
+         th:if="${imagenes != null and !#lists.isEmpty(imagenes)}">
+
+    <div class="section-title">
+        <div>
+            <p class="eyebrow">EVIDENCIA</p>
+            <h2>Imágenes del seguimiento 📷</h2>
+        </div>
+    </div>
+
+    <div class="images-gallery">
+
+        <!-- IMAGEN GRANDE -->
+        <div class="main-image-container">
+
+            <img id="mainImage"
+     th:src="${imagenes.?[imagenPrincipal][0].rutaImagen}"
+     alt="Imagen principal del seguimiento"
+     class="main-image">
+
+        </div>
+
+
+        <!-- MINIATURAS -->
+        <div class="thumbnails-container">
+
+    <button type="button"
+            class="thumbnail"
+            th:each="imagen : ${imagenes}"
+            th:classappend="${imagen.imagenPrincipal ? 'active' : ''}"
+            th:attr="data-image=${imagen.rutaImagen}"
+            onclick="cambiarImagen(this)">
+
+        <img th:src="${imagen.rutaImagen}"
+             alt="Miniatura del seguimiento"
+             class="thumbnail-image">
+
+    </button>
+
+</div>
+
+    </div>
+
+
+</section>
+
     <!-- =====================================================
      ELIMINAR SEGUIMIENTO
 ====================================================== -->
@@ -673,6 +723,34 @@
     </section>
 
 </main>
+
+
+<script>
+    function cambiarImagen(elemento) {
+
+        const imagenPrincipal =
+            document.getElementById("mainImage");
+
+        const nuevaRuta =
+            elemento.getAttribute("data-image");
+
+        imagenPrincipal.src = nuevaRuta;
+
+
+        // Quitar selección anterior
+        document
+            .querySelectorAll(".thumbnail")
+            .forEach(function (thumbnail) {
+
+                thumbnail.classList.remove("active");
+
+            });
+
+
+        // Marcar la nueva imagen seleccionada
+        elemento.classList.add("active");
+    }
+</script>
 
 </body>
 </html>

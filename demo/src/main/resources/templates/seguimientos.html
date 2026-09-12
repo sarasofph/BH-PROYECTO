@@ -1,604 +1,102 @@
 <!DOCTYPE html>
+
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Seguimientos | BackHome</title>
+<meta charset="UTF-8">
 
-    <!-- Fuentes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <!-- Iconos -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<title>Seguimientos | BackHome</title>
 
-    <style>
+<!-- =====================================================
+     FUENTES
+     ===================================================== -->
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #fffafc;
-            color: #30252d;
-            min-height: 100vh;
-        }
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
 
-        /* =========================
-           FONDO DECORATIVO
-        ========================= */
+<link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@300;400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
 
-        body::before {
-            content: "";
-            position: fixed;
-            width: 420px;
-            height: 420px;
-            background: #f8dce8;
-            border-radius: 50%;
-            top: -180px;
-            right: -120px;
-            opacity: .45;
-            z-index: -1;
-        }
 
-        body::after {
-            content: "";
-            position: fixed;
-            width: 350px;
-            height: 350px;
-            background: #f7e7a8;
-            border-radius: 50%;
-            bottom: -160px;
-            left: -130px;
-            opacity: .35;
-            z-index: -1;
-        }
+<!-- =====================================================
+     ICONOS
+     ===================================================== -->
 
-        /* =========================
-           HEADER
-        ========================= */
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-        header {
-            width: 100%;
-            padding: 22px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 250, 252, .92);
-            border-bottom: 1px solid #f1dce5;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(12px);
-        }
 
-        .logo {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
+<!-- =====================================================
+     CSS
+     ===================================================== -->
 
-        .logo-paw {
-            font-size: 27px;
-        }
+<link rel="stylesheet"
+      th:href="@{/css/seguimientos.css}">
 
-        .logo-text {
-            font-family: 'Playwrite NZ Basic', cursive;
-            font-size: 25px;
-            font-weight: 600;
-            color: #c94f79;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #5b4b55;
-            font-size: 14px;
-            font-weight: 600;
-            transition: .2s;
-        }
-
-        nav a:hover {
-            color: #c94f79;
-        }
-
-        nav a.active {
-            color: #c94f79;
-        }
-
-        .auth-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-login,
-        .btn-register {
-            text-decoration: none;
-            padding: 10px 17px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .btn-login {
-            color: #c94f79;
-        }
-
-        .btn-register {
-            background: #c94f79;
-            color: white;
-        }
-
-        .btn-register:hover {
-            background: #ad3f65;
-        }
-
-        .btn-account {
-            text-decoration: none;
-            background: #f7e5ed;
-            color: #a83d63;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* =========================
-           CONTENIDO
-        ========================= */
-
-        .page-container {
-            width: min(1200px, 90%);
-            margin: 0 auto;
-            padding: 65px 0 90px;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .small-label {
-            display: inline-block;
-            background: #f7e4ec;
-            color: #b5436c;
-            padding: 7px 14px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .page-header h1 {
-            font-family: 'Playwrite NZ Basic', cursive;
-            font-size: clamp(34px, 5vw, 53px);
-            line-height: 1.2;
-            color: #382b34;
-            margin-bottom: 13px;
-        }
-
-        .page-header h1 span {
-            color: #c94f79;
-        }
-
-        .page-header p {
-            max-width: 650px;
-            margin: 0 auto;
-            color: #766770;
-            font-size: 15px;
-            line-height: 1.7;
-        }
-
-        /* =========================
-           FILTROS
-        ========================= */
-
-        .filters-box {
-            background: white;
-            border: 1px solid #f0dce5;
-            border-radius: 22px;
-            padding: 22px;
-            margin-bottom: 38px;
-            box-shadow: 0 10px 35px rgba(90, 50, 70, .06);
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .filter-tab {
-            border: 1px solid #ead5df;
-            background: #fff;
-            color: #665660;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .filter-tab:hover {
-            border-color: #c94f79;
-            color: #c94f79;
-        }
-
-        .filter-tab.active {
-            background: #c94f79;
-            border-color: #c94f79;
-            color: white;
-        }
-
-        .search-area {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-        }
-
-        .search-input {
-            width: 100%;
-            border: 1px solid #ead5df;
-            background: #fffafc;
-            border-radius: 13px;
-            padding: 13px 16px;
-            font-family: inherit;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .search-input:focus {
-            border-color: #c94f79;
-        }
-
-        .search-button {
-            border: none;
-            background: #382b34;
-            color: white;
-            border-radius: 13px;
-            padding: 0 23px;
-            font-family: inherit;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* =========================
-           RESULTADOS
-        ========================= */
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .results-header h2 {
-            font-size: 19px;
-            color: #382b34;
-        }
-
-        .results-count {
-            color: #8b7a83;
-            font-size: 13px;
-        }
-
-        .seguimientos-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
-        }
-
-        /* =========================
-           CARD
-        ========================= */
-
-        .seguimiento-card {
-            background: white;
-            border: 1px solid #f0dce5;
-            border-radius: 22px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(90, 50, 70, .06);
-            transition: transform .2s, box-shadow .2s;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .seguimiento-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 38px rgba(90, 50, 70, .11);
-        }
-
-        .card-top {
-            padding: 17px 18px 0;
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .type-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 10px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .type-badge.perdido {
-            background: #fde7e7;
-            color: #bd4545;
-        }
-
-        .type-badge.encontrado {
-            background: #e5f5eb;
-            color: #398153;
-        }
-
-        .verified-badge {
-            background: #edf7ef;
-            color: #398153;
-            padding: 6px 10px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .card-body {
-            padding: 18px;
-            flex: 1;
-        }
-
-        .animal-icon {
-            width: 62px;
-            height: 62px;
-            background: #f9e8ef;
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 31px;
-            margin-bottom: 15px;
-        }
-
-        .card-body h3 {
-            font-size: 18px;
-            color: #382b34;
-            margin-bottom: 8px;
-            line-height: 1.35;
-        }
-
-        .description {
-            color: #786a72;
-            font-size: 12px;
-            line-height: 1.65;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 17px;
-        }
-
-        .card-info {
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
-        }
-
-        .info-row {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            color: #6d5e66;
-            font-size: 11px;
-        }
-
-        .info-row i {
-            color: #c94f79;
-            width: 15px;
-            text-align: center;
-        }
-
-        .priority {
-            font-weight: 700;
-        }
-
-        .card-footer {
-            padding: 0 18px 18px;
-        }
-
-        .detail-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            background: #382b34;
-            color: white;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
-            transition: .2s;
-        }
-
-        .detail-button:hover {
-            background: #c94f79;
-        }
-
-        /* =========================
-           SIN RESULTADOS
-        ========================= */
-
-        .empty-state {
-            background: white;
-            border: 1px dashed #e6cbd7;
-            border-radius: 24px;
-            padding: 60px 25px;
-            text-align: center;
-        }
-
-        .empty-icon {
-            width: 75px;
-            height: 75px;
-            margin: 0 auto 18px;
-            border-radius: 50%;
-            background: #f9e8ef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-
-        .empty-state h3 {
-            color: #382b34;
-            margin-bottom: 8px;
-            font-size: 19px;
-        }
-
-        .empty-state p {
-            color: #7c6c74;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        footer {
-            border-top: 1px solid #f0dce5;
-            padding: 30px 7%;
-            text-align: center;
-            color: #8b7a83;
-            font-size: 12px;
-        }
-
-
-
-
-
-        .card-image {
-    width: 100%;
-    height: 230px;
-    overflow: hidden;
-    background: #f5f1f2;
-}
-
-.card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.no-image {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #9b7d87;
-    font-size: 14px;
-}
-
-.no-image i {
-    font-size: 42px;
-}
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 950px) {
-
-            .seguimientos-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            nav {
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 700px) {
-
-            header {
-                padding: 18px 5%;
-            }
-
-            nav {
-                display: none;
-            }
-
-            .page-container {
-                width: 92%;
-                padding-top: 45px;
-            }
-
-            .seguimientos-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-area {
-                grid-template-columns: 1fr;
-            }
-
-            .search-button {
-                padding: 12px;
-            }
-
-            .results-header {
-                align-items: flex-start;
-                gap: 8px;
-                flex-direction: column;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
 
-<!-- =========================
+<!-- =========================================================
+     FONDO DECORATIVO
+     ========================================================= -->
+
+<div class="site-background">
+
+<div class="blob blob-one"></div>
+
+<div class="blob blob-two"></div>
+
+<div class="blob blob-three"></div>
+
+<span class="paw paw-one">🐾</span>
+
+<span class="paw paw-two">🐾</span>
+
+<span class="paw paw-three">🐾</span>
+
+<span class="paw paw-four">🐾</span>
+
+</div>
+
+<!-- =========================================================
      HEADER
-========================= -->
+     ========================================================= -->
 
-<header>
+<header class="site-header">
 
-    <a th:href="@{/}" class="logo">
-        <span class="logo-paw">🐾</span>
-        <span class="logo-text">BackHome</span>
+<div class="header-container">
+
+
+    <!-- LOGO -->
+
+    <a th:href="@{/}"
+       class="header-brand-group">
+
+        <img th:src="@{/images/logo-backhome.png}"
+             alt="Logo BackHome"
+             class="header-logo-img">
+
+        <span class="header-brand-title">
+            BackHome
+        </span>
+
     </a>
 
-    <nav>
+
+    <!-- NAVEGACIÓN -->
+
+    <nav class="header-nav-menu">
 
         <a th:href="@{/}">
             Inicio
@@ -609,97 +107,165 @@
             Seguimientos
         </a>
 
+        <a th:href="@{/cliente/donar}">
+            Apóyanos
+        </a>
+
     </nav>
 
-    <div class="auth-buttons">
 
-        <!-- Usuario no autenticado -->
+    <!-- ACCIONES -->
 
-        <div sec:authorize="!isAuthenticated()">
+    <div class="header-actions-group">
 
-            <a th:href="@{/login}" class="btn-login">
+
+        <!-- NO AUTENTICADO -->
+
+        <div sec:authorize="!isAuthenticated()"
+             class="guest-actions">
+
+            <a th:href="@{/login}"
+               class="auth-link-login">
+
                 Iniciar sesión
+
             </a>
 
-            <a th:href="@{/registro}" class="btn-register">
-                Registrarse
+            <a th:href="@{/registro}"
+               class="auth-btn-register">
+
+                Crear cuenta
+
             </a>
 
         </div>
 
-        <!-- Usuario autenticado -->
 
-        <div sec:authorize="isAuthenticated()">
+        <!-- AUTENTICADO -->
+
+        <div sec:authorize="isAuthenticated()"
+             class="logged-actions">
 
             <a th:href="@{/cliente/perfil}"
-               class="btn-account">
+               class="account-button">
+
                 <i class="fa-solid fa-user"></i>
+
                 Mi cuenta
+
             </a>
 
         </div>
 
     </div>
 
+</div>
+
 </header>
 
+<!-- =========================================================
+     CONTENIDO PRINCIPAL
+     ========================================================= -->
 
-<!-- =========================
-     CONTENIDO
-========================= -->
+<main class="seguimientos-page">
 
-<main class="page-container">
+<!-- =====================================================
+     INTRO
+     ===================================================== -->
 
-    <section class="page-header">
+<section class="seguimientos-intro">
 
-        <span class="small-label">
-            Comunidad BackHome
-        </span>
+    <span class="eyebrow">
+        COMUNIDAD BACKHOME
+    </span>
 
-        <h1>
-            Seguimientos de <span>mascotas</span>
-        </h1>
+    <h1>
+        Seguimientos de
+        <span>mascotas</span>
+    </h1>
 
-        <p>
-            Consulta los reportes verificados de mascotas perdidas
-            y encontradas. Quizás puedas ayudar a una familia
-            a volver a casa.
-        </p>
+    <p>
+        Consulta los reportes verificados de mascotas
+        perdidas y encontradas. Quizás puedas ayudar
+        a una familia a volver a casa.
+    </p>
 
-    </section>
+</section>
 
 
-    <!-- =========================
-         FILTROS
-    ========================= -->
 
-    <section class="filters-box">
+<!-- =====================================================
+     FILTROS
+     ===================================================== -->
 
-        <div class="filter-tabs">
+<section class="filters-card">
 
-            <button class="filter-tab active"
-                    type="button"
-                    onclick="filtrarTipo('todos', this)">
-                Todos
-            </button>
 
-            <button class="filter-tab"
-                    type="button"
-                    onclick="filtrarTipo('perdido', this)">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                Perdidos
-            </button>
+    <div class="filters-header">
 
-            <button class="filter-tab"
-                    type="button"
-                    onclick="filtrarTipo('encontrado', this)">
-                <i class="fa-solid fa-house"></i>
-                Encontrados
-            </button>
+        <div>
+
+            <span class="filters-label">
+                BUSCAR
+            </span>
+
+            <h2>
+                Encuentra un reporte
+            </h2>
 
         </div>
 
-        <div class="search-area">
+        <span class="filters-icon">
+            🔎
+        </span>
+
+    </div>
+
+
+    <!-- TIPO -->
+
+    <div class="filter-tabs">
+
+        <button class="filter-tab active"
+                type="button"
+                onclick="filtrarTipo('todos', this)">
+
+            Todos
+
+        </button>
+
+
+        <button class="filter-tab"
+                type="button"
+                onclick="filtrarTipo('perdido', this)">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Perdidos
+
+        </button>
+
+
+        <button class="filter-tab"
+                type="button"
+                onclick="filtrarTipo('encontrado', this)">
+
+            <i class="fa-solid fa-house"></i>
+
+            Encontrados
+
+        </button>
+
+    </div>
+
+
+    <!-- BUSCADOR -->
+
+    <div class="search-area">
+
+        <div class="search-input-wrapper">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
 
             <input
                 type="text"
@@ -708,35 +274,54 @@
                 placeholder="Buscar por título, mascota, localidad..."
                 onkeyup="buscarSeguimientos()">
 
-            <button type="button"
-                    class="search-button"
-                    onclick="buscarSeguimientos()">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-                Buscar
-
-            </button>
-
         </div>
 
-    </section>
+
+        <button type="button"
+                class="search-button"
+                onclick="buscarSeguimientos()">
+
+            Buscar
+
+        </button>
+
+    </div>
+
+</section>
 
 
-    <!-- =========================
-         ENCABEZADO RESULTADOS
-    ========================= -->
+
+<!-- =====================================================
+     RESULTADOS
+     ===================================================== -->
+
+<section class="results-section">
+
 
     <div class="results-header">
 
-        <h2>
-            Reportes verificados
-        </h2>
+        <div>
+
+            <span class="results-label">
+                REPORTES
+            </span>
+
+            <h2>
+                Mascotas que buscan volver a casa
+            </h2>
+
+        </div>
+
 
         <span class="results-count"
               id="contador">
 
             Mostrando
-            <strong th:text="${#lists.size(seguimientos)}">0</strong>
+
+            <strong th:text="${#lists.size(seguimientos)}">
+                0
+            </strong>
+
             reportes
 
         </span>
@@ -744,48 +329,67 @@
     </div>
 
 
-    <!-- =========================
-         TARJETAS
-    ========================= -->
+
+    <!-- =================================================
+         GRID
+         ================================================= -->
 
     <section class="seguimientos-grid"
              id="seguimientosGrid">
 
+
+        <!-- =================================================
+             TARJETA
+             ================================================= -->
+
         <article class="seguimiento-card"
                  th:each="seguimiento : ${seguimientos}"
 
-                 
+                 th:attr="
+                     data-tipo=${seguimiento.tipoSeguimiento},
+                     data-texto=${seguimiento.titulo + ' ' +
+                                 seguimiento.descripcion + ' ' +
+                                 seguimiento.lugar.direccion + ' ' +
+                                 seguimiento.lugar.localidad.nombre + ' ' +
+                                 seguimiento.animal.nombre + ' ' +
+                                 seguimiento.animal.color}">
 
-                 th:attr="data-tipo=${seguimiento.tipoSeguimiento},
-                          data-texto=${seguimiento.titulo + ' ' +
-                                      seguimiento.descripcion + ' ' +
-                                      seguimiento.lugar.direccion + ' ' +
-                                      seguimiento.lugar.localidad.nombre + ' ' +
-                                      seguimiento.animal.nombre + ' ' +
-                                      seguimiento.animal.color}">
 
-<div class="card-image">
+            <!-- =============================================
+                 IMAGEN
+                 ============================================= -->
 
-    <img
-        th:if="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
-        th:src="${imagenesPrincipales[seguimiento.idSeguimiento].rutaImagen}"
-        alt="Fotografía de la mascota"
-    >
+            <div class="card-image">
 
-    <div
-        th:unless="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
-        class="no-image"
-    >
-        <i class="fa-solid fa-paw"></i>
-        <span>Sin fotografía</span>
-    </div>
 
-</div>
+                <img
+                    th:if="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
 
-            <div class="card-top">
+                    th:src="${imagenesPrincipales[seguimiento.idSeguimiento].rutaImagen}"
 
-                <span class="type-badge"
-                      th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'} ? ' perdido' : ' encontrado'">
+                    alt="Fotografía de la mascota">
+
+
+                <div
+                    th:unless="${imagenesPrincipales[seguimiento.idSeguimiento] != null}"
+
+                    class="no-image">
+
+                    <i class="fa-solid fa-paw"></i>
+
+                    <span>
+                        Sin fotografía
+                    </span>
+
+                </div>
+
+
+                <!-- TIPO SOBRE LA IMAGEN -->
+
+                <div class="image-type-badge"
+                     th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'}
+                                     ? ' perdido'
+                                     : ' encontrado'">
 
                     <i class="fa-solid"
                        th:classappend="${seguimiento.tipoSeguimiento.name() == 'perdido'}
@@ -797,116 +401,157 @@
                         Perdido
                     </span>
 
-                </span>
+                </div>
 
-                <span class="verified-badge">
-                    ✓ Verificado
-                </span>
+
+                <!-- VERIFICADO -->
+
+                <div class="image-verified">
+
+                    <i class="fa-solid fa-check"></i>
+
+                    Verificado
+
+                </div>
 
             </div>
 
 
+
+            <!-- =============================================
+                 CUERPO
+                 ============================================= -->
+
             <div class="card-body">
 
-                <div class="animal-icon">
-                    🐾
-                </div>
 
                 <h3 th:text="${seguimiento.titulo}">
                     Nombre del seguimiento
                 </h3>
 
+
                 <p class="description"
                    th:text="${seguimiento.descripcion}">
+
                     Descripción del seguimiento.
+
                 </p>
 
 
+
+                <!-- INFORMACIÓN -->
+
                 <div class="card-info">
 
-                    <!-- Animal -->
+
+                    <!-- MASCOTA -->
 
                     <div class="info-row">
 
-                        <i class="fa-solid fa-paw"></i>
-
-                        <span>
-                            <strong>Mascota:</strong>
-
-                            <span th:text="${seguimiento.animal.nombre != null and !seguimiento.animal.nombre.isEmpty()
-                                             ? seguimiento.animal.nombre
-                                             : 'Sin nombre'}">
-                                Sin nombre
-                            </span>
+                        <span class="info-icon">
+                            <i class="fa-solid fa-paw"></i>
                         </span>
+
+                        <div>
+
+                            <span class="info-label">
+                                Mascota
+                            </span>
+
+                            <strong
+                                th:text="${seguimiento.animal.nombre != null
+                                          and !seguimiento.animal.nombre.isEmpty()
+                                          ? seguimiento.animal.nombre
+                                          : 'Sin nombre'}">
+
+                                Sin nombre
+
+                            </strong>
+
+                        </div>
 
                     </div>
 
 
-                    <!-- Localidad -->
+                    <!-- LOCALIDAD -->
 
                     <div class="info-row">
 
-                        <i class="fa-solid fa-location-dot"></i>
+                        <span class="info-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </span>
 
-                        <span>
+                        <div>
 
-                            <strong>Localidad:</strong>
-
-                            <span th:text="${seguimiento.lugar.localidad.nombre}">
+                            <span class="info-label">
                                 Localidad
                             </span>
 
-                        </span>
+                            <strong
+                                th:text="${seguimiento.lugar.localidad.nombre}">
+
+                                Localidad
+
+                            </strong>
+
+                        </div>
 
                     </div>
 
 
-                    <!-- Dirección -->
+                    <!-- FECHA -->
 
                     <div class="info-row">
 
-                        <i class="fa-solid fa-map-pin"></i>
-
-                        <span th:text="${seguimiento.lugar.direccion}">
-                            Dirección
+                        <span class="info-icon">
+                            <i class="fa-regular fa-calendar"></i>
                         </span>
 
-                    </div>
+                        <div>
 
-
-                    <!-- Prioridad -->
-
-                    <div class="info-row">
-
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-
-                        <span>
-
-                            <strong>Prioridad:</strong>
-
-                            <span class="priority"
-                                  th:text="${seguimiento.prioridad != null
-                                            ? seguimiento.prioridad.nombre
-                                            : 'Normal'}">
-                                Normal
+                            <span class="info-label">
+                                Publicado
                             </span>
 
-                        </span>
+                            <strong
+                                th:text="${#temporals.format(
+                                    seguimiento.fechaPublicacion,
+                                    'dd/MM/yyyy'
+                                )}">
+
+                                01/01/2026
+
+                            </strong>
+
+                        </div>
 
                     </div>
 
 
-                    <!-- Fecha -->
+                    <!-- PRIORIDAD -->
 
                     <div class="info-row">
 
-                        <i class="fa-regular fa-calendar"></i>
-
-                        <span
-                            th:text="${#temporals.format(seguimiento.fechaPublicacion, 'dd/MM/yyyy')}">
-                            01/01/2026
+                        <span class="info-icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
                         </span>
+
+                        <div>
+
+                            <span class="info-label">
+                                Prioridad
+                            </span>
+
+                            <strong class="priority"
+                                    th:text="${seguimiento.prioridad != null
+                                              ? seguimiento.prioridad.nombre
+                                              : 'Normal'}">
+
+                                Normal
+
+                            </strong>
+
+                        </div>
 
                     </div>
 
@@ -914,13 +559,20 @@
 
             </div>
 
+
+
+            <!-- =============================================
+                 FOOTER CARD
+                 ============================================= -->
 
             <div class="card-footer">
 
                 <a th:href="@{/seguimientos/{id}(id=${seguimiento.idSeguimiento})}"
                    class="detail-button">
 
-                    Ver seguimiento
+                    <span>
+                        Ver seguimiento
+                    </span>
 
                     <i class="fa-solid fa-arrow-right"></i>
 
@@ -933,16 +585,19 @@
     </section>
 
 
-    <!-- =========================
-         ESTADO VACÍO
-    ========================= -->
+
+    <!-- =================================================
+         SIN RESULTADOS
+         ================================================= -->
 
     <section class="empty-state"
              id="emptyState"
              style="display: none;">
 
         <div class="empty-icon">
+
             🐾
+
         </div>
 
         <h3>
@@ -956,23 +611,30 @@
 
     </section>
 
+</section>
+
 </main>
 
-
-<!-- =========================
+<!-- =========================================================
      FOOTER
-========================= -->
+     ========================================================= -->
 
-<footer>
+<footer class="site-footer">
 
-    © 2026 BackHome · Ayudando a reunir familias con sus mascotas 🐾
+
+<div class="footer-bottom-bar">
+
+    <p>
+        © 2026 BackHome - Todos los derechos reservados.
+    </p>
+
+</div>
 
 </footer>
 
-
-<!-- =========================
+<!-- =========================================================
      JAVASCRIPT
-========================= -->
+     ========================================================= -->
 
 <script>
 
@@ -983,8 +645,14 @@
 
         tipoActual = tipo;
 
-        document.querySelectorAll('.filter-tab')
-            .forEach(tab => tab.classList.remove('active'));
+        document
+            .querySelectorAll('.filter-tab')
+            .forEach(tab => {
+
+                tab.classList.remove('active');
+
+            });
+
 
         boton.classList.add('active');
 
@@ -992,34 +660,46 @@
     }
 
 
+
     function buscarSeguimientos() {
 
         aplicarFiltros();
+
     }
+
 
 
     function aplicarFiltros() {
 
+        const input =
+            document.getElementById('buscador');
+
+
         const texto =
-            document.getElementById('buscador')
-                .value
+            input.value
                 .toLowerCase()
                 .trim();
 
+
         const tarjetas =
-            document.querySelectorAll('.seguimiento-card');
+            document.querySelectorAll(
+                '.seguimiento-card'
+            );
+
 
         let visibles = 0;
 
 
         tarjetas.forEach(card => {
 
+
             const tipo =
-                card.dataset.tipo
+                (card.dataset.tipo || '')
                     .toLowerCase();
 
+
             const contenido =
-                card.dataset.texto
+                (card.dataset.texto || '')
                     .toLowerCase();
 
 

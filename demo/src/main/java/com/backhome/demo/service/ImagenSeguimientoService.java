@@ -114,4 +114,54 @@ public class ImagenSeguimientoService {
             );
         }
     }
+
+    public void eliminarImagenesDelSeguimiento(
+        Seguimiento seguimiento) {
+
+    try {
+
+        var imagenes =
+                imagenSeguimientoRepository
+                        .findBySeguimiento_IdSeguimiento(
+                                seguimiento.getIdSeguimiento()
+                        );
+
+        for (ImagenSeguimiento imagen : imagenes) {
+
+            String rutaImagen =
+                    imagen.getRutaImagen();
+
+            if (rutaImagen != null
+                    && rutaImagen.startsWith(
+                            "/uploads/seguimientos/")) {
+
+                String nombreArchivo =
+                        rutaImagen.substring(
+                                "/uploads/seguimientos/".length()
+                        );
+
+                Path archivo =
+                        directorio.resolve(nombreArchivo);
+
+                Files.deleteIfExists(archivo);
+            }
+        }
+
+        /*
+         * Después de eliminar los archivos físicos,
+         * eliminamos sus registros de la base de datos.
+         */
+        imagenSeguimientoRepository
+                .deleteAll(imagenes);
+
+    } catch (IOException e) {
+
+        throw new RuntimeException(
+                "No se pudieron eliminar las imágenes del seguimiento.",
+                e
+        );
+    }
+}
+
+
 }

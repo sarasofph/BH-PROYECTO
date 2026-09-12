@@ -996,41 +996,83 @@ public String eliminarSeguimiento(
         Authentication authentication,
         RedirectAttributes redirectAttributes) {
 
-    String email = authentication.getName();
+    try {
 
-    Cliente cliente = clienteRepository
-            .findByPersonaEmailIgnoreCase(email)
-            .orElseThrow(() ->
-                    new IllegalArgumentException("Cliente no encontrado")
+        String email = authentication.getName();
+
+        Cliente cliente = clienteRepository
+                .findByPersonaEmailIgnoreCase(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Cliente no encontrado"
+                        )
+                );
+
+        Seguimiento seguimiento = seguimientoRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Seguimiento no encontrado"
+                        )
+                );
+
+
+        // =================================================
+        // VERIFICAR PROPIETARIO
+        // =================================================
+
+        if (seguimiento.getCliente() == null ||
+                !seguimiento.getCliente()
+                        .getIdCliente()
+                        .equals(cliente.getIdCliente())) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "No tienes permiso para eliminar este seguimiento."
             );
 
-    Seguimiento seguimiento = seguimientoRepository
-            .findById(id)
-            .orElseThrow(() ->
-                    new IllegalArgumentException("Seguimiento no encontrado")
-            );
+            return "redirect:/cliente/seguimientos";
+        }
 
-    // Verificar que el seguimiento pertenezca al cliente autenticado
-    if (seguimiento.getCliente() == null ||
-            !seguimiento.getCliente()
-                    .getIdCliente()
-                    .equals(cliente.getIdCliente())) {
+
+        // =================================================
+        // ELIMINAR IMÁGENES
+        // =================================================
+
+        imagenSeguimientoService
+                .eliminarImagenesDelSeguimiento(
+                        seguimiento
+                );
+
+
+        // =================================================
+        // ELIMINAR SEGUIMIENTO
+        // =================================================
+
+        seguimientoRepository.delete(seguimiento);
+
+
+        // =================================================
+        // MENSAJE
+        // =================================================
+
+        redirectAttributes.addFlashAttribute(
+                "exito",
+                "El seguimiento y sus imágenes fueron eliminados correctamente."
+        );
+
+        return "redirect:/cliente/seguimientos";
+
+
+    } catch (Exception e) {
 
         redirectAttributes.addFlashAttribute(
                 "error",
-                "No tienes permiso para eliminar este seguimiento."
+                "No se pudo eliminar el seguimiento: "
+                        + e.getMessage()
         );
 
         return "redirect:/cliente/seguimientos";
     }
-
-    seguimientoRepository.delete(seguimiento);
-
-    redirectAttributes.addFlashAttribute(
-            "exito",
-            "El seguimiento fue eliminado correctamente."
-    );
-
-    return "redirect:/cliente/seguimientos";
 }
 }
