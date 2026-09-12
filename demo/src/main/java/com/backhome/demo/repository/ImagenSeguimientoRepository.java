@@ -13,10 +13,10 @@ public interface ImagenSeguimientoRepository
         extends JpaRepository<ImagenSeguimiento, Integer> {
 
     List<ImagenSeguimiento> findBySeguimiento_IdSeguimiento(
-            Integer idSeguimiento
+            Integer id
     );
 
-    Optional<ImagenSeguimiento> findBySeguimiento_IdSeguimientoAndImagenPrincipalTrue(
+    List<ImagenSeguimiento> findBySeguimiento_IdSeguimientoAndImagenPrincipalTrue(
             Integer idSeguimiento
     );
 }

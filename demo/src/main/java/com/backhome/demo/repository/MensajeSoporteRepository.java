@@ -12,8 +12,4 @@ public interface MensajeSoporteRepository
         extends JpaRepository<MensajeSoporte, Integer> {
 
     List<MensajeSoporte> findAllByOrderByFechaMensajeDesc();
-
-    List<MensajeSoporte> findByCliente_IdClienteOrderByFechaMensajeDesc(
-            Integer idCliente
-    );
 }

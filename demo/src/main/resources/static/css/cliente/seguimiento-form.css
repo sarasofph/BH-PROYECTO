@@ -1,0 +1,826 @@
+/* =========================================================
+   BACKHOME
+   NUEVO SEGUIMIENTO
+   ========================================================= */
+
+:root {
+    --wine-dark: #55152B;
+    --wine: #6E2136;
+    --wine-light: #8A2C46;
+
+    --rose-dark: #A94F6B;
+    --rose: #C66D88;
+    --rose-light: #E39CB6;
+    --rose-soft: #FCE8EE;
+
+    --cream: #FFFDF9;
+    --cream-soft: #FFF8FB;
+    --background: #F9F1F4;
+
+    --text: #493D42;
+    --text-soft: #77666D;
+    --text-muted: #998A90;
+
+    --border: #E6D7DC;
+    --border-light: #EFE3E7;
+    --white: #FFFFFF;
+
+    --danger: #9A4058;
+
+    --radius: 12px;
+    --radius-small: 8px;
+
+    --shadow: 0 6px 22px rgba(85, 21, 43, 0.07);
+
+    --font-brand: 'Playwrite NZ Basic', cursive;
+    --font-main: 'Plus Jakarta Sans', sans-serif;
+}
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: var(--font-main);
+    color: var(--text);
+
+    background:
+        radial-gradient(
+            circle at 8% 12%,
+            rgba(227, 156, 182, 0.14),
+            transparent 26%
+        ),
+        linear-gradient(
+            135deg,
+            #FFF8FA 0%,
+            #FFFDF9 55%,
+            #FAEEF2 100%
+        );
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
+    background: rgba(255, 253, 249, 0.96);
+
+    border-bottom: 1px solid rgba(85, 21, 43, 0.08);
+
+    backdrop-filter: blur(12px);
+}
+
+.header-container {
+    width: min(1120px, calc(100% - 40px));
+    min-height: 72px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+}
+
+.header-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+.header-logo-img {
+    width: 43px;
+    height: 43px;
+    object-fit: contain;
+}
+
+.header-brand-title {
+    color: var(--wine-dark);
+
+    font-family: var(--font-brand);
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.header-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header-nav-menu a {
+    padding: 8px 13px;
+
+    color: var(--text-soft);
+
+    border-radius: 7px;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.header-nav-menu a:hover {
+    color: var(--wine);
+    background: var(--rose-soft);
+}
+
+.header-nav-menu a.active {
+    color: var(--wine-dark);
+    background: var(--rose-soft);
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.container {
+    width: min(1080px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.form-page {
+    padding: 32px 0 55px;
+}
+
+
+/* =========================================================
+   VOLVER
+   ========================================================= */
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-bottom: 20px;
+
+    color: var(--wine);
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--wine-dark);
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.page-heading {
+    margin-bottom: 22px;
+}
+
+.eyebrow {
+    margin: 0 0 5px;
+
+    color: var(--rose);
+
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+}
+
+.page-heading h1 {
+    margin: 0;
+
+    color: var(--wine-dark);
+
+    font-size: clamp(1.8rem, 3vw, 2.45rem);
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.page-heading > p:last-child {
+    max-width: 650px;
+
+    margin: 7px 0 0;
+
+    color: var(--text-soft);
+
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ALERTA
+   ========================================================= */
+
+.alert {
+    margin-bottom: 18px;
+    padding: 11px 14px;
+
+    border-radius: var(--radius-small);
+
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.alert-error {
+    color: var(--danger);
+
+    background: #FBECEF;
+    border: 1px solid #E8C5CE;
+}
+
+
+/* =========================================================
+   CONTENEDOR DEL FORMULARIO
+   ========================================================= */
+
+.form-card {
+    padding: 25px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+}
+
+
+/* =========================================================
+   AVISO INICIAL
+   ========================================================= */
+
+.notice {
+    margin-bottom: 22px;
+    padding: 12px 14px;
+
+    color: var(--wine);
+
+    background: var(--rose-soft);
+
+    border: 1px solid rgba(198, 109, 136, 0.22);
+    border-left: 3px solid var(--rose);
+
+    border-radius: 8px;
+
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.notice strong {
+    color: var(--wine-dark);
+}
+
+
+/* =========================================================
+   SECCIONES
+   ========================================================= */
+
+.section {
+    margin: 0;
+    padding: 23px 0;
+
+    border-top: 1px solid var(--border-light);
+}
+
+.section:first-of-type {
+    padding-top: 4px;
+    border-top: none;
+}
+
+.form-section-heading {
+    margin: 0 0 16px;
+
+    color: var(--wine-dark);
+
+    font-size: 1rem;
+    line-height: 1.3;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   GRID GENERAL
+   ========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 14px 18px;
+}
+
+.form-group {
+    min-width: 0;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.form-card label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--text);
+
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.required {
+    color: var(--rose-dark);
+}
+
+
+/* =========================================================
+   CAMPOS
+   ========================================================= */
+
+.form-card input[type="text"],
+.form-card input[type="date"],
+.form-card input[type="datetime-local"],
+.form-card select,
+.form-card textarea {
+    width: 100%;
+
+    color: var(--text);
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+
+    outline: none;
+
+    font-size: 0.79rem;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.form-card input[type="text"],
+.form-card input[type="date"],
+.form-card input[type="datetime-local"],
+.form-card select {
+    height: 40px;
+    padding: 0 11px;
+}
+
+.form-card textarea {
+    min-height: 105px;
+
+    padding: 10px 11px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+}
+
+.form-card input::placeholder,
+.form-card textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+    background: #FFFEFF;
+
+    border-color: var(--rose);
+
+    box-shadow:
+        0 0 0 3px rgba(198, 109, 136, 0.10);
+}
+
+
+/* =========================================================
+   PRIORIDAD
+   ========================================================= */
+
+.priority-description {
+    display: block;
+
+    min-height: 18px;
+
+    margin-top: 6px;
+
+    color: var(--text-soft);
+
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   TIPO DE REPORTE
+   ========================================================= */
+
+.type-options,
+.animal-type-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.type-option,
+.animal-type-option {
+    position: relative;
+}
+
+.type-option input,
+.animal-type-option input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+}
+
+.type-option label,
+.animal-type-option label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+    min-width: 112px;
+
+    margin: 0;
+    padding: 8px 13px;
+
+    color: var(--text-soft);
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.type-option label:hover,
+.animal-type-option label:hover {
+    background: var(--cream-soft);
+    border-color: var(--rose-light);
+}
+
+.type-option input:checked + label,
+.animal-type-option input:checked + label {
+    color: var(--wine-dark);
+
+    background: var(--rose-soft);
+
+    border-color: var(--rose);
+}
+
+
+/* =========================================================
+   TIPO DE ANIMAL
+   ========================================================= */
+
+.section > .form-group {
+    margin-top: 17px;
+}
+
+
+/* =========================================================
+   SECCIONES CONDICIONALES
+   ========================================================= */
+
+.conditional {
+    display: none;
+}
+
+.conditional.active {
+    display: block;
+}
+
+
+/* =========================================================
+   FOTOGRAFÍAS
+   ========================================================= */
+
+.form-card input[type="file"] {
+    width: 100%;
+
+    padding: 8px;
+
+    color: var(--text-soft);
+    background: var(--cream-soft);
+
+    border: 1px dashed var(--rose-light);
+    border-radius: var(--radius-small);
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+}
+
+.form-card input[type="file"]::file-selector-button {
+    margin-right: 9px;
+    padding: 7px 11px;
+
+    color: var(--white);
+    background: var(--wine);
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: background-color 0.18s ease;
+}
+
+.form-card input[type="file"]::file-selector-button:hover {
+    background: var(--wine-dark);
+}
+
+.help {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 0.68rem;
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   REFUGIO
+   ========================================================= */
+
+#seccionRefugio {
+    margin-top: 14px;
+}
+
+.refuge-notice {
+    margin-top: 10px;
+    margin-bottom: 0;
+
+    background: #FFF7F9;
+}
+
+.refuge-notice p {
+    margin: 5px 0 0;
+
+    color: var(--text-soft);
+
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
+
+.support-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 9px;
+    padding: 8px 11px;
+
+    color: var(--wine);
+
+    background: var(--white);
+
+    border: 1px solid var(--rose-light);
+    border-radius: 7px;
+
+    font-size: 0.7rem;
+    font-weight: 800;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.support-button:hover {
+    background: var(--rose-soft);
+    border-color: var(--rose);
+}
+
+
+/* =========================================================
+   BOTONES FINALES
+   ========================================================= */
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 5px;
+    padding-top: 20px;
+
+    border-top: 1px solid var(--border-light);
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 9px 17px;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    font-size: 0.76rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.buttons .button:not(.button-secondary) {
+    color: var(--white);
+    background: var(--wine);
+}
+
+.buttons .button:not(.button-secondary):hover {
+    background: var(--wine-dark);
+}
+
+.button-secondary {
+    color: var(--wine);
+
+    background: var(--white);
+
+    border-color: var(--border);
+}
+
+.button-secondary:hover {
+    background: var(--rose-soft);
+    border-color: var(--rose-light);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 780px) {
+
+    .container {
+        width: min(100% - 28px, 1080px);
+    }
+
+    .header-container {
+        width: min(100% - 28px, 1120px);
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    .buttons {
+        justify-content: stretch;
+    }
+
+    .buttons .button {
+        flex: 1;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    .header-container {
+        min-height: 66px;
+
+        gap: 10px;
+    }
+
+    .header-logo-img {
+        width: 38px;
+        height: 38px;
+    }
+
+    .header-brand-title {
+        font-size: 1.2rem;
+    }
+
+    .header-nav-menu a {
+        padding: 7px 8px;
+
+        font-size: 0.7rem;
+    }
+
+    .form-page {
+        padding-top: 25px;
+        padding-bottom: 40px;
+    }
+
+    .page-heading h1 {
+        font-size: 1.7rem;
+    }
+
+    .form-card {
+        padding: 16px;
+    }
+
+    .type-options,
+    .animal-type-options {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .type-option,
+    .animal-type-option,
+    .type-option label,
+    .animal-type-option label {
+        width: 100%;
+    }
+
+    .buttons {
+        flex-direction: column-reverse;
+    }
+
+    .buttons .button {
+        width: 100%;
+    }
+}

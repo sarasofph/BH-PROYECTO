@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Soporte | BackHome</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <main class="support-container">
+
+        <section class="support-card">
+
+            <h1>Soporte BackHome</h1>
+
+            <p class="support-intro">
+                ¿Necesitas ayuda? Envíanos un mensaje y un administrador
+                revisará tu solicitud.
+            </p>
+
+            <!-- Mensaje de éxito -->
+            <div th:if="${exito}"
+                 class="alert success"
+                 th:text="${exito}">
+            </div>
+
+            <!-- Mensaje de error -->
+            <div th:if="${error}"
+                 class="alert error"
+                 th:text="${error}">
+            </div>
+
+            <form th:action="@{/cliente/soporte}"
+                  method="post">
+
+                <div class="form-group">
+
+                    <label for="mensaje">
+                        Mensaje
+                    </label>
+
+                    <textarea id="mensaje"
+                              name="mensaje"
+                              rows="7"
+                              placeholder="Escribe aquí tu mensaje..."
+                              required></textarea>
+
+                </div>
+
+                <button type="submit">
+                    Enviar mensaje
+                </button>
+
+            </form>
+
+         <a href="javascript:history.back()" class="back-link">
+    Volver
+</a>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

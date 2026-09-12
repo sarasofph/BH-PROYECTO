@@ -28,6 +28,8 @@ import com.backhome.demo.repository.PrioridadRepository;
 import com.backhome.demo.repository.SeguimientoEncontradoRepository;
 import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
+import com.backhome.demo.model.Refugio;
+import com.backhome.demo.repository.RefugioRepository;
 
 import com.backhome.demo.service.ImagenSeguimientoService;
 import com.backhome.demo.service.SeguimientoService;
@@ -65,6 +67,7 @@ public class ClienteSeguimientoController {
     private final ImagenSeguimientoRepository imagenSeguimientoRepository;
     private final ImagenSeguimientoService imagenSeguimientoService;
     private final GestionSeguimientoRepository gestionSeguimientoRepository;
+    private final RefugioRepository refugioRepository;
 
 
     // =========================================================
@@ -83,7 +86,8 @@ public class ClienteSeguimientoController {
             SeguimientoEncontradoRepository seguimientoEncontradoRepository,
             ImagenSeguimientoRepository imagenSeguimientoRepository,
            ImagenSeguimientoService imagenSeguimientoService,
-GestionSeguimientoRepository gestionSeguimientoRepository) {
+GestionSeguimientoRepository gestionSeguimientoRepository,
+RefugioRepository refugioRepository) {
 
         this.seguimientoRepository = seguimientoRepository;
         this.actualizacionSeguimientoRepository =
@@ -105,6 +109,7 @@ this.imagenSeguimientoService =
 
 this.gestionSeguimientoRepository =
         gestionSeguimientoRepository;
+        this.refugioRepository = refugioRepository;
     }
 
 
@@ -214,13 +219,13 @@ public String listarSeguimientos(
             // ENCONTRADO
             // -------------------------
 
-            @RequestParam(required = false) String fechaEncontrado,
-            @RequestParam(required = false) Integer estadoCustodiaId,
+           @RequestParam(required = false) String fechaEncontrado,
+@RequestParam(required = false) Integer estadoCustodiaId,
+@RequestParam(required = false) Integer refugioId,
 
-            // -------------------------
-            // IMÁGENES
-            // -------------------------
-
+// -------------------------
+// IMÁGENES
+// -------------------------
             @RequestParam(
                     value = "imagenes",
                     required = false
@@ -270,7 +275,8 @@ public String listarSeguimientos(
                             fechaUltimaVezVistoDate,
 
                             fechaEncontradoDate,
-                            estadoCustodiaId
+                        estadoCustodiaId,
+                        refugioId
                     );
 
 
@@ -411,7 +417,7 @@ model.addAttribute(
 
             List<ImagenSeguimiento> imagenes =
                     imagenSeguimientoRepository
-                            .findBySeguimiento_IdSeguimiento(id);
+                            .findBySeguimiento_IdSeguimientoAndImagenPrincipalTrue(id);
 
             model.addAttribute(
                     "imagenes",
@@ -630,6 +636,11 @@ model.addAttribute(
                 "tiposSeguimiento",
                 TipoSeguimiento.values()
         );
+
+        model.addAttribute(
+        "refugios",
+        refugioRepository.findAllByOrderByIdRefugioDesc()
+);
     }
 
 

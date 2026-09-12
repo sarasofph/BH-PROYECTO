@@ -14,7 +14,7 @@
           href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
 
     <link rel="stylesheet"
-          th:href="@{/css/cliente/seguimientos.css}">
+      th:href="@{/css/cliente/seguimiento-form.css}">
 </head>
 
 <body>
@@ -200,19 +200,25 @@
                             Prioridad
                         </label>
 
-                        <select id="prioridad"
-                                name="prioridadId">
+                       <select id="prioridad"
+        name="prioridadId"
+        required>
 
-                            <option value="">
-                                Seleccionar prioridad
-                            </option>
+    <option value="">
+        Selecciona una prioridad
+    </option>
 
-                            <option th:each="prioridad : ${prioridades}"
-                                    th:value="${prioridad.idPrioridad}"
-                                    th:text="${prioridad.nombre}">
-                            </option>
+    <option th:each="prioridad : ${prioridades}"
+            th:value="${prioridad.idPrioridad}"
+            th:text="${prioridad.nombre}"
+            th:attr="data-descripcion=${prioridad.descripcion}">
+    </option>
 
-                        </select>
+</select>
+
+<span id="descripcionPrioridad"
+      class="priority-description">
+</span>
 
                     </div>
 
@@ -605,26 +611,87 @@
 
                     <div class="form-group">
 
-                        <label for="estadoCustodiaId">
-                            Estado de custodia
-                            <span class="required">*</span>
-                        </label>
+    <label for="estadoCustodiaId">
+        Estado de custodia
+        <span class="required">*</span>
+    </label>
 
-                        <select id="estadoCustodiaId"
-                                name="estadoCustodiaId">
+    <select id="estadoCustodiaId"
+            name="estadoCustodiaId">
 
-                            <option value="">
-                                Seleccionar estado
-                            </option>
+        <option value="">
+            Seleccionar estado
+        </option>
 
-                            <option th:each="estado : ${estadosCustodia}"
-                                    th:value="${estado.idEstadoCustodia}"
-                                    th:text="${estado.nombre}">
-                            </option>
+        <option th:each="estado : ${estadosCustodia}"
+                th:value="${estado.idEstadoCustodia}"
+                th:text="${estado.nombre}">
+        </option>
 
-                        </select>
+    </select>
 
-                    </div>
+</div>
+
+
+<!-- =====================================================
+     REFUGIO
+====================================================== -->
+
+<div id="seccionRefugio"
+     class="form-group full"
+     style="display: none;">
+
+    <label for="refugioId">
+        Refugio
+        <span class="required">*</span>
+    </label>
+
+    <select id="refugioId"
+            name="refugioId">
+
+        <option value="">
+            Seleccionar refugio
+        </option>
+
+        <option th:each="refugio : ${refugios}"
+                th:value="${refugio.idRefugio}"
+                th:text="${refugio.nombre}">
+        </option>
+
+    </select>
+
+    <span class="help">
+        Solo puedes seleccionar refugios registrados y verificados por BackHome.
+    </span>
+
+    <!-- Opción para cuando el refugio no está registrado -->
+   <div class="notice refuge-notice">
+
+        <strong>¿El refugio no aparece en la lista?</strong>
+
+        <p>
+            Si el animal se encuentra en un refugio que no aparece,
+            escribe su nombre y los datos que conozcas en la descripción
+            del reporte.
+        </p>
+
+        <p>
+    Si necesitas registrar un refugio que todavía no aparece,
+    puedes comunicarte con el equipo de BackHome para que un
+    administrador revise el caso.
+</p>
+
+<a th:href="@{/cliente/soporte}"
+   class="support-button">
+
+    <span>💬</span>
+    Comunicarme con soporte
+
+</a>
+
+    </div>
+
+</div>
 
                 </div>
 
@@ -676,6 +743,19 @@
     const estadoCustodia =
         document.getElementById("estadoCustodiaId");
 
+        const seccionRefugio =
+    document.getElementById("seccionRefugio");
+
+const refugioId =
+    document.getElementById("refugioId");
+
+const descripcionPrioridad =
+    document.getElementById("descripcionPrioridad");
+
+const prioridad =
+    document.getElementById("prioridad");
+
+
 
     const domestico =
         document.getElementById("domestico");
@@ -707,34 +787,74 @@
 
     function actualizarTipoSeguimiento() {
 
-        if (perdido.checked) {
+    if (perdido.checked) {
 
-            seccionPerdido.classList.add("active");
-            seccionEncontrado.classList.remove("active");
+        seccionPerdido.classList.add("active");
+        seccionEncontrado.classList.remove("active");
 
-            fechaPerdida.required = true;
-            fechaEncontrado.required = false;
-            estadoCustodia.required = false;
+        fechaPerdida.required = true;
+        fechaEncontrado.required = false;
+        estadoCustodia.required = false;
 
-            fechaEncontrado.value = "";
-            estadoCustodia.value = "";
+        fechaEncontrado.value = "";
+        estadoCustodia.value = "";
 
-        }
+        // Ocultar y limpiar refugio
+        seccionRefugio.style.display = "none";
+        refugioId.required = false;
+        refugioId.disabled = true;
+        refugioId.value = "";
 
-
-        if (encontrado.checked) {
-
-            seccionEncontrado.classList.add("active");
-            seccionPerdido.classList.remove("active");
-
-            fechaPerdida.required = false;
-            fechaEncontrado.required = true;
-            estadoCustodia.required = true;
-
-            fechaPerdida.value = "";
-
-        }
     }
+
+
+    if (encontrado.checked) {
+
+        seccionEncontrado.classList.add("active");
+        seccionPerdido.classList.remove("active");
+
+        fechaPerdida.required = false;
+        fechaEncontrado.required = true;
+        estadoCustodia.required = true;
+
+        fechaPerdida.value = "";
+
+        actualizarRefugio();
+
+    }
+}
+
+function actualizarRefugio() {
+
+    const opcionSeleccionada =
+        estadoCustodia.options[
+            estadoCustodia.selectedIndex
+        ];
+
+    if (!opcionSeleccionada) {
+        return;
+    }
+
+    const textoEstado =
+        opcionSeleccionada.textContent.trim().toLowerCase();
+
+
+    if (textoEstado === "en un refugio") {
+
+        seccionRefugio.style.display = "block";
+
+        refugioId.disabled = false;
+        refugioId.required = true;
+
+    } else {
+
+        seccionRefugio.style.display = "none";
+
+        refugioId.disabled = true;
+        refugioId.required = false;
+        refugioId.value = "";
+    }
+}
 
 
     perdido.addEventListener(
@@ -765,7 +885,7 @@
             especieDomestica.required = true;
 
             raza.disabled = false;
-            raza.required = true;
+            raza.required = false;
 
             especieExotica.disabled = true;
             especieExotica.required = false;
@@ -803,8 +923,30 @@
         "change",
         actualizarTipoAnimal
     );
+    estadoCustodia.addEventListener(
+        "change",
+        actualizarRefugio
+    );
 
-</script>
+    prioridad.addEventListener(
+        "change",
+        function() {
+            const opcionSeleccionada =
+                prioridad.options[
+                    prioridad.selectedIndex
+                ];
 
-</body>
+            if (opcionSeleccionada) {
+                descripcionPrioridad.textContent =
+                    opcionSeleccionada.getAttribute("data-descripcion") || "";
+            } else {
+                descripcionPrioridad.textContent = "";
+            }
+        }
+    );
+
+
+
+    </script>
+
 </html>

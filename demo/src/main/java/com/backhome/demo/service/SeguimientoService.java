@@ -12,9 +12,11 @@ import com.backhome.demo.model.Cliente;
 import com.backhome.demo.model.EstadoCustodia;
 import com.backhome.demo.model.EstadoModeracion;
 import com.backhome.demo.model.EstadoSeguimiento;
+import com.backhome.demo.model.IngresoRefugio;
 import com.backhome.demo.model.Localidad;
 import com.backhome.demo.model.Lugar;
 import com.backhome.demo.model.Prioridad;
+import com.backhome.demo.model.Refugio;
 import com.backhome.demo.model.Seguimiento;
 import com.backhome.demo.model.SeguimientoEncontrado;
 import com.backhome.demo.model.SeguimientoPerdido;
@@ -27,9 +29,11 @@ import com.backhome.demo.repository.AnimalExoticoRepository;
 import com.backhome.demo.repository.AnimalRepository;
 import com.backhome.demo.repository.ClienteRepository;
 import com.backhome.demo.repository.EstadoCustodiaRepository;
+import com.backhome.demo.repository.IngresoRefugioRepository;
 import com.backhome.demo.repository.LocalidadRepository;
 import com.backhome.demo.repository.LugarRepository;
 import com.backhome.demo.repository.PrioridadRepository;
+import com.backhome.demo.repository.RefugioRepository;
 import com.backhome.demo.repository.SeguimientoEncontradoRepository;
 import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
@@ -48,6 +52,8 @@ public class SeguimientoService {
     private final SeguimientoPerdidoRepository seguimientoPerdidoRepository;
     private final SeguimientoEncontradoRepository seguimientoEncontradoRepository;
     private final EstadoCustodiaRepository estadoCustodiaRepository;
+    private final RefugioRepository refugioRepository;
+    private final IngresoRefugioRepository ingresoRefugioRepository;
 
     public SeguimientoService(
             SeguimientoRepository seguimientoRepository,
@@ -60,7 +66,9 @@ public class SeguimientoService {
             PrioridadRepository prioridadRepository,
             SeguimientoPerdidoRepository seguimientoPerdidoRepository,
             SeguimientoEncontradoRepository seguimientoEncontradoRepository,
-            EstadoCustodiaRepository estadoCustodiaRepository) {
+            EstadoCustodiaRepository estadoCustodiaRepository,
+            RefugioRepository refugioRepository,
+            IngresoRefugioRepository ingresoRefugioRepository) {
 
         this.seguimientoRepository = seguimientoRepository;
         this.animalRepository = animalRepository;
@@ -73,6 +81,8 @@ public class SeguimientoService {
         this.seguimientoPerdidoRepository = seguimientoPerdidoRepository;
         this.seguimientoEncontradoRepository = seguimientoEncontradoRepository;
         this.estadoCustodiaRepository = estadoCustodiaRepository;
+        this.refugioRepository = refugioRepository;
+        this.ingresoRefugioRepository = ingresoRefugioRepository;
     }
 
     @Transactional
@@ -101,7 +111,8 @@ public class SeguimientoService {
             LocalDateTime fechaUltimaVezVisto,
 
             LocalDateTime fechaEncontrado,
-            Integer estadoCustodiaId) {
+            Integer estadoCustodiaId,
+            Integer refugioId) {
 
         /*
          * =====================================================
@@ -211,19 +222,19 @@ public class SeguimientoService {
                 );
             }
 
-            if (raza == null || raza.isBlank()) {
-
-                throw new IllegalArgumentException(
-                        "Debes indicar la raza del animal."
-                );
-            }
+            /*
+             * La raza es opcional.
+             */
 
             AnimalDomestico domestico =
                     new AnimalDomestico();
 
             domestico.setAnimal(animal);
             domestico.setEspecie(especie.trim());
-            domestico.setRaza(raza.trim());
+
+            if (raza != null && !raza.isBlank()) {
+                domestico.setRaza(raza.trim());
+            }
 
             animalDomesticoRepository.save(domestico);
 
@@ -336,11 +347,8 @@ public class SeguimientoService {
                 tipoSeguimiento
         );
 
-
         /*
          * ESTADOS AUTOMÁTICOS
-         *
-         * El cliente NO selecciona estos valores.
          */
 
         seguimiento.setEstadoSeguimiento(
@@ -350,7 +358,6 @@ public class SeguimientoService {
         seguimiento.setEstadoModeracion(
                 EstadoModeracion.pendiente
         );
-
 
         /*
          * RELACIONES
@@ -385,7 +392,8 @@ public class SeguimientoService {
             crearSeguimientoEncontrado(
                     seguimiento,
                     fechaEncontrado,
-                    estadoCustodiaId
+                    estadoCustodiaId,
+                    refugioId
             );
         }
 
@@ -440,7 +448,8 @@ public class SeguimientoService {
     private void crearSeguimientoEncontrado(
             Seguimiento seguimiento,
             LocalDateTime fechaEncontrado,
-            Integer estadoCustodiaId) {
+            Integer estadoCustodiaId,
+            Integer refugioId) {
 
         if (fechaEncontrado == null) {
 
@@ -456,7 +465,7 @@ public class SeguimientoService {
             );
         }
 
-        EstadoCustodia estadoCustodia =
+        EstadoCustodia estadoSeleccionado =
                 estadoCustodiaRepository
                         .findById(estadoCustodiaId)
                         .orElseThrow(() ->
@@ -470,8 +479,83 @@ public class SeguimientoService {
 
         encontrado.setSeguimiento(seguimiento);
         encontrado.setFechaEncontrado(fechaEncontrado);
-        encontrado.setEstadoCustodia(estadoCustodia);
 
-        seguimientoEncontradoRepository.save(encontrado);
+
+        
+
+        if ("En un refugio".equalsIgnoreCase(
+                estadoSeleccionado.getNombre())) {
+
+            /*
+             * El refugio es obligatorio cuando se selecciona
+             * "En un refugio".
+             */
+
+            if (refugioId == null) {
+
+                throw new IllegalArgumentException(
+                        "Debes seleccionar un refugio registrado."
+                );
+            }
+
+            /*
+             * Validar que el refugio realmente exista.
+             */
+
+            Refugio refugio =
+                    refugioRepository.findById(refugioId)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException(
+                                            "El refugio seleccionado no existe."
+                                    )
+                            );
+
+
+
+           EstadoCustodia custodiaInicial =
+        estadoCustodiaRepository
+                .findByNombreIgnoreCase(
+                        "Con la persona que lo encontró"
+                )
+                .orElseThrow(() ->
+                        new IllegalStateException(
+                                "No existe el estado de custodia inicial."
+                        )
+                );
+
+            encontrado.setEstadoCustodia(custodiaInicial);
+
+            encontrado =
+                    seguimientoEncontradoRepository.save(encontrado);
+
+
+            /*
+             * Crear solicitud de ingreso al refugio.
+             */
+
+            IngresoRefugio ingreso =
+                    new IngresoRefugio();
+
+            ingreso.setRefugio(refugio);
+            ingreso.setSeguimiento(seguimiento);
+            ingreso.setFechaIngreso(LocalDateTime.now());
+            ingreso.setEstado(
+                    IngresoRefugio.Estado.pendiente
+            );
+
+            ingresoRefugioRepository.save(ingreso);
+
+
+        } else {
+
+            /*
+             * Para cualquier otro estado de custodia,
+             * se guarda directamente el estado seleccionado.
+             */
+
+            encontrado.setEstadoCustodia(estadoSeleccionado);
+
+            seguimientoEncontradoRepository.save(encontrado);
+        }
     }
 }
