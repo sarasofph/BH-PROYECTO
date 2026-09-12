@@ -1,393 +1,833 @@
+
 <!DOCTYPE html>
-<html lang="es" 
-xmlns:th="http://www.thymeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BackHome | Red de Recuperación Animal</title>
 
-    <!-- Google Fonts: Playwrite NZ Basic (wordmark) + Plus Jakarta Sans (texto general) -->
+    <title>BackHome | Cada mascota merece volver a casa</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@300;400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 
+
 <body>
 
-    <!-- FONDO DECORATIVO GLOBAL -->
-    <div class="site-background" aria-hidden="true">
-        <span class="blob blob-one"></span>
-        <span class="blob blob-two"></span>
-        <span class="blob blob-three"></span>
-        <span class="paw paw-one">🐾</span>
-        <span class="paw paw-two">🐾</span>
-        <span class="paw paw-three">🐾</span>
-        <span class="paw paw-four">🐾</span>
-    </div>
+<div class="site-background">
 
-    <!-- HEADER SUPERIOR CON LOGO Y NAVEGACIÓN -->
-    <header class="site-header">
-        <div class="header-container">
-            <a th:href="@{/}" class="header-brand-group">
-                <img th:src="@{/images/logo-backhome.png}" src="logo.png" alt="Logo BackHome" class="header-logo-img">
-                <span class="header-brand-title">BackHome</span>
+    <div class="blob blob-one"></div>
+    <div class="blob blob-two"></div>
+    <div class="blob blob-three"></div>
+
+    <!-- Huellas decorativas estáticas -->
+    <span class="paw paw-one">🐾</span>
+    <span class="paw paw-two">🐾</span>
+    <span class="paw paw-three">🐾</span>
+
+</div>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="site-header">
+
+    <div class="header-container">
+
+        <!-- LOGO -->
+
+        <a th:href="@{/}"
+           class="header-brand-group">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="Logo BackHome"
+                 class="header-logo-img">
+
+            <span class="header-brand-title">
+                BackHome
+            </span>
+
+        </a>
+
+
+        <!-- NAVEGACIÓN -->
+
+        <nav class="header-nav-menu">
+
+            <a th:href="@{/}"
+               class="nav-link active">
+                Inicio
             </a>
 
-            <nav class="header-nav-menu">
-                <a href="#inicio">Inicio</a>
-                <a href="#proceso-seguimiento">Cómo Funciona</a>
-                <a th:href="@{/seguimientos}">
-        Seguimientos
-    </a>
-                <a href="#localidades-mapa">Localidades</a>
-                <a href="#apoyo-donaciones">Apóyanos</a>
-            </nav>
+            <a href="#proceso-seguimiento"
+               class="nav-link">
+                Cómo funciona
+            </a>
+
+            <a th:href="@{/seguimientos}"
+               class="nav-link">
+                Seguimientos
+            </a>
+
+            <a href="#mapa"
+               class="nav-link">
+                Mapa
+            </a>
+
+            <a href="#apoyo"
+               class="nav-link">
+                Apóyanos
+            </a>
+
+        </nav>
 
 
-            <div class="header-actions-group"
-     sec:authorize="!isAuthenticated()">
+        <!-- ACCIONES DE CUENTA -->
 
-    <a th:href="@{/login}" class="auth-link-login">
-        Iniciar sesión
-    </a>
+        <div class="header-actions-group">
 
-    <a th:href="@{/registro}" class="auth-btn-register">
-        Crear cuenta gratis
-    </a>
+            <!-- NO AUTENTICADO -->
 
-</div>
+            <div sec:authorize="!isAuthenticated()"
+                 class="guest-actions">
 
+                <a th:href="@{/login}"
+                   class="auth-link-login">
+                    Iniciar sesión
+                </a>
 
-<div class="header-actions-group"
-     sec:authorize="isAuthenticated()">
+                <a th:href="@{/registro}"
+                   class="auth-btn-register">
+                    Crear cuenta
+                </a>
 
-    <a th:href="@{/cliente/perfil}"
-       class="auth-link-login">
-        Mi Cuenta
-    </a>
-
-    <form th:action="@{/logout}"
-          method="post"
-          style="display: inline;">
-
-        <button type="submit"
-                class="auth-btn-register">
-            Cerrar sesión
-        </button>
-
-    </form>
-
-</div>
-    </header>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="site-main-content">
-
-        <!-- SECCIÓN DE BIENVENIDA (HERO) -->
-        <section class="hero-welcome-section" id="inicio">
-            <div class="hero-content-wrapper">
-                <div class="hero-text-block">
-                    <span class="hero-eyebrow">🐾 Red comunitaria de rescate en Bogotá</span>
-                    <h1>Cada mascota merece un camino seguro de
-                        <span class="accent-text">
-                            regreso a casa
-                        </span>
-                    </h1>
-                    <p>Haz seguimiento a mascotas perdidas o encontradas en Bogotá, desde el primer reporte hasta el reencuentro.</p>
-                    <div class="hero-buttons-container">
-                        <a th:href="@{/registro}"  sec:authorize="!isAuthenticated()" class="btn-primary-action">Reportar mi mascota</a>
-                    </div>
-                </div>
-
-                <div class="hero-logo-container">
-                    <img th:src="@{/images/logo-backhome.png}" src="logo.png" alt="Logo BackHome" class="hero-central-logo">
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN: CÓMO FUNCIONA EL SEGUIMIENTO -->
-        <section class="workflow-section" id="proceso-seguimiento">
-
-            <div class="section-heading-block">
-                <h2>¿Cómo funciona el seguimiento?</h2>
-                <p>Elegí tu caso y mirá, en el mismo lugar, cómo se valida cada seguimiento hasta el reencuentro.</p>
             </div>
 
-            <!-- Perdida / Encontrada: misma mecánica de fondo, casos distintos, validación integrada -->
-            <div class="primary-actions-grid">
 
-                <div class="primary-action-card tone-alert">
-                    <div class="primary-action-header">
-                        <span class="primary-action-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 3 2 20h20L12 3z" />
-                                <line x1="12" y1="9" x2="12" y2="14" />
-                                <line x1="12" y1="17.5" x2="12" y2="17.5" />
-                            </svg>
-                        </span>
-                        <div>
-                            <h3>Perdiste una mascota</h3>
-                            <p>Publicá una foto reciente y el lugar donde la viste por última vez para activar la búsqueda comunitaria en minutos.</p>
-                        </div>
-                    </div>
+            <!-- AUTENTICADO -->
 
-                    <ul class="primary-action-checklist">
-                        <li>Foto reciente de tu mascota</li>
-                        <li>Última ubicación donde la viste</li>
-                        <li>Tus datos de contacto</li>
-                    </ul>
+            <div sec:authorize="isAuthenticated()"
+                 class="user-actions">
 
-                    <div class="mini-tracker">
-                        <div class="mini-step">
-                            <span class="mini-step-dot">1</span>
-                            <span class="mini-step-label">Registrás el seguimiento</span>
-                        </div>
-                        <div class="mini-step">
-                            <span class="mini-step-dot">2</span>
-                            <span class="mini-step-label">Se valida en el sistema</span>
-                        </div>
-                        <div class="mini-step">
-                            <span class="mini-step-dot">3</span>
-                            <span class="mini-step-label">La comunidad ayuda hasta encontrarla</span>
-                        </div>
-                    </div>
+                <a th:href="@{/cliente/perfil}"
+                   class="auth-btn-register">
+                    Mi cuenta
+                </a>
 
-                   <a th:href="@{/registro}"
-   sec:authorize="!isAuthenticated()"
-   class="primary-action-cta">
-    Reportar pérdida ahora
-    <span aria-hidden="true">→</span>
-</a>
+                <form th:action="@{/logout}"
+                      method="post">
 
-  <a th:href="@{/cliente/seguimientos/nuevo}"
-   sec:authorize="isAuthenticated()"
-   class="primary-action-cta">
-    Reportar pérdida ahora
-    <span aria-hidden="true">→</span>
-</a>
-                </div>
+                    <button type="submit"
+                            class="auth-link-login logout-button">
+                        Cerrar sesión
+                    </button>
 
-                <div class="primary-action-card tone-hope">
-                    <div class="primary-action-header">
-                        <span class="primary-action-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 21s-7-4.6-9.5-8.7C.6 8.8 2 5 5.6 4.2 8 3.6 10 5 12 7c2-2 4-3.4 6.4-2.8C22 5 23.4 8.8 21.5 12.3 19 16.4 12 21 12 21z" />
-                            </svg>
-                        </span>
-                        <div>
-                            <h3>Encontraste una mascota</h3>
-                            <p>Subí una foto y contanos dónde la encontraste para ayudarnos a identificar a su familia lo antes posible.</p>
-                        </div>
-                    </div>
+                </form>
 
-                    <ul class="primary-action-checklist">
-                        <li>Foto del animal encontrado</li>
-                        <li>Lugar exacto del hallazgo</li>
-                        <li>Estado en que se encuentra</li>
-                    </ul>
+            </div>
 
-                    <div class="mini-tracker">
-                        <div class="mini-step">
-                            <span class="mini-step-dot">1</span>
-                            <span class="mini-step-label">Registrás el seguimiento</span>
-                        </div>
-                        <div class="mini-step">
-                            <span class="mini-step-dot">2</span>
-                            <span class="mini-step-label">Se valida en el sistema</span>
-                        </div>
-                        <div class="mini-step">
-                            <span class="mini-step-dot">3</span>
-                            <span class="mini-step-label">Ayudás a reunirla con su familia</span>
-                        </div>
-                    </div>
+        </div>
 
-                    <a th:href="@{/registro}"
-                       sec:authorize="!isAuthenticated()"
-                       class="primary-action-cta">
-                        Reportar hallazgo ahora
-                        <span aria-hidden="true">→</span>
-                    </a>
+    </div>
 
-                     <a th:href="@{/cliente/seguimientos/nuevo}"
+</header>
+
+
+
+<main>
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero-welcome-section">
+
+        <div class="hero-content-wrapper">
+
+
+            <!-- TEXTO -->
+
+            <div class="hero-text-block">
+
+                <span class="hero-eyebrow">
+                    Red comunitaria de rescate en Bogotá
+                </span>
+
+                <h1>
+                    Cada mascota merece
+                    <span class="accent-text">
+                        un camino seguro
+                    </span>
+                    de regreso a casa
+                </h1>
+
+                <p>
+                    BackHome conecta a las personas que han perdido
+                    una mascota con quienes pueden ayudar a encontrarla.
+                    Reporta, verifica y sigue cada caso desde un solo lugar.
+                </p>
+
+
+                <div class="hero-buttons-container">
+
+                    <!-- USUARIO AUTENTICADO -->
+
+                    <a th:href="@{/cliente/seguimientos/nuevo}"
                        sec:authorize="isAuthenticated()"
-                       class="primary-action-cta">
-                        Reportar hallazgo ahora
-                        <span aria-hidden="true">→</span>
+                       class="btn-primary-action">
+                        Crear un reporte
                     </a>
 
 
-                </div>
-            </div>
+                    <!-- VISITANTE -->
 
-            <!-- Mapa ilustrado + expediente de ejemplo -->
-            <div class="secondary-grid">
+                    <a th:href="@{/login}"
+                       sec:authorize="!isAuthenticated()"
+                       class="btn-primary-action">
+                        Crear un reporte
+                    </a>
 
-                <!-- Mapa: ilustración real con pines, leyenda y explicación -->
-                <div class="map-showcase" id="localidades-mapa">
-                    <span class="map-ribbon">Próximamente</span>
-
-                    <div class="map-illustration-frame" aria-hidden="true">
-                        <div class="map-illustration-grid"></div>
-                        <span class="map-district d-1"></span>
-                        <span class="map-district d-2"></span>
-                        <span class="map-pin-lg pin-alert" style="top:26%; left:58%;"></span>
-                        <span class="map-pin-lg pin-hope" style="top:56%; left:32%;"></span>
-                        <span class="map-pin-lg pin-resolved" style="top:42%; left:76%;"></span>
-                        <span class="map-locality-tag" style="top:20%; left:54%;">Usaquén</span>
-                        <span class="map-locality-tag" style="top:64%; left:16%;">Kennedy</span>
-                    </div>
-
-                    <div class="map-legend">
-                        <span class="map-legend-item"><span class="legend-dot pin-alert"></span> Perdido</span>
-                        <span class="map-legend-item"><span class="legend-dot pin-hope"></span> Encontrado</span>
-                        <span class="map-legend-item"><span class="legend-dot pin-resolved"></span> Resuelto</span>
-                    </div>
-
-                    <div class="map-showcase-body">
-                        <h3>Explorá por localidad</h3>
-                        <p>Cuando el mapa esté disponible, así vas a poder ver y filtrar los seguimientos activos de Bogotá.</p>
-
-                        <ul class="locality-feature-list">
-                            <li>Cada seguimiento aparece ubicado en el mapa</li>
-                            <li>Filtrás por localidad para ver solo lo que te interesa</li>
-                        </ul>
-
-                        <div class="map-cta">Mapa disponible pronto</div>
-                    </div>
                 </div>
 
-                <!-- Expediente de ejemplo, con más información real -->
-                <div class="case-file-wrapper">
-                    <span class="example-tag-label">Ejemplo de Seguimiento en Vivo</span>
-
-                    <div class="case-file-card">
-                        <div class="case-file-banner">
-                            <span class="status-badge-pill lost">Perdido</span>
-                            <span class="status-badge-verified">✓ Verificado Admin</span>
-                        </div>
-
-                        <div class="case-file-body">
-                            <div class="case-file-identity">
-                                <span class="example-avatar" aria-hidden="true">🐾</span>
-                                <div>
-                                    <h3 th:text="${caso1 != null ? caso1.titulo : 'Canela (Cachorra Mestiza)'}">Canela (Cachorra Mestiza)</h3>
-                                    <p class="example-location-text"><strong>Zona:</strong> Usaquén</p>
-                                </div>
-                            </div>
-
-                            <div class="case-file-info-grid">
-                                <div class="case-file-info-item">
-                                    <span class="info-label">Raza</span>
-                                    <span class="info-value">Mestiza</span>
-                                </div>
-                                <div class="case-file-info-item">
-                                    <span class="info-label">Tamaño</span>
-                                    <span class="info-value">Pequeño</span>
-                                </div>
-                                <div class="case-file-info-item">
-                                    <span class="info-label">Color</span>
-                                    <span class="info-value">Canela</span>
-                                </div>
-                                <div class="case-file-info-item">
-                                    <span class="info-label">Estado</span>
-                                    <span class="info-value">Activo</span>
-                                </div>
-                            </div>
-
-                            <div class="case-file-timeline">
-                                <div class="timeline-item">
-                                    <span class="timeline-dot"></span>
-                                    <div>
-                                        <span class="timeline-date">03 Ago</span>
-                                        <span class="timeline-label">Seguimiento registrado</span>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <span class="timeline-dot"></span>
-                                    <div>
-                                        <span class="timeline-date">04 Ago</span>
-                                        <span class="timeline-label">Validado por el equipo</span>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <span class="timeline-dot active"></span>
-                                    <div>
-                                        <span class="timeline-date">05 Ago</span>
-                                        <span class="timeline-label">Vista por última vez en Usaquén</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN DE APOYO / DONACIONES -->
-        <section class="interactive-modules-section">
-            <div class="support-showcase" id="apoyo-donaciones">
-                <div class="support-showcase-visual" aria-hidden="true">
-                    <span class="support-icon-badge">💖</span>
-                    <span class="support-dot dot-a"></span>
-                    <span class="support-dot dot-b"></span>
-                    <span class="support-dot dot-c"></span>
-                </div>
-
-                <div class="support-showcase-content">
-                    <span class="stub-badge active">Aportes Abiertos</span>
-                    <h3>Apóyanos y Sostenibilidad</h3>
-                    <p>Tu aporte mantiene la plataforma activa y respalda a los hogares de paso que cuidan mascotas mientras encuentran su camino de regreso.</p>
-                    <p class="support-microcopy">Cada aporte ayuda a un hogar de paso.</p>
-                    <a th:href="@{/cliente/donar}" class="btn-stub-action">Quiero ayudar <span aria-hidden="true">→</span></a>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-column-brand">
-                <div class="footer-brand-row">
-                    <span class="footer-brand-name">BackHome</span>
-                </div>
-                <p>Infraestructura tecnológica comunitaria orientada a la protección, registro y reencuentro de mascotas.</p>
             </div>
 
-            <div class="footer-column-links">
-                <h4><span aria-hidden="true">🐾</span> Navegación</h4>
-                <ul>
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#proceso-seguimiento">Cómo Funciona</a></li>
-                    <li><a href="#localidades-mapa">Localidades</a></li>
-                    <li><a href="#apoyo-donaciones">Apóyanos</a></li>
-                </ul>
+
+            <!-- LOGO -->
+
+            <div class="hero-logo-container">
+
+                <div class="hero-logo-glow"></div>
+
+                <img th:src="@{/images/logo-backhome.png}"
+                     alt="BackHome"
+                     class="hero-central-logo">
+
             </div>
 
-            <div class="footer-column-links">
-                <h4><span aria-hidden="true">🐾</span> Plataforma</h4>
-                <ul>
-                    <li sec:authorize="!isAuthenticated()">
-    <a th:href="@{/login}">Iniciar Sesión</a>
-</li>
-
-<li sec:authorize="!isAuthenticated()">
-    <a th:href="@{/registro}">Registrarse</a>
-</li>
-                    <li><a th:href="@{/cliente/donar}">Centro de Donaciones</a></li>
-                </ul>
-            </div>
         </div>
 
-        <div class="footer-bottom-bar">
-            <p>© 2026 BackHome - Todos los derechos reservados.</p>
+    </section>
+
+
+
+    <!-- =====================================================
+         CÓMO FUNCIONA
+    ===================================================== -->
+
+    <section id="proceso-seguimiento"
+             class="how-section">
+
+
+        <!-- TÍTULO -->
+
+        <div class="section-heading-block">
+
+            <span class="section-eyebrow">
+                El proceso
+            </span>
+
+            <h2>
+                ¿Cómo funciona BackHome?
+            </h2>
+
+            <p>
+                La plataforma organiza cada reporte para que la información
+                pueda ser revisada y seguida de manera clara.
+            </p>
+
         </div>
-    </footer>
+
+
+
+        <!-- =================================================
+             PASOS
+        ================================================= -->
+
+        <div class="process-flow">
+
+
+            <!-- PASO 1 -->
+
+            <article class="process-step">
+
+                <div class="process-number">
+                    01
+                </div>
+
+                <div class="process-icon">
+                    📝
+                </div>
+
+                <div class="process-content">
+
+                    <h3>
+                        Reporta
+                    </h3>
+
+                    <p>
+                        Registra la información de la mascota,
+                        el lugar donde fue vista y los datos importantes
+                        del caso.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <div class="process-line"></div>
+
+
+            <!-- PASO 2 -->
+
+            <article class="process-step">
+
+                <div class="process-number">
+                    02
+                </div>
+
+                <div class="process-icon">
+                    🔎
+                </div>
+
+                <div class="process-content">
+
+                    <h3>
+                        Verificamos
+                    </h3>
+
+                    <p>
+                        Un administrador revisa el reporte antes de
+                        que pueda aparecer públicamente en la plataforma.
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <div class="process-line"></div>
+
+
+            <!-- PASO 3 -->
+
+            <article class="process-step">
+
+                <div class="process-number">
+                    03
+                </div>
+
+                <div class="process-icon">
+                    🐾
+                </div>
+
+                <div class="process-content">
+
+                    <h3>
+                        Haz seguimiento
+                    </h3>
+
+                    <p>
+                        Consulta los casos verificados y mantente atento
+                        a las actualizaciones de cada seguimiento.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+
+        <!-- =================================================
+             TIPOS DE REPORTE
+        ================================================= -->
+
+        <div class="subsection-heading">
+
+            <h3>
+                ¿Qué tipo de reporte necesitas?
+            </h3>
+
+            <p>
+                BackHome permite registrar mascotas perdidas
+                o mascotas encontradas.
+            </p>
+
+        </div>
+
+
+        <div class="report-choice-group">
+
+
+            <!-- PERDIDA -->
+
+            <a th:href="@{/cliente/seguimientos/nuevo}"
+               sec:authorize="isAuthenticated()"
+               class="report-choice-button lost-choice">
+
+                <span class="report-choice-icon">
+                    🐕
+                </span>
+
+                <span class="report-choice-text">
+                    Reportar mascota perdida
+                </span>
+
+                <span class="report-choice-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <a th:href="@{/login}"
+               sec:authorize="!isAuthenticated()"
+               class="report-choice-button lost-choice">
+
+                <span class="report-choice-icon">
+                    🐕
+                </span>
+
+                <span class="report-choice-text">
+                    Reportar mascota perdida
+                </span>
+
+                <span class="report-choice-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <!-- ENCONTRADA -->
+
+            <a th:href="@{/cliente/seguimientos/nuevo}"
+               sec:authorize="isAuthenticated()"
+               class="report-choice-button found-choice">
+
+                <span class="report-choice-icon">
+                    🏠
+                </span>
+
+                <span class="report-choice-text">
+                    Reportar mascota encontrada
+                </span>
+
+                <span class="report-choice-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <a th:href="@{/login}"
+               sec:authorize="!isAuthenticated()"
+               class="report-choice-button found-choice">
+
+                <span class="report-choice-icon">
+                    🏠
+                </span>
+
+                <span class="report-choice-text">
+                    Reportar mascota encontrada
+                </span>
+
+                <span class="report-choice-arrow">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BOTÓN SEGUIMIENTOS
+        ================================================= -->
+
+        <div class="section-action">
+
+            <p>
+                ¿Quieres conocer los casos que ya han sido verificados?
+            </p>
+
+            <a th:href="@{/seguimientos}"
+               class="followups-main-button">
+                Ver seguimientos
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         MAPA + APOYO
+         DOS SECCIONES INDEPENDIENTES
+    ===================================================== -->
+
+    <section class="map-support-section">
+
+
+        <!-- =================================================
+             MAPA
+        ================================================= -->
+
+        <section id="mapa"
+                 class="map-section">
+
+            <div class="map-section-content">
+
+
+                <div class="map-section-text">
+
+                    <span class="section-eyebrow">
+                        Próximamente
+                    </span>
+
+                    <h2>
+                        Mapa de casos en Bogotá
+                    </h2>
+
+                    <p>
+                        Una futura función de BackHome permitirá consultar
+                        los seguimientos según la localidad donde fueron
+                        reportados.
+                    </p>
+
+
+                    <div class="map-features">
+
+                        <div class="map-feature">
+
+                            <span class="map-feature-icon">
+                                📍
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Localidades
+                                </strong>
+
+                                <p>
+                                    Organiza los casos según su ubicación.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="map-feature">
+
+                            <span class="map-feature-icon">
+                                🔎
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Búsqueda
+                                </strong>
+
+                                <p>
+                                    Facilita encontrar casos cercanos.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PREVISUALIZACIÓN -->
+
+                <div class="bogota-map-preview">
+
+                    <div class="map-preview-header">
+
+                        <span>
+                            Bogotá D.C.
+                        </span>
+
+                        <span class="map-preview-status">
+                            Próximamente
+                        </span>
+
+                    </div>
+
+
+                    <div class="bogota-map-shape">
+
+                        <span class="map-location location-one">
+                            <span class="map-dot lost-dot"></span>
+                        </span>
+
+                        <span class="map-location location-two">
+                            <span class="map-dot found-dot"></span>
+                        </span>
+
+                        <span class="map-location location-three">
+                            <span class="map-dot lost-dot"></span>
+                        </span>
+
+                        <span class="map-location location-four">
+                            <span class="map-dot resolved-dot"></span>
+                        </span>
+
+                        <span class="map-center-mark">
+                            🐾
+                        </span>
+
+                    </div>
+
+
+                    <div class="map-preview-footer">
+
+                        <span>
+                            🔴 Perdido
+                        </span>
+
+                        <span>
+                            🟢 Encontrado
+                        </span>
+
+                        <span>
+                            ⚪ Reunido
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             APÓYANOS
+        ================================================= -->
+
+        <section id="apoyo"
+                 class="support-section">
+
+            <div class="support-card">
+
+
+                <!-- DECORACIÓN -->
+
+                <div class="support-visual">
+
+                    <span class="support-paw paw-a">
+                        🐾
+                    </span>
+
+                    <span class="support-paw paw-b">
+                        🐾
+                    </span>
+
+                    <div class="support-main-icon">
+                        🐾
+                    </div>
+
+                </div>
+
+
+                <!-- CONTENIDO -->
+
+                <div class="support-content">
+
+                    <span class="section-eyebrow">
+                        Apóyanos
+                    </span>
+
+                    <h2>
+                        Ayúdanos a mantener vivo BackHome
+                    </h2>
+
+                    <p>
+                        BackHome busca convertirse en una herramienta
+                        comunitaria que facilite la búsqueda de mascotas
+                        perdidas y ayude a quienes encuentran una.
+                    </p>
+
+                    <p>
+                        Tu apoyo puede contribuir al crecimiento,
+                        mantenimiento y mejora de la plataforma.
+                    </p>
+
+
+                    <a href="#"
+                       class="support-button">
+                        Apoyar BackHome
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="site-footer">
+
+    <div class="footer-container">
+
+
+        <!-- =================================================
+             MARCA
+        ================================================= -->
+
+        <div class="footer-brand-column">
+
+            <a th:href="@{/}"
+               class="footer-brand">
+
+                <img th:src="@{/images/logo-backhome.png}"
+                     alt="Logo BackHome">
+
+                <span>
+                    BackHome
+                </span>
+
+            </a>
+
+
+            <p>
+                Una plataforma creada para facilitar la búsqueda
+                y el reencuentro entre mascotas y sus familias.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             NAVEGACIÓN
+        ================================================= -->
+
+        <div class="footer-column">
+
+            <h3>
+                Navegación
+            </h3>
+
+            <a th:href="@{/}">
+                Inicio
+            </a>
+
+            <a href="#proceso-seguimiento">
+                Cómo funciona
+            </a>
+
+            <a th:href="@{/seguimientos}">
+                Seguimientos
+            </a>
+
+            <a href="#mapa">
+                Mapa
+            </a>
+
+            <a href="#apoyo">
+                Apóyanos
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             CUENTA
+        ================================================= -->
+
+        <div class="footer-column">
+
+            <h3>
+                Cuenta
+            </h3>
+
+
+            <!-- VISITANTE -->
+
+            <a th:href="@{/login}"
+               sec:authorize="!isAuthenticated()">
+                Iniciar sesión
+            </a>
+
+            <a th:href="@{/registro}"
+               sec:authorize="!isAuthenticated()">
+                Crear cuenta
+            </a>
+
+
+            <!-- USUARIO -->
+
+            <a th:href="@{/cliente/perfil}"
+               sec:authorize="isAuthenticated()">
+                Mi cuenta
+            </a>
+
+
+            <a th:href="@{/seguimientos}">
+                Ver seguimientos
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PARTE INFERIOR
+    ===================================================== -->
+
+    <div class="footer-bottom-bar">
+
+        <p>
+            © 2026 BackHome. Proyecto desarrollado en Bogotá.
+        </p>
+
+        <p>
+            Cada huella cuenta. 🐾
+        </p>
+
+    </div>
+
+</footer>
+
 
 </body>
 </html>
+```
