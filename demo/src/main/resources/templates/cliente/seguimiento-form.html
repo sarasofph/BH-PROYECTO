@@ -84,7 +84,7 @@
         </h1>
 
         <p>
-            Registra la información del animal perdido o encontrado.
+            Registra la información del animal perdido o encontrado. El formulario está dividido en pasos cortos para que sea más fácil de completar.
         </p>
 
     </section>
@@ -108,20 +108,60 @@
         </div>
 
 
+        <!-- =====================================================
+             INDICADOR DE PASOS
+        ====================================================== -->
+
+        <div class="stepper" id="formStepper">
+
+            <button type="button" class="stepper-item is-current" data-goto-step="1">
+                <span class="stepper-circle">1</span>
+                <span class="stepper-label">Reporte</span>
+            </button>
+
+            <button type="button" class="stepper-item" data-goto-step="2">
+                <span class="stepper-circle">2</span>
+                <span class="stepper-label">Animal</span>
+            </button>
+
+            <button type="button" class="stepper-item" data-goto-step="3">
+                <span class="stepper-circle">3</span>
+                <span class="stepper-label">Fotos</span>
+            </button>
+
+            <button type="button" class="stepper-item" data-goto-step="4">
+                <span class="stepper-circle">4</span>
+                <span class="stepper-label">Lugar</span>
+            </button>
+
+            <button type="button" class="stepper-item" data-goto-step="5">
+                <span class="stepper-circle">5</span>
+                <span class="stepper-label">Detalles</span>
+            </button>
+
+        </div>
+
+
         <form th:action="@{/cliente/seguimientos}"
               method="post"
-              enctype="multipart/form-data">
+              enctype="multipart/form-data"
+              id="seguimientoForm"
+              novalidate>
 
 
             <!-- =====================================================
-                 INFORMACIÓN DEL REPORTE
+                 PASO 1 · INFORMACIÓN DEL REPORTE
             ====================================================== -->
 
-            <section class="section">
+            <section class="section" data-step="1">
 
                 <h2 class="form-section-heading">
                     Información del reporte
                 </h2>
+
+                <p class="step-panel-subtext">
+                    Cuéntanos qué pasó, en pocas palabras.
+                </p>
 
                 <div class="form-grid">
 
@@ -200,25 +240,25 @@
                             Prioridad
                         </label>
 
-                       <select id="prioridad"
-        name="prioridadId"
-        required>
+                        <select id="prioridad"
+                                name="prioridadId"
+                                required>
 
-    <option value="">
-        Selecciona una prioridad
-    </option>
+                            <option value="">
+                                Selecciona una prioridad
+                            </option>
 
-    <option th:each="prioridad : ${prioridades}"
-            th:value="${prioridad.idPrioridad}"
-            th:text="${prioridad.nombre}"
-            th:attr="data-descripcion=${prioridad.descripcion}">
-    </option>
+                            <option th:each="prioridad : ${prioridades}"
+                                    th:value="${prioridad.idPrioridad}"
+                                    th:text="${prioridad.nombre}"
+                                    th:attr="data-descripcion=${prioridad.descripcion}">
+                            </option>
 
-</select>
+                        </select>
 
-<span id="descripcionPrioridad"
-      class="priority-description">
-</span>
+                        <span id="descripcionPrioridad"
+                              class="priority-description">
+                        </span>
 
                     </div>
 
@@ -228,14 +268,18 @@
 
 
             <!-- =====================================================
-                 INFORMACIÓN DEL ANIMAL
+                 PASO 2 · INFORMACIÓN DEL ANIMAL
             ====================================================== -->
 
-            <section class="section">
+            <section class="section" data-step="2">
 
                 <h2 class="form-section-heading">
                     🐾 Información del animal
                 </h2>
+
+                <p class="step-panel-subtext">
+                    Estos datos ayudan a otros usuarios a reconocerlo.
+                </p>
 
                 <div class="form-grid">
 
@@ -445,14 +489,18 @@
 
 
             <!-- =====================================================
-                 FOTOGRAFÍAS
+                 PASO 3 · FOTOGRAFÍAS
             ====================================================== -->
 
-            <section class="section">
+            <section class="section" data-step="3">
 
                 <h2 class="form-section-heading">
                     📷 Fotografías
                 </h2>
+
+                <p class="step-panel-subtext">
+                    Las fotos aumentan las probabilidades de que reconozcan al animal.
+                </p>
 
                 <div class="form-group">
 
@@ -477,14 +525,18 @@
 
 
             <!-- =====================================================
-                 LUGAR
+                 PASO 4 · LUGAR
             ====================================================== -->
 
-            <section class="section">
+            <section class="section" data-step="4">
 
                 <h2 class="form-section-heading">
                     📍 Lugar
                 </h2>
+
+                <p class="step-panel-subtext">
+                    ¿Dónde ocurrió o dónde se encuentra el animal?
+                </p>
 
                 <div class="form-grid">
 
@@ -535,15 +587,20 @@
 
 
             <!-- =====================================================
-                 PERDIDO
+                 PASO 5 · DETALLES SEGÚN ESTADO
             ====================================================== -->
 
             <section id="seccionPerdido"
-                     class="section conditional">
+                     class="section conditional"
+                     data-step="5">
 
                 <h2 class="form-section-heading">
                     🔴 Información de pérdida
                 </h2>
+
+                <p class="step-panel-subtext">
+                    Estos datos ayudan a estimar dónde buscar.
+                </p>
 
                 <div class="form-grid">
 
@@ -582,16 +639,17 @@
             </section>
 
 
-            <!-- =====================================================
-                 ENCONTRADO
-            ====================================================== -->
-
             <section id="seccionEncontrado"
-                     class="section conditional">
+                     class="section conditional"
+                     data-step="5">
 
                 <h2 class="form-section-heading">
                     🟢 Información del hallazgo
                 </h2>
+
+                <p class="step-panel-subtext">
+                    Cuéntanos en qué estado se encuentra el animal ahora.
+                </p>
 
                 <div class="form-grid">
 
@@ -611,87 +669,87 @@
 
                     <div class="form-group">
 
-    <label for="estadoCustodiaId">
-        Estado de custodia
-        <span class="required">*</span>
-    </label>
+                        <label for="estadoCustodiaId">
+                            Estado de custodia
+                            <span class="required">*</span>
+                        </label>
 
-    <select id="estadoCustodiaId"
-            name="estadoCustodiaId">
+                        <select id="estadoCustodiaId"
+                                name="estadoCustodiaId">
 
-        <option value="">
-            Seleccionar estado
-        </option>
+                            <option value="">
+                                Seleccionar estado
+                            </option>
 
-        <option th:each="estado : ${estadosCustodia}"
-                th:value="${estado.idEstadoCustodia}"
-                th:text="${estado.nombre}">
-        </option>
+                            <option th:each="estado : ${estadosCustodia}"
+                                    th:value="${estado.idEstadoCustodia}"
+                                    th:text="${estado.nombre}">
+                            </option>
 
-    </select>
+                        </select>
 
-</div>
+                    </div>
 
 
-<!-- =====================================================
-     REFUGIO
-====================================================== -->
+                    <!-- =====================================================
+                         REFUGIO
+                    ====================================================== -->
 
-<div id="seccionRefugio"
-     class="form-group full"
-     style="display: none;">
+                    <div id="seccionRefugio"
+                         class="form-group full"
+                         style="display: none;">
 
-    <label for="refugioId">
-        Refugio
-        <span class="required">*</span>
-    </label>
+                        <label for="refugioId">
+                            Refugio
+                            <span class="required">*</span>
+                        </label>
 
-    <select id="refugioId"
-            name="refugioId">
+                        <select id="refugioId"
+                                name="refugioId">
 
-        <option value="">
-            Seleccionar refugio
-        </option>
+                            <option value="">
+                                Seleccionar refugio
+                            </option>
 
-        <option th:each="refugio : ${refugios}"
-                th:value="${refugio.idRefugio}"
-                th:text="${refugio.nombre}">
-        </option>
+                            <option th:each="refugio : ${refugios}"
+                                    th:value="${refugio.idRefugio}"
+                                    th:text="${refugio.nombre}">
+                            </option>
 
-    </select>
+                        </select>
 
-    <span class="help">
-        Solo puedes seleccionar refugios registrados y verificados por BackHome.
-    </span>
+                        <span class="help">
+                            Solo puedes seleccionar refugios registrados y verificados por BackHome.
+                        </span>
 
-    <!-- Opción para cuando el refugio no está registrado -->
-   <div class="notice refuge-notice">
+                        <!-- Opción para cuando el refugio no está registrado -->
+                        <div class="notice refuge-notice">
 
-        <strong>¿El refugio no aparece en la lista?</strong>
+                            <strong>¿El refugio no aparece en la lista?</strong>
 
-        <p>
-            Si el animal se encuentra en un refugio que no aparece,
-            escribe su nombre y los datos que conozcas en la descripción
-            del reporte.
-        </p>
+                            <p>
+                                Si el animal se encuentra en un refugio que no aparece,
+                                escribe su nombre y los datos que conozcas en la descripción
+                                del reporte.
+                            </p>
 
-        <p>
-    Si necesitas registrar un refugio que todavía no aparece,
-    puedes comunicarte con el equipo de BackHome para que un
-    administrador revise el caso.
-</p>
+                            <p>
+                                Si necesitas registrar un refugio que todavía no aparece,
+                                puedes comunicarte con el equipo de BackHome para que un
+                                administrador revise el caso.
+                            </p>
 
-<a th:href="@{/cliente/soporte}"
-   class="support-button">
+                            <a th:href="@{/cliente/soporte}"
+                               class="support-button">
 
-    <span>💬</span>
-    Comunicarme con soporte
+                                <span>💬</span>
+                                Comunicarme con soporte
 
-</a>
+                            </a>
 
-    </div>
+                        </div>
 
-</div>
+                    </div>
 
                 </div>
 
@@ -699,20 +757,39 @@
 
 
             <!-- =====================================================
-                 BOTONES
+                 NAVEGACIÓN ENTRE PASOS
             ====================================================== -->
 
-            <div class="buttons">
+            <div class="form-nav">
 
                 <a th:href="@{/cliente/seguimientos}"
-                   class="button button-secondary">
+                   class="button button-ghost">
                     Cancelar
                 </a>
 
-                <button type="submit"
-                        class="button">
-                    Publicar seguimiento
-                </button>
+                <div class="form-nav-right">
+
+                    <button type="button"
+                            id="btnAnterior"
+                            class="button button-secondary"
+                            style="display: none;">
+                        ← Anterior
+                    </button>
+
+                    <button type="button"
+                            id="btnSiguiente"
+                            class="button button-primary">
+                        Siguiente →
+                    </button>
+
+                    <button type="submit"
+                            id="btnPublicar"
+                            class="button button-primary"
+                            style="display: none;">
+                        Publicar seguimiento
+                    </button>
+
+                </div>
 
             </div>
 
@@ -822,6 +899,8 @@ const prioridad =
         actualizarRefugio();
 
     }
+
+    actualizarVisibilidadPaso();
 }
 
 function actualizarRefugio() {
@@ -946,7 +1025,203 @@ function actualizarRefugio() {
     );
 
 
+    /*
+     * =========================================================
+     * NAVEGACIÓN POR PASOS (STEPPER)
+     * =========================================================
+     */
+
+    const TOTAL_PASOS = 5;
+
+    const form = document.getElementById("seguimientoForm");
+    const pasoElementos = Array.from(document.querySelectorAll(".section[data-step]"));
+    const stepperItems = Array.from(document.querySelectorAll(".stepper-item"));
+
+    const btnAnterior = document.getElementById("btnAnterior");
+    const btnSiguiente = document.getElementById("btnSiguiente");
+    const btnPublicar = document.getElementById("btnPublicar");
+
+    let pasoActual = 1;
+    let pasoMaximoAlcanzado = 1;
+
+    function actualizarVisibilidadPaso() {
+
+        pasoElementos.forEach(function (seccion) {
+
+            const esDelPaso = Number(seccion.dataset.step) === pasoActual;
+
+            if (seccion.classList.contains("conditional")) {
+
+                const estaActivaPorCondicion =
+                    seccion.classList.contains("active");
+
+                seccion.style.display =
+                    (esDelPaso && estaActivaPorCondicion) ? "block" : "none";
+
+            } else {
+
+                seccion.style.display = esDelPaso ? "block" : "none";
+
+            }
+
+        });
+
+    }
+
+    function actualizarStepperVisual() {
+
+        stepperItems.forEach(function (item) {
+
+            const numeroPaso = Number(item.dataset.gotoStep);
+
+            item.classList.remove("is-current", "is-done", "is-clickable");
+
+            if (numeroPaso === pasoActual) {
+                item.classList.add("is-current");
+            } else if (numeroPaso < pasoActual) {
+                item.classList.add("is-done");
+            }
+
+            if (numeroPaso <= pasoMaximoAlcanzado) {
+                item.classList.add("is-clickable");
+            }
+
+        });
+
+    }
+
+    function actualizarBotonesNav() {
+
+        btnAnterior.style.display = pasoActual === 1 ? "none" : "inline-flex";
+
+        const esUltimoPaso = pasoActual === TOTAL_PASOS;
+
+        btnSiguiente.style.display = esUltimoPaso ? "none" : "inline-flex";
+        btnPublicar.style.display = esUltimoPaso ? "inline-flex" : "none";
+
+    }
+
+    function irAlPaso(numeroPaso) {
+
+        pasoActual = numeroPaso;
+
+        if (pasoActual > pasoMaximoAlcanzado) {
+            pasoMaximoAlcanzado = pasoActual;
+        }
+
+        actualizarVisibilidadPaso();
+        actualizarStepperVisual();
+        actualizarBotonesNav();
+
+        const formCard = document.querySelector(".form-card");
+
+        if (formCard) {
+            formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+    }
+
+    function obtenerControlesFueraDelPaso(numeroPaso) {
+
+        const controles = [];
+
+        pasoElementos.forEach(function (seccion) {
+
+            if (Number(seccion.dataset.step) !== numeroPaso) {
+
+                seccion.querySelectorAll("input, select, textarea").forEach(function (el) {
+                    controles.push(el);
+                });
+
+            }
+
+        });
+
+        return controles;
+
+    }
+
+    function pasoEsValido() {
+
+        // Para que la validación nativa del navegador solo tenga en cuenta
+        // los campos del paso visible, deshabilitamos temporalmente los
+        // campos de los demás pasos (un campo deshabilitado siempre queda
+        // fuera de la validación, en todos los navegadores). Apenas
+        // terminamos de validar, los volvemos a dejar como estaban para
+        // que su valor se siga enviando al publicar el reporte.
+
+        const controlesFuera = obtenerControlesFueraDelPaso(pasoActual);
+        const estadosOriginales = controlesFuera.map(function (el) {
+            return el.disabled;
+        });
+
+        controlesFuera.forEach(function (el) {
+            el.disabled = true;
+        });
+
+        const esValido = form.reportValidity();
+
+        controlesFuera.forEach(function (el, indice) {
+            el.disabled = estadosOriginales[indice];
+        });
+
+        return esValido;
+
+    }
+
+    btnSiguiente.addEventListener("click", function () {
+
+        if (!pasoEsValido()) {
+            return;
+        }
+
+        if (pasoActual < TOTAL_PASOS) {
+            irAlPaso(pasoActual + 1);
+        }
+
+    });
+
+    // El formulario tiene "novalidate" para controlar nosotros el momento
+    // de la validación; al enviar (botón "Publicar"), validamos igualmente
+    // solo el paso visible en ese momento (el último).
+    form.addEventListener("submit", function (evento) {
+
+        if (!pasoEsValido()) {
+            evento.preventDefault();
+        }
+
+    });
+
+    btnAnterior.addEventListener("click", function () {
+
+        if (pasoActual > 1) {
+            irAlPaso(pasoActual - 1);
+        }
+
+    });
+
+    stepperItems.forEach(function (item) {
+
+        item.addEventListener("click", function () {
+
+            const numeroPaso = Number(item.dataset.gotoStep);
+
+            if (numeroPaso <= pasoMaximoAlcanzado) {
+                irAlPaso(numeroPaso);
+            }
+
+        });
+
+    });
+
+    // Estado inicial
+    actualizarVisibilidadPaso();
+    actualizarStepperVisual();
+    actualizarBotonesNav();
+
 
     </script>
+
+</body>
 
 </html>
