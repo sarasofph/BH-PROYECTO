@@ -83,7 +83,6 @@
                class="nav-link">
                 Mapa
             </a>
-
             <a href="#apoyo"
                class="nav-link">
                 Apóyanos
@@ -678,10 +677,10 @@
                         mantenimiento y mejora de la plataforma.
                     </p>
 
-
-                    <a href="#"
-                       class="support-button">
-                        Apoyar BackHome
+          <a th:href="@{/cliente/donar}">
+                        <button class="support-button">
+                            Apoyar BackHome
+                        </button>   
                     </a>
 
                 </div>
@@ -759,7 +758,7 @@
                 Mapa
             </a>
 
-            <a href="#apoyo">
+            <a th:href="@{/cliente/donar}">
                 Apóyanos
             </a>
 
@@ -830,4 +829,4 @@
 
 </body>
 </html>
-```
+
