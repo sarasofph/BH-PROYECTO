@@ -69,11 +69,10 @@
 
                 <span>Seguimientos</span>
 
-
             </a>
 
             <a th:href="@{/admin/refugios}"
-               class="menu-item active">
+               class="menu-item">
 
                 <i class="fa-solid fa-house"></i>
 
@@ -88,7 +87,6 @@
 
                 <span>Donaciones</span>
 
-
             </a>
 
             <a th:href="@{/admin/consejos}"
@@ -97,7 +95,6 @@
                 <i class="fa-solid fa-lightbulb"></i>
 
                 <span>Consejos</span>
-
 
             </a>
 
@@ -320,7 +317,7 @@
 
 
         <!-- =================================================
-             FILTROS
+             USUARIOS
         ================================================== -->
 
         <section class="table-section">
@@ -339,15 +336,35 @@
 
                 </div>
 
-                <span class="result-count"
-                      th:text="${usuarios.size()} + ' resultados'">
+                <!-- BOTÓN CREAR USUARIO -->
 
-                    0 resultados
+                <div style="display:flex; align-items:center; gap:15px;">
 
-                </span>
+                    <span class="result-count"
+                          th:text="${usuarios.size()} + ' resultados'">
+
+                        0 resultados
+
+                    </span>
+
+                    <button type="button"
+                            class="primary-button"
+                            id="openCreateUser">
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                        Crear usuario
+
+                    </button>
+
+                </div>
 
             </div>
 
+
+            <!-- =================================================
+                 FILTROS
+            ================================================== -->
 
             <form th:action="@{/admin/usuarios}"
                   method="get"
@@ -1007,6 +1024,282 @@
 
         </section>
 
+
+        <!-- =====================================================
+             MODAL CREAR USUARIO
+        ====================================================== -->
+
+        <div class="modal"
+             id="createUserModal">
+
+            <div class="modal-overlay"></div>
+
+            <div class="modal-content">
+
+                <button type="button"
+                        class="modal-close"
+                        id="closeCreateUser">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+                <div class="modal-heading">
+
+                    <div class="modal-icon">
+
+                        <i class="fa-solid fa-user-plus"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Crear usuario
+                        </h2>
+
+                        <p>
+                            Registra una nueva cuenta en BackHome.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FORMULARIO CREAR
+                ================================================== -->
+
+                <form th:action="@{/admin/usuarios/crear}"
+                      method="post"
+                      class="edit-form">
+
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+
+
+                    <div class="form-grid">
+
+
+                        <!-- TIPO DOCUMENTO -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Tipo documento
+                            </label>
+
+                            <select name="tipoDocumentoId"
+                                    required
+                                    style="
+                                        width:100%;
+                                        padding:12px;
+                                        border:1px solid #e4dce0;
+                                        border-radius:10px;
+                                        background:#fff;
+                                        font-family:inherit;
+                                    ">
+
+                                <option value="">
+                                    Seleccionar
+                                </option>
+
+                                <option th:each="tipo : ${tiposDocumento}"
+                                        th:value="${tipo.idTDoc}"
+                                        th:text="${tipo.nDoc}">
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- DOCUMENTO -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Número documento
+                            </label>
+
+                            <input type="text"
+                                   name="numeroDocumento"
+                                   maxlength="20"
+                                   placeholder="Número de documento"
+                                   required>
+
+                        </div>
+
+
+                        <!-- PRIMER NOMBRE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Primer nombre
+                            </label>
+
+                            <input type="text"
+                                   name="primerNombre"
+                                   maxlength="100"
+                                   placeholder="Primer nombre"
+                                   required>
+
+                        </div>
+
+
+                        <!-- SEGUNDO NOMBRE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Segundo nombre
+                            </label>
+
+                            <input type="text"
+                                   name="segundoNombre"
+                                   maxlength="100"
+                                   placeholder="Opcional">
+
+                        </div>
+
+
+                        <!-- PRIMER APELLIDO -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Primer apellido
+                            </label>
+
+                            <input type="text"
+                                   name="primerApellido"
+                                   maxlength="100"
+                                   placeholder="Primer apellido"
+                                   required>
+
+                        </div>
+
+
+                        <!-- SEGUNDO APELLIDO -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Segundo apellido
+                            </label>
+
+                            <input type="text"
+                                   name="segundoApellido"
+                                   maxlength="100"
+                                   placeholder="Opcional">
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="form-group full">
+
+                            <label>
+                                Correo electrónico
+                            </label>
+
+                            <input type="email"
+                                   name="email"
+                                   maxlength="150"
+                                   placeholder="correo@ejemplo.com"
+                                   required>
+
+                        </div>
+
+
+                        <!-- TELEFONO -->
+
+                        <div class="form-group full">
+
+                            <label>
+                                Número telefónico
+                            </label>
+
+                            <input type="text"
+                                   name="numeroTel"
+                                   maxlength="20"
+                                   placeholder="Número de teléfono"
+                                   required>
+
+                        </div>
+
+
+                        <!-- CONTRASEÑA -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Contraseña
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   minlength="6"
+                                   maxlength="100"
+                                   placeholder="Mínimo 6 caracteres"
+                                   required>
+
+                        </div>
+
+
+                        <!-- CONFIRMAR CONTRASEÑA -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Confirmar contraseña
+                            </label>
+
+                            <input type="password"
+                                   name="confirmarPassword"
+                                   minlength="6"
+                                   maxlength="100"
+                                   placeholder="Repetir contraseña"
+                                   required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="modal-actions">
+
+                        <button type="button"
+                                class="secondary-button"
+                                id="cancelCreateUser">
+
+                            Cancelar
+
+                        </button>
+
+                        <button type="submit"
+                                class="primary-button">
+
+                            <i class="fa-solid fa-user-plus"></i>
+
+                            Crear usuario
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
     </main>
 
 </div>
@@ -1015,6 +1308,86 @@
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    // =========================================================
+    // CREAR USUARIO
+    // =========================================================
+
+    const createButton =
+        document.getElementById("openCreateUser");
+
+    const createModal =
+        document.getElementById("createUserModal");
+
+    const closeCreateButton =
+        document.getElementById("closeCreateUser");
+
+    const cancelCreateButton =
+        document.getElementById("cancelCreateUser");
+
+
+    if (createButton && createModal) {
+
+        createButton.addEventListener("click", function () {
+
+            createModal.classList.add("show");
+
+            document.body.classList.add("modal-open");
+
+        });
+
+    }
+
+
+    function closeCreateModal() {
+
+        if (createModal) {
+
+            createModal.classList.remove("show");
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+    }
+
+
+    if (closeCreateButton) {
+
+        closeCreateButton.addEventListener(
+            "click",
+            closeCreateModal
+        );
+
+    }
+
+
+    if (cancelCreateButton) {
+
+        cancelCreateButton.addEventListener(
+            "click",
+            closeCreateModal
+        );
+
+    }
+
+
+    if (createModal) {
+
+        const overlay =
+            createModal.querySelector(".modal-overlay");
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeCreateModal
+            );
+
+        }
+
+    }
+
 
     // =========================================================
     // MODALES DE EDICIÓN
@@ -1030,8 +1403,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("editModal-" + id);
 
             if (modal) {
+
                 modal.classList.add("show");
+
                 document.body.classList.add("modal-open");
+
             }
 
         });
@@ -1053,8 +1429,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("statusModal-" + id);
 
             if (modal) {
+
                 modal.classList.add("show");
+
                 document.body.classList.add("modal-open");
+
             }
 
         });
@@ -1063,27 +1442,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // =========================================================
-    // CERRAR MODALES
+    // CERRAR MODALES EXISTENTES
     // =========================================================
 
-    document.querySelectorAll(".modal-close, .modal-cancel, .modal-overlay")
-        .forEach(function (element) {
+    document.querySelectorAll(
+        ".modal-close, .modal-cancel, .modal-overlay"
+    ).forEach(function (element) {
 
-            element.addEventListener("click", function () {
+        element.addEventListener("click", function () {
 
-                const modal =
-                    this.closest(".modal");
+            const modal =
+                this.closest(".modal");
 
-                if (modal) {
+            if (modal) {
 
-                    modal.classList.remove("show");
+                modal.classList.remove("show");
 
-                    document.body.classList.remove("modal-open");
-                }
+                document.body.classList.remove("modal-open");
 
-            });
+            }
 
         });
+
+    });
 
 
     // =========================================================
@@ -1102,6 +1483,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
             document.body.classList.remove("modal-open");
+
         }
 
     });
