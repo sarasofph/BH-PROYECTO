@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mapa de Bogotá | BackHome</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin=""/>
+
+    <!-- CSS de BackHome -->
+    <link rel="stylesheet"
+          th:href="@{/css/mapa.css}">
+</head>
+
+<body>
+
+<header class="mapa-header">
+
+    <div class="logo">
+        <a th:href="@{/}">
+            <span>Back</span><strong>Home</strong>
+        </a>
+    </div>
+
+    <div class="mapa-titulo">
+        <h1>Mapa de Bogotá</h1>
+        <p>Explora las localidades y reportes de BackHome</p>
+    </div>
+
+    <a th:href="@{/}" class="volver">
+        Volver
+    </a>
+
+</header>
+
+
+<main class="mapa-contenedor">
+
+    <section class="mapa-introduccion">
+
+        <h2>Localidades y seguimientos</h2>
+
+        <p>
+            Explora las localidades de Bogotá y consulta los reportes
+            verificados de mascotas perdidas o encontradas.
+        </p>
+
+        <!-- LEYENDA -->
+
+        <div class="leyenda-mapa">
+
+            <div class="leyenda-item">
+                <span class="leyenda-color perdido"></span>
+                <span>Perdido</span>
+            </div>
+
+            <div class="leyenda-item">
+                <span class="leyenda-color encontrado"></span>
+                <span>Encontrado</span>
+            </div>
+
+            <div class="leyenda-item">
+                <span class="leyenda-color reunido"></span>
+                <span>Reunido</span>
+            </div>
+
+            <div class="leyenda-item">
+                <span class="leyenda-color cerrado"></span>
+                <span>Cerrado</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAPA -->
+
+    <section class="mapa-wrapper">
+
+        <div id="mapa"></div>
+
+    </section>
+
+
+    <!-- INFORMACIÓN DE LA LOCALIDAD -->
+
+    <section class="informacion-localidad">
+
+        <h2 id="titulo-localidad">
+            Selecciona una localidad
+        </h2>
+
+        <p id="descripcion-localidad">
+            Haz clic sobre una localidad o sobre un marcador
+            para consultar información.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- Leaflet -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        crossorigin=""></script>
+
+
+<!-- ============================================================
+     DATOS DE SEGUIMIENTOS DESDE SPRING BOOT
+     ============================================================ -->
+
+<script th:inline="javascript">
+
+    const seguimientos = /*[[${seguimientos}]]*/ []
+        .map((seguimiento) => ({
+            id: seguimiento.idSeguimiento,
+            titulo: seguimiento.titulo,
+            tipo: seguimiento.tipoSeguimiento,
+            estado: seguimiento.estadoSeguimiento,
+            localidadId: seguimiento.lugar?.localidad?.idLocalidad,
+            localidadNombre: seguimiento.lugar?.localidad?.nombre
+        }));
+
+    console.log("Seguimientos cargados:", seguimientos);
+
+</script>
+
+
+<script>
+
+    /*
+     * ============================================================
+     * MAPA DE BOGOTÁ
+     * ============================================================
+     */
+
+    const mapa = L.map('mapa', {
+
+        minZoom: 10,
+
+        maxZoom: 16,
+
+        worldCopyJump: false
+
+    });
+
+
+    /*
+     * Vista inicial
+     */
+
+    mapa.setView([4.65, -74.1], 11);
+
+
+    /*
+     * Mapa base: calles, ríos, parques y manzanas urbanas,
+     * sin etiquetas de texto propias.
+     *
+     * NOTA: tanto CARTO como los basemaps clásicos de Esri
+     * (server.arcgisonline.com) empezaron a exigir una API key
+     * para uso anónimo. Se usa OpenStreetMap estándar, que
+     * sigue siendo gratuito y sin key, y se le aplica un filtro
+     * fuerte en CSS (ver mapa.css, .leaflet-tile-pane) para que
+     * no se vea con los colores genéricos de OSM, sino con la
+     * paleta de BackHome.
+     */
+
+    L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">' +
+                'OpenStreetMap</a> contributors',
+            subdomains: 'abc',
+            maxZoom: 19
+        }
+    ).addTo(mapa);
+
+
+    /*
+     * Variable donde guardaremos el GeoJSON
+     */
+
+    let geojson;
+
+
+    /*
+     * ============================================================
+     * ESTILO NORMAL DE LAS LOCALIDADES
+     * ============================================================
+     */
+
+    function estiloLocalidad(feature) {
+
+        return {
+
+            color: '#8b174d',
+
+            weight: 2,
+
+            fillColor: '#e8a1bc',
+
+            fillOpacity: 0.65
+
+        };
+
+    }
+
+
+    /*
+     * ============================================================
+     * RESALTAR LOCALIDAD
+     * ============================================================
+     */
+
+    function resaltarLocalidad(e) {
+
+        const capa = e.target;
+
+        capa.setStyle({
+
+            weight: 3,
+
+            color: '#641036',
+
+            fillColor: '#c95d87',
+
+            fillOpacity: 0.85
+
+        });
+
+        capa.bringToFront();
+
+    }
+
+
+    /*
+     * ============================================================
+     * QUITAR RESALTADO
+     * ============================================================
+     */
+
+    function quitarResaltado(e) {
+
+        geojson.resetStyle(e.target);
+
+    }
+
+
+    /*
+     * ============================================================
+     * OBTENER NOMBRE DE LOCALIDAD
+     * ============================================================
+     */
+
+    function obtenerNombreLocalidad(feature) {
+
+        const propiedades = feature.properties || {};
+
+        return (
+
+            propiedades.LocNombre ||
+
+            propiedades.n_localidad ||
+
+            propiedades.NOMBRE ||
+
+            propiedades.nombre ||
+
+            propiedades.LOCNOMBRE ||
+
+            propiedades.NOM_LOC ||
+
+            propiedades.NOMBRE_LOC ||
+
+            'Localidad'
+
+        );
+
+    }
+
+
+    /*
+     * ============================================================
+     * OBTENER ID DE LOCALIDAD
+     * ============================================================
+     *
+     * NOTA: este código ("LocCodigo") es el código OFICIAL de la
+     * localidad dentro del archivo geográfico de Bogotá (01..20).
+     * NO corresponde al id autoincremental de la tabla Localidad
+     * en la base de datos, así que ya no se usa para relacionar
+     * seguimientos. Se deja por si sirve para otro uso futuro.
+     */
+
+    function obtenerIdLocalidad(feature) {
+
+    const propiedades = feature.properties || {};
+
+    return propiedades.LocCodigo || null;
+
+}
+
+
+    /*
+     * ============================================================
+     * NORMALIZAR NOMBRE DE LOCALIDAD
+     * ============================================================
+     *
+     * El GeoJSON trae los nombres en mayúsculas ("ANTONIO NARIÑO")
+     * y la base de datos puede traerlos en otro formato
+     * ("Antonio Nariño"). Para poder relacionar los seguimientos
+     * con su localidad de forma confiable, comparamos siempre por
+     * nombre, ignorando mayúsculas/minúsculas y tildes.
+     */
+
+    function normalizarNombreLocalidad(texto) {
+
+        return (texto || '')
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim()
+            .toUpperCase();
+
+    }
+    
+
+
+    /*
+     * ============================================================
+     * COLOR DEL SEGUIMIENTO
+     * ============================================================
+     */
+
+    function obtenerColorSeguimiento(seguimiento) {
+
+        /*
+         * Primero revisamos si está reunido.
+         */
+
+        if (seguimiento.estado === 'reunido') {
+
+            return '#7b2cbf';
+
+        }
+
+
+        /*
+         * Después si está cerrado.
+         */
+
+        if (seguimiento.estado === 'cerrado') {
+
+            return '#555555';
+
+        }
+
+
+        /*
+         * Si está activo, usamos el tipo.
+         */
+
+        if (seguimiento.tipo === 'perdido') {
+
+            return '#c62828';
+
+        }
+
+
+        if (seguimiento.tipo === 'encontrado') {
+
+            return '#2e8b57';
+
+        }
+
+
+        /*
+         * Color por defecto
+         */
+
+        return '#8b174d';
+
+    }
+
+
+    /*
+     * ============================================================
+     * TEXTO DEL TIPO
+     * ============================================================
+     */
+
+    function obtenerTextoTipo(tipo) {
+
+        if (tipo === 'perdido') {
+
+            return 'Perdido';
+
+        }
+
+        if (tipo === 'encontrado') {
+
+            return 'Encontrado';
+
+        }
+
+        return tipo;
+
+    }
+
+
+    /*
+     * ============================================================
+     * TEXTO DEL ESTADO
+     * ============================================================
+     */
+
+    function obtenerTextoEstado(estado) {
+
+        if (estado === 'activo') {
+
+            return 'Activo';
+
+        }
+
+        if (estado === 'reunido') {
+
+            return 'Reunido';
+
+        }
+
+        if (estado === 'cerrado') {
+
+            return 'Cerrado';
+
+        }
+
+        return estado;
+
+    }
+
+
+    /*
+     * ============================================================
+     * CREAR ICONO DEL SEGUIMIENTO
+     * ============================================================
+     */
+
+    function crearIconoSeguimiento(seguimiento) {
+
+        const color =
+            obtenerColorSeguimiento(seguimiento);
+
+        const esActivo =
+            seguimiento.estado === 'activo';
+
+
+        return L.divIcon({
+
+            className: 'marcador-seguimiento',
+
+            html:
+
+                '<div class="marcador-punto' +
+                (esActivo ? ' marcador-punto--activo' : '') +
+                '" style="background-color:' + color + ';">' +
+
+                (
+                    esActivo
+                        ? '<span class="marcador-pulso" ' +
+                          'style="background-color:' + color + ';"></span>'
+                        : ''
+                ) +
+
+                '<span class="marcador-icono">🐾</span>' +
+
+                '</div>',
+
+            iconSize: [32, 32],
+
+            iconAnchor: [16, 16],
+
+            popupAnchor: [0, -18]
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * MOSTRAR SEGUIMIENTO EN EL PANEL
+     * ============================================================
+     */
+
+    function mostrarSeguimiento(seguimiento) {
+
+        const titulo =
+            document.getElementById('titulo-localidad');
+
+        const descripcion =
+            document.getElementById('descripcion-localidad');
+
+        const color =
+            obtenerColorSeguimiento(seguimiento);
+
+
+        titulo.textContent =
+            seguimiento.titulo;
+
+
+        descripcion.innerHTML =
+
+            '<span class="seguimiento-insignia" ' +
+            'style="background-color:' + color + '"></span>' +
+
+            '<strong>Tipo:</strong> ' +
+
+            obtenerTextoTipo(
+                seguimiento.tipo
+            ) +
+
+            '<br>' +
+
+            '<strong>Estado:</strong> ' +
+
+            obtenerTextoEstado(
+                seguimiento.estado
+            ) +
+
+            '<br>' +
+
+            '<strong>Localidad:</strong> ' +
+
+            seguimiento.localidadNombre;
+
+    }
+
+
+    /*
+     * ============================================================
+     * CREAR MARCADORES
+     * ============================================================
+     *
+     * Como todavía no tenemos latitud y longitud en Lugar,
+     * utilizamos el centro de cada localidad.
+     *
+     * Si existen varios seguimientos en una misma localidad,
+     * los desplazamos ligeramente para que puedan verse
+     * individualmente.
+     */
+
+    function crearMarcadoresSeguimientos() {
+
+        if (!geojson) {
+
+            return;
+
+        }
+
+
+        /*
+         * Recorrer cada localidad
+         */
+
+        geojson.eachLayer(function(layer) {
+
+            const feature =
+                layer.feature;
+
+
+            const nombreLocalidad =
+                obtenerNombreLocalidad(feature);
+
+            const nombreNormalizado =
+                normalizarNombreLocalidad(nombreLocalidad);
+
+
+            /*
+             * Buscar los seguimientos de esta localidad,
+             * comparando por nombre (ver normalizarNombreLocalidad).
+             */
+
+            const seguimientosLocalidad =
+                seguimientos.filter(
+                    seguimiento =>
+                        normalizarNombreLocalidad(
+                            seguimiento.localidadNombre
+                        ) === nombreNormalizado
+                );
+
+
+            /*
+             * Si no hay seguimientos,
+             * no colocamos marcadores.
+             */
+
+            if (
+                seguimientosLocalidad.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * Centro geográfico aproximado
+             * de la localidad.
+             */
+
+            const centro =
+                layer.getBounds().getCenter();
+
+
+            /*
+             * Separación entre marcadores.
+             */
+
+            const cantidad =
+                seguimientosLocalidad.length;
+
+
+            seguimientosLocalidad.forEach(
+                function(seguimiento, indice) {
+
+
+                    /*
+                     * Si hay varios marcadores,
+                     * los distribuimos alrededor
+                     * del centro.
+                     */
+
+                    let lat =
+                        centro.lat;
+
+                    let lng =
+                        centro.lng;
+
+
+                    if (cantidad > 1) {
+
+                        const angulo =
+                            (2 * Math.PI * indice)
+                            / cantidad;
+
+
+                        const radio = 0.004;
+
+
+                        lat +=
+                            Math.sin(angulo)
+                            * radio;
+
+
+                        lng +=
+                            Math.cos(angulo)
+                            * radio;
+
+                    }
+
+
+                    /*
+                     * Crear marcador
+                     */
+
+                    const marcador =
+                        L.marker(
+
+                            [lat, lng],
+
+                            {
+                                icon:
+                                    crearIconoSeguimiento(
+                                        seguimiento
+                                    )
+                            }
+
+                        ).addTo(mapa);
+
+
+                    /*
+                     * Popup
+                     */
+
+                    marcador.bindPopup(
+
+                        '<div class="popup-seguimiento">' +
+
+                        '<div class="popup-pata">🐾</div>' +
+
+                        '<h3>' +
+
+                        seguimiento.titulo +
+
+                        '</h3>' +
+
+                        '<p>' +
+
+                        '<strong>Tipo:</strong> ' +
+
+                        obtenerTextoTipo(
+                            seguimiento.tipo
+                        ) +
+
+                        '</p>' +
+
+                        '<p>' +
+
+                        '<strong>Estado:</strong> ' +
+
+                        obtenerTextoEstado(
+                            seguimiento.estado
+                        ) +
+
+                        '</p>' +
+
+                        '<p>' +
+
+                        '<strong>Localidad:</strong> ' +
+
+                        seguimiento.localidadNombre +
+
+                        '</p>' +
+
+                        '<p class="popup-verificado">' +
+
+                        '✓ Verificado por BackHome' +
+
+                        '</p>' +
+
+                        '</div>'
+
+                    );
+
+
+                    /*
+                     * Al hacer clic en el marcador,
+                     * actualizamos el panel inferior.
+                     */
+
+                    marcador.on(
+                        'click',
+                        function() {
+
+                            mostrarSeguimiento(
+                                seguimiento
+                            );
+
+                        }
+                    );
+
+                }
+
+            );
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * EVENTOS DE LAS LOCALIDADES
+     * ============================================================
+     */
+
+    function eventosLocalidad(feature, layer) {
+
+        const nombre =
+            obtenerNombreLocalidad(feature);
+
+
+        /*
+         * Tooltip permanente
+         */
+
+        layer.bindTooltip(
+
+            nombre,
+
+            {
+
+                permanent: true,
+
+                direction: 'center',
+
+                className:
+                    'nombre-localidad',
+
+                opacity: 0.9
+
+            }
+
+        );
+
+
+        /*
+         * Eventos del mouse
+         */
+
+        layer.on({
+
+            mouseover:
+                resaltarLocalidad,
+
+            mouseout:
+                quitarResaltado,
+
+
+            /*
+             * Click en localidad
+             */
+
+            click: function() {
+
+
+                document.getElementById(
+                    'titulo-localidad'
+                ).textContent =
+                    nombre;
+
+
+                /*
+                 * Buscar seguimientos de esta localidad
+                 * (comparando por nombre, ver
+                 * normalizarNombreLocalidad).
+                 */
+
+                const nombreNormalizado =
+                    normalizarNombreLocalidad(nombre);
+
+
+                const seguimientosLocalidad =
+                    seguimientos.filter(
+                        seguimiento =>
+                            normalizarNombreLocalidad(
+                                seguimiento.localidadNombre
+                            ) === nombreNormalizado
+                    );
+
+
+                /*
+                 * Mostrar información.
+                 */
+
+                if (
+                    seguimientosLocalidad.length === 0
+                ) {
+
+                    document.getElementById(
+                        'descripcion-localidad'
+                    ).textContent =
+                        'No hay seguimientos verificados ' +
+                        'en esta localidad.';
+
+                } else {
+
+                    document.getElementById(
+                        'descripcion-localidad'
+                    ).textContent =
+
+                        seguimientosLocalidad.length +
+
+                        (
+                            seguimientosLocalidad.length === 1
+                                ? ' seguimiento verificado.'
+                                : ' seguimientos verificados.'
+                        );
+
+                }
+
+
+                /*
+                 * Popup de la localidad
+                 */
+
+                let contenidoPopup =
+
+                    '<div class="popup-localidad">' +
+
+                    '<strong>' +
+
+                    nombre +
+
+                    '</strong>' +
+
+                    '<br><br>';
+
+
+                if (
+                    seguimientosLocalidad.length === 0
+                ) {
+
+                    contenidoPopup +=
+                        'No hay seguimientos verificados.';
+
+                } else {
+
+                    contenidoPopup +=
+
+                        '<strong>' +
+
+                        seguimientosLocalidad.length +
+
+                        '</strong> seguimiento(s) verificado(s).';
+
+                }
+
+
+                contenidoPopup += '</div>';
+
+
+                layer.bindPopup(
+                    contenidoPopup
+                ).openPopup();
+
+            }
+
+        });
+
+    }
+
+
+    /*
+     * ============================================================
+     * CONVERSIÓN DE ESRI JSON A GEOJSON
+     * ============================================================
+     */
+
+    function calcularAreaConSigno(anillo) {
+
+        let suma = 0;
+
+        for (
+            let i = 0;
+            i < anillo.length - 1;
+            i++
+        ) {
+
+            const [x1, y1] =
+                anillo[i];
+
+            const [x2, y2] =
+                anillo[i + 1];
+
+
+            suma +=
+                (x1 * y2) -
+                (x2 * y1);
+
+        }
+
+        return suma / 2;
+
+    }
+
+
+    function esriAGeoJSON(esriData) {
+
+        const features =
+            (esriData.features || [])
+                .map(feature => {
+
+                    const anillos =
+                        feature.geometry.rings;
+
+
+                    const poligonos = [];
+
+
+                    let poligonoActual =
+                        null;
+
+
+                    anillos.forEach(
+                        anillo => {
+
+                            const area =
+                                calcularAreaConSigno(
+                                    anillo
+                                );
+
+
+                            if (
+                                area < 0 ||
+                                !poligonoActual
+                            ) {
+
+                                poligonoActual =
+                                    [anillo];
+
+
+                                poligonos.push(
+                                    poligonoActual
+                                );
+
+                            } else {
+
+                                poligonoActual.push(
+                                    anillo
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    return {
+
+                        type: 'Feature',
+
+                        properties:
+                            feature.attributes,
+
+                        geometry: {
+
+                            type: 'MultiPolygon',
+
+                            coordinates:
+                                poligonos
+
+                        }
+
+                    };
+
+                });
+
+
+        return {
+
+            type:
+                'FeatureCollection',
+
+            features:
+                features
+
+        };
+
+    }
+
+
+    /*
+     * ============================================================
+     * CARGAR GEOJSON
+     * ============================================================
+     */
+
+    fetch('/geojson/localidades.json')
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'No se pudo cargar el archivo GeoJSON.'
+                );
+
+            }
+
+            return response.json();
+
+        })
+
+
+        .then(data => {
+
+
+            /*
+             * Convertir Esri JSON
+             * a GeoJSON.
+             */
+
+            const datosGeoJSON =
+                esriAGeoJSON(data);
+
+
+            /*
+             * Crear localidades.
+             */
+
+            geojson =
+                L.geoJSON(
+
+                    datosGeoJSON,
+
+                    {
+
+                        style:
+                            estiloLocalidad,
+
+                        onEachFeature:
+                            eventosLocalidad
+
+                    }
+
+                ).addTo(mapa);
+
+
+            /*
+             * Ajustar mapa a Bogotá.
+             */
+
+            mapa.fitBounds(
+
+                geojson.getBounds(),
+
+                {
+
+                    padding:
+                        [20, 20]
+
+                }
+
+            );
+
+
+            /*
+             * Limitar movimiento.
+             */
+
+            mapa.setMaxBounds(
+
+                geojson
+                    .getBounds()
+                    .pad(0.10)
+
+            );
+
+
+            /*
+             * Crear los marcadores
+             * después de tener las localidades.
+             */
+
+            crearMarcadoresSeguimientos();
+
+
+            /*
+             * Diagnóstico: si algún seguimiento no encontró
+             * localidad (por ejemplo, por un nombre mal escrito
+             * o distinto entre la base de datos y el GeoJSON),
+             * se avisa aquí para poder corregirlo fácilmente.
+             */
+
+            const nombresGeoJSON = new Set(
+                geojson.getLayers().map(
+                    layer => normalizarNombreLocalidad(
+                        obtenerNombreLocalidad(layer.feature)
+                    )
+                )
+            );
+
+            const seguimientosSinLocalidad = seguimientos.filter(
+                seguimiento => !nombresGeoJSON.has(
+                    normalizarNombreLocalidad(seguimiento.localidadNombre)
+                )
+            );
+
+            if (seguimientosSinLocalidad.length > 0) {
+
+                console.warn(
+                    'Estos seguimientos no calzaron con ninguna ' +
+                    'localidad del mapa (revisa el nombre en la BD):',
+                    seguimientosSinLocalidad.map(
+                        s => ({ id: s.id, localidadNombre: s.localidadNombre })
+                    )
+                );
+
+            }
+
+        })
+
+
+        .catch(error => {
+
+            console.error(
+                'Error cargando el mapa:',
+                error
+            );
+
+
+            document.getElementById(
+                'descripcion-localidad'
+            ).textContent =
+
+                'No se pudo cargar el mapa de localidades. ' +
+                'Intenta recargar la página.';
+
+        });
+
+</script>
+
+</body>
+
+</html>
