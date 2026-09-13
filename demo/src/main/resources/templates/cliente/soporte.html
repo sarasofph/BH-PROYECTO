@@ -8,21 +8,91 @@
 
     <title>Soporte | BackHome</title>
 
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+
+    <link rel="stylesheet"
+          th:href="@{/css/cliente/soporte.css}">
 </head>
 
 <body>
 
-    <main class="support-container">
+<header class="site-header">
+
+    <div class="header-container">
+
+        <a th:href="@{/}" class="header-brand-group">
+
+            <img th:src="@{/images/logo-backhome.png}"
+                 alt="Logo BackHome"
+                 class="header-logo-img">
+
+            <span class="header-brand-title">
+                BackHome
+            </span>
+
+        </a>
+
+        <nav class="header-nav-menu">
+
+            <a th:href="@{/cliente/perfil}">
+                Mi cuenta
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main class="support-page">
+
+    <div class="support-container">
+
+
+        <section class="support-heading">
+
+            <p class="eyebrow">
+                CENTRO DE AYUDA
+            </p>
+
+            <h1>
+                Soporte BackHome
+            </h1>
+
+            <p>
+                ¿Necesitas ayuda con un seguimiento o tienes alguna
+                situación que quieras comunicar al equipo de BackHome?
+            </p>
+
+        </section>
+
 
         <section class="support-card">
 
-            <h1>Soporte BackHome</h1>
+            <div class="support-card-header">
 
-            <p class="support-intro">
-                ¿Necesitas ayuda? Envíanos un mensaje y un administrador
-                revisará tu solicitud.
-            </p>
+                <div class="support-icon">
+                    💬
+                </div>
+
+                <div>
+                    <h2>
+                        Comunícate con nosotros
+                    </h2>
+
+                    <p>
+                        Envíanos tu mensaje y un administrador
+                        revisará tu solicitud.
+                    </p>
+                </div>
+
+            </div>
+
 
             <!-- Mensaje de éxito -->
             <div th:if="${exito}"
@@ -30,14 +100,17 @@
                  th:text="${exito}">
             </div>
 
+
             <!-- Mensaje de error -->
             <div th:if="${error}"
                  class="alert error"
                  th:text="${error}">
             </div>
 
+
             <form th:action="@{/cliente/soporte}"
-                  method="post">
+                  method="post"
+                  class="support-form">
 
                 <div class="form-group">
 
@@ -47,25 +120,40 @@
 
                     <textarea id="mensaje"
                               name="mensaje"
-                              rows="7"
+                              rows="8"
+                              maxlength="2000"
                               placeholder="Escribe aquí tu mensaje..."
                               required></textarea>
 
+                    <span class="help-text">
+                        Cuéntanos con claridad qué necesitas o qué
+                        situación quieres reportar.
+                    </span>
+
                 </div>
 
-                <button type="submit">
-                    Enviar mensaje
-                </button>
+
+                <div class="form-actions">
+
+                    <a href="javascript:history.back()"
+                       class="button button-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            class="button button-primary">
+                        Enviar mensaje
+                    </button>
+
+                </div>
 
             </form>
 
-         <a href="javascript:history.back()" class="back-link">
-    Volver
-</a>
-
         </section>
 
-    </main>
+    </div>
+
+</main>
 
 </body>
 </html>

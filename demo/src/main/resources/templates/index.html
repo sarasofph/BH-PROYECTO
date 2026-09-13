@@ -87,6 +87,10 @@
                class="nav-link">
                 Apóyanos
             </a>
+              <a th:href="@{/cliente/soporte}"
+               class="nav-link">
+                Soporte
+            </a>
 
         </nav>
 
@@ -762,6 +766,10 @@
                 Apóyanos
             </a>
 
+             <a th:href="@{/cliente/soporte}">
+                Soporte
+            </a>
+
         </div>
 
 
@@ -798,10 +806,16 @@
             </a>
 
 
-            <a th:href="@{/seguimientos}">
-                Ver seguimientos
+            <a th:href="@{/cliente/seguimientos}"
+            sec:authorize="isAuthenticated()">
+                Ver mis seguimientos
             </a>
 
+
+<a th:href="@{/cliente/seguimientos/nuevo}"
+               sec:authorize="isAuthenticated()">   
+            Crear un reporte
+</a>
         </div>
 
     </div>
