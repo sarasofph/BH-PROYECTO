@@ -26,6 +26,10 @@ public class ActualizacionSeguimiento {
     @JoinColumn(name = "seguimiento_id", nullable = false)
     private Seguimiento seguimiento;
 
+    @ManyToOne
+@JoinColumn(name = "persona_id")
+private Persona persona;
+
     @Column(name = "mensaje", nullable = false, columnDefinition = "TEXT")
     private String mensaje;
 
@@ -50,6 +54,8 @@ public class ActualizacionSeguimiento {
             updatedAt = ahora;
         }
     }
+
+    
 
     @PreUpdate
     protected void alActualizar() {
@@ -95,4 +101,13 @@ public class ActualizacionSeguimiento {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
+public Persona getPersona() {
+    return persona;
+}
+
+public void setPersona(Persona persona) {
+    this.persona = persona;
+}
 }

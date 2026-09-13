@@ -557,7 +557,188 @@
 
             </section>
 
+
+
+            <!-- =========================
+     ACTUALIZACIONES
+========================= -->
+
+<section class="section-card">
+
+    <h2 class="section-title">
+
+        <span class="title-icon">
+            <i class="fa-solid fa-arrows-rotate"></i>
+        </span>
+
+        Actualizaciones
+
+    </h2>
+
+
+    <div th:if="${actualizaciones != null && !actualizaciones.isEmpty()}"
+         class="updates-list">
+
+        <div class="update-item"
+             th:each="actualizacion : ${actualizaciones}">
+
+            <div class="update-date">
+
+                <i class="fa-regular fa-clock"></i>
+
+                <span th:text="${#temporals.format(
+                    actualizacion.createdAt,
+                    'dd/MM/yyyy HH:mm'
+                )}">
+                    01/01/2026 10:00
+                </span>
+
+            </div>
+
+
+            <p th:text="${actualizacion.mensaje}">
+                Actualización del seguimiento.
+            </p>
+
         </div>
+
+    </div>
+
+
+    <div th:if="${actualizaciones == null || actualizaciones.isEmpty()}"
+         class="no-updates">
+
+        <i class="fa-regular fa-message"></i>
+
+        <p>
+            Este seguimiento todavía no tiene actualizaciones.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     HISTORIAL DEL ESTADO
+========================= -->
+
+<section class="section-card"
+         th:if="${historialEstado != null && !historialEstado.isEmpty()}">
+
+    <h2 class="section-title">
+
+        <span class="title-icon">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+        </span>
+
+        Historial del seguimiento
+
+    </h2>
+
+
+    <div class="history-list">
+
+        <div class="history-item"
+             th:each="historial : ${historialEstado}">
+
+            <div class="history-date">
+
+                <i class="fa-regular fa-calendar"></i>
+
+                <span th:text="${#temporals.format(
+                    historial.fechaCambio,
+                    'dd/MM/yyyy HH:mm'
+                )}">
+                    01/01/2026 10:00
+                </span>
+
+            </div>
+
+
+            <div class="history-change">
+
+                <span th:text="${historial.estadoAnterior != null
+                                ? historial.estadoAnterior
+                                : 'Inicio'}">
+                    Inicio
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+                <strong th:text="${historial.estadoNuevo}">
+                    Activo
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HISTORIAL DE CUSTODIA
+========================= -->
+
+<section class="section-card"
+         th:if="${historialCustodia != null && !historialCustodia.isEmpty()}">
+
+    <h2 class="section-title">
+
+        <span class="title-icon">
+            <i class="fa-solid fa-house-circle-check"></i>
+        </span>
+
+        Historial de custodia
+
+    </h2>
+
+
+    <div class="history-list">
+
+        <div class="history-item"
+             th:each="historial : ${historialCustodia}">
+
+            <div class="history-date">
+
+                <i class="fa-regular fa-calendar"></i>
+
+                <span th:text="${#temporals.format(
+                    historial.fechaCambio,
+                    'dd/MM/yyyy HH:mm'
+                )}">
+                    01/01/2026 10:00
+                </span>
+
+            </div>
+
+
+            <div class="history-change">
+
+                <span th:text="${historial.estadoCustodiaAnterior != null
+                                ? historial.estadoCustodiaAnterior.nombre
+                                : 'Inicio'}">
+                    Inicio
+                </span>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+                <strong th:text="${historial.estadoCustodiaNuevo.nombre}">
+                    En un refugio
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+        </div>
+
 
 
         <!-- =========================

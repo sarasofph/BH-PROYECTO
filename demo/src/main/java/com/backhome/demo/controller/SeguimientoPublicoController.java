@@ -14,10 +14,19 @@ import com.backhome.demo.model.EstadoModeracion;
 import com.backhome.demo.model.ImagenSeguimiento;
 import com.backhome.demo.model.Seguimiento;
 import com.backhome.demo.model.TipoSeguimiento;
+import com.backhome.demo.model.ActualizacionSeguimiento;
+import com.backhome.demo.model.HistorialEstadoSeguimiento;
+import com.backhome.demo.model.HistorialEstadoCustodia;
+import com.backhome.demo.repository.HistorialEstadoSeguimientoRepository;
+import com.backhome.demo.repository.HistorialEstadoCustodiaRepository;
+
+
 import com.backhome.demo.repository.ImagenSeguimientoRepository;
 import com.backhome.demo.repository.SeguimientoEncontradoRepository;
 import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
+import com.backhome.demo.repository.ActualizacionSeguimientoRepository;
+
 
 @Controller
 @RequestMapping("/seguimientos")
@@ -27,18 +36,27 @@ public class SeguimientoPublicoController {
     private final SeguimientoPerdidoRepository seguimientoPerdidoRepository;
     private final SeguimientoEncontradoRepository seguimientoEncontradoRepository;
     private final ImagenSeguimientoRepository imagenSeguimientoRepository;
+    private final ActualizacionSeguimientoRepository actualizacionSeguimientoRepository;
+    private final HistorialEstadoSeguimientoRepository historialEstadoSeguimientoRepository;
+private final HistorialEstadoCustodiaRepository historialEstadoCustodiaRepository;
 
     public SeguimientoPublicoController(
-            SeguimientoRepository seguimientoRepository,
-            SeguimientoPerdidoRepository seguimientoPerdidoRepository,
-            SeguimientoEncontradoRepository seguimientoEncontradoRepository,
-            ImagenSeguimientoRepository imagenSeguimientoRepository) {
+        SeguimientoRepository seguimientoRepository,
+        SeguimientoPerdidoRepository seguimientoPerdidoRepository,
+        SeguimientoEncontradoRepository seguimientoEncontradoRepository,
+        ImagenSeguimientoRepository imagenSeguimientoRepository,
+        ActualizacionSeguimientoRepository actualizacionSeguimientoRepository,
+        HistorialEstadoSeguimientoRepository historialEstadoSeguimientoRepository,
+        HistorialEstadoCustodiaRepository historialEstadoCustodiaRepository) {
 
-        this.seguimientoRepository = seguimientoRepository;
-        this.seguimientoPerdidoRepository = seguimientoPerdidoRepository;
-        this.seguimientoEncontradoRepository = seguimientoEncontradoRepository;
-        this.imagenSeguimientoRepository = imagenSeguimientoRepository;
-    }
+    this.seguimientoRepository = seguimientoRepository;
+    this.seguimientoPerdidoRepository = seguimientoPerdidoRepository;
+    this.seguimientoEncontradoRepository = seguimientoEncontradoRepository;
+    this.imagenSeguimientoRepository = imagenSeguimientoRepository;
+    this.actualizacionSeguimientoRepository = actualizacionSeguimientoRepository;
+    this.historialEstadoSeguimientoRepository = historialEstadoSeguimientoRepository;
+    this.historialEstadoCustodiaRepository = historialEstadoCustodiaRepository;
+}
 
     @GetMapping
     public String listar(Model model) {
@@ -116,6 +134,15 @@ public class SeguimientoPublicoController {
                 imagenes
         );
 
+        List<ActualizacionSeguimiento> actualizaciones =
+        actualizacionSeguimientoRepository
+                .findBySeguimiento_IdSeguimientoOrderByCreatedAtDesc(id);
+
+model.addAttribute(
+        "actualizaciones",
+        actualizaciones
+);
+
         if (seguimiento.getTipoSeguimiento()
                 == TipoSeguimiento.perdido) {
 
@@ -130,16 +157,38 @@ public class SeguimientoPublicoController {
 
         } else {
 
-            seguimientoEncontradoRepository
-                    .findBySeguimiento_IdSeguimiento(id)
-                    .ifPresent(detalle ->
-                            model.addAttribute(
-                                    "seguimientoEncontrado",
-                                    detalle
-                            )
-                    );
-        }
+    seguimientoEncontradoRepository
+            .findBySeguimiento_IdSeguimiento(id)
+            .ifPresent(detalle -> {
 
-        return "seguimiento-detalle";
-    }
+                model.addAttribute(
+                        "seguimientoEncontrado",
+                        detalle
+                );
+
+                List<HistorialEstadoCustodia> historialCustodia =
+                        historialEstadoCustodiaRepository
+                                .findBySeguimientoEncontrado_IdEncontradoOrderByFechaCambioDesc(
+                                        detalle.getIdEncontrado()
+                                );
+
+                model.addAttribute(
+                        "historialCustodia",
+                        historialCustodia
+                );
+            });
+}
+
+        
+    List<HistorialEstadoSeguimiento> historialEstado =
+        historialEstadoSeguimientoRepository
+                .findBySeguimiento_IdSeguimientoOrderByFechaCambioDesc(id);
+
+model.addAttribute(
+        "historialEstado",
+        historialEstado
+);
+
+    return "seguimiento-detalle";
+}
 }

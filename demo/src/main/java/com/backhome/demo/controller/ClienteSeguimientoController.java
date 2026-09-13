@@ -16,6 +16,7 @@ import com.backhome.demo.model.EstadoModeracion;
 import com.backhome.demo.model.Localidad;
 import com.backhome.demo.model.GestionSeguimiento;
 import com.backhome.demo.repository.GestionSeguimientoRepository;
+import com.backhome.demo.model.HistorialEstadoCustodia;
 
 
 
@@ -30,6 +31,7 @@ import com.backhome.demo.repository.SeguimientoPerdidoRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
 import com.backhome.demo.model.Refugio;
 import com.backhome.demo.repository.RefugioRepository;
+import com.backhome.demo.repository.HistorialEstadoCustodiaRepository;
 
 import com.backhome.demo.service.ImagenSeguimientoService;
 import com.backhome.demo.service.SeguimientoService;
@@ -68,6 +70,7 @@ public class ClienteSeguimientoController {
     private final ImagenSeguimientoService imagenSeguimientoService;
     private final GestionSeguimientoRepository gestionSeguimientoRepository;
     private final RefugioRepository refugioRepository;
+    private final HistorialEstadoCustodiaRepository historialEstadoCustodiaRepository;
 
 
     // =========================================================
@@ -87,7 +90,8 @@ public class ClienteSeguimientoController {
             ImagenSeguimientoRepository imagenSeguimientoRepository,
            ImagenSeguimientoService imagenSeguimientoService,
 GestionSeguimientoRepository gestionSeguimientoRepository,
-RefugioRepository refugioRepository) {
+RefugioRepository refugioRepository,
+HistorialEstadoCustodiaRepository historialEstadoCustodiaRepository) {
 
         this.seguimientoRepository = seguimientoRepository;
         this.actualizacionSeguimientoRepository =
@@ -110,6 +114,10 @@ this.imagenSeguimientoService =
 this.gestionSeguimientoRepository =
         gestionSeguimientoRepository;
         this.refugioRepository = refugioRepository;
+
+
+        this.historialEstadoCustodiaRepository =
+        historialEstadoCustodiaRepository;
     }
 
 
@@ -380,6 +388,8 @@ public String listarSeguimientos(
                     seguimiento
             );
 
+            
+
 
             // -------------------------
             // ACTUALIZACIONES
@@ -449,18 +459,29 @@ model.addAttribute(
             // =================================================
 
             if (seguimiento.getTipoSeguimiento()
-                    == TipoSeguimiento.encontrado) {
+        == TipoSeguimiento.encontrado) {
 
-                seguimientoEncontradoRepository
-                        .findBySeguimiento_IdSeguimiento(id)
-                        .ifPresent(
-                                seguimientoEncontrado ->
-                                        model.addAttribute(
-                                                "seguimientoEncontrado",
-                                                seguimientoEncontrado
-                                        )
-                        );
-            }
+    seguimientoEncontradoRepository
+            .findBySeguimiento_IdSeguimiento(id)
+            .ifPresent(seguimientoEncontrado -> {
+
+                model.addAttribute(
+                        "seguimientoEncontrado",
+                        seguimientoEncontrado
+                );
+
+                List<HistorialEstadoCustodia> historialCustodia =
+                        historialEstadoCustodiaRepository
+                                .findBySeguimientoEncontrado_IdEncontradoOrderByFechaCambioDesc(
+                                        seguimientoEncontrado.getIdEncontrado()
+                                );
+
+                model.addAttribute(
+                        "historialCustodia",
+                        historialCustodia
+                );
+            });
+}
 
 
             return "cliente/seguimiento-detalle";
@@ -711,11 +732,46 @@ public String editarFormulario(
         return "redirect:/cliente/seguimientos/" + id;
     }
 
-    model.addAttribute("seguimiento", seguimiento);
+   // =====================================================
+// CARGAR INFORMACIÓN SEGÚN EL TIPO DE SEGUIMIENTO
+// =====================================================
 
-    cargarDatosFormulario(model);
+if (seguimiento.getTipoSeguimiento() == TipoSeguimiento.encontrado) {
 
-    return "cliente/seguimiento-editar";
+    seguimientoEncontradoRepository
+            .findBySeguimiento_IdSeguimiento(id)
+            .ifPresent(seguimientoEncontrado ->
+                    model.addAttribute(
+                            "seguimientoEncontrado",
+                            seguimientoEncontrado
+                    )
+            );
+}
+
+if (seguimiento.getTipoSeguimiento() == TipoSeguimiento.perdido) {
+
+    seguimientoPerdidoRepository
+            .findBySeguimiento_IdSeguimiento(id)
+            .ifPresent(seguimientoPerdido ->
+                    model.addAttribute(
+                            "seguimientoPerdido",
+                            seguimientoPerdido
+                    )
+            );
+}
+
+
+// =====================================================
+// CARGAR DATOS DEL FORMULARIO
+// =====================================================
+
+model.addAttribute("seguimiento", seguimiento);
+
+cargarDatosFormulario(model);
+
+return "cliente/seguimiento-editar";
+
+
 }
 /* =====================================================
    GUARDAR CAMBIOS DEL SEGUIMIENTO
@@ -955,18 +1011,11 @@ public String guardarEdicion(
            MODERACIÓN
         ================================================== */
 
-        /*
-         * Si el seguimiento estaba verificado y el cliente
-         * modifica información, vuelve a revisión.
-         */
+       
 
-        if (seguimiento.getEstadoModeracion()
-                == EstadoModeracion.verificado) {
-
-            seguimiento.setEstadoModeracion(
-                    EstadoModeracion.pendiente
-            );
-        }
+       if (seguimiento.getEstadoModeracion() != EstadoModeracion.pendiente) {
+    seguimiento.setEstadoModeracion(EstadoModeracion.pendiente);
+}
 
 
         seguimientoRepository.save(seguimiento);

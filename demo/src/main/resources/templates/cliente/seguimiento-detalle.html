@@ -271,6 +271,14 @@
      ELIMINAR SEGUIMIENTO
 ====================================================== -->
 
+    <a th:if="${seguimiento.estadoSeguimiento.name() != 'reunido'
+           and seguimiento.estadoSeguimiento.name() != 'cerrado'}"
+   th:href="@{/cliente/seguimientos/{id}/editar(id=${seguimiento.idSeguimiento})}"
+   class="button button-danger">
+    Editar seguimiento
+</a>
+
+
 <form th:action="@{/cliente/seguimientos/{id}/eliminar(id=${seguimiento.idSeguimiento})}"
       method="post"
       class="delete-form"
@@ -286,6 +294,8 @@
     </button>
 
 </form>
+
+
     <!-- =====================================================
          INFORMACIÓN DEL ANIMAL
     ====================================================== -->
@@ -515,6 +525,117 @@
                 </span>
 
             </div>
+
+        </div>
+
+    </section>
+
+
+        <!-- =====================================================
+         HISTORIAL DE CUSTODIA
+    ====================================================== -->
+
+    <section class="detail-card"
+             th:if="${seguimiento.tipoSeguimiento.name() == 'encontrado'
+                     and historialCustodia != null
+                     and !#lists.isEmpty(historialCustodia)}">
+
+        <div class="section-title">
+
+            <div>
+
+                <p class="eyebrow">
+                    HISTORIAL
+                </p>
+
+                <h2>
+                    Historial de custodia 🐾
+                </h2>
+
+                <p>
+                    Cambios registrados sobre el estado de custodia
+                    de la mascota.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-history">
+
+            <article class="admin-management"
+                     th:each="historial : ${historialCustodia}">
+
+                <!-- FECHA -->
+
+                <div class="admin-management-date">
+
+                    <span>
+                        Fecha del cambio
+                    </span>
+
+                    <strong
+                        th:text="${#temporals.format(
+                            historial.fechaCambio,
+                            'dd/MM/yyyy HH:mm'
+                        )}">
+                        01/09/2026 12:00
+                    </strong>
+
+                </div>
+
+
+                <!-- CAMBIO -->
+
+                <div class="admin-management-item">
+
+                    <strong>
+                        Cambio de custodia
+                    </strong>
+
+                    <span>
+
+                        <span
+                            th:if="${historial.estadoCustodiaAnterior != null}"
+                            th:text="${historial.estadoCustodiaAnterior.nombre}">
+                            Estado anterior
+                        </span>
+
+                        <span
+                            th:if="${historial.estadoCustodiaAnterior != null}">
+                            →
+                        </span>
+
+                        <strong
+                            th:text="${historial.estadoCustodiaNuevo.nombre}">
+                            Estado nuevo
+                        </strong>
+
+                    </span>
+
+                </div>
+
+
+                <!-- ADMINISTRADOR -->
+
+                <div class="admin-management-item"
+                     th:if="${historial.administrador != null}">
+
+                    <strong>
+                        Gestionado por
+                    </strong>
+
+                    <span
+                        th:text="${historial.administrador.persona.primerNombre
+                                 + ' '
+                                 + historial.administrador.persona.primerApellido}">
+                        Administrador
+                    </span>
+
+                </div>
+
+            </article>
 
         </div>
 
