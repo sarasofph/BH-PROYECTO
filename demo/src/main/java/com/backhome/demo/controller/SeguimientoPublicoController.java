@@ -125,6 +125,11 @@ private final HistorialEstadoCustodiaRepository historialEstadoCustodiaRepositor
                 seguimiento
         );
 
+        model.addAttribute(
+        "personaContacto",
+        seguimiento.getCliente().getPersona()
+);
+
         List<ImagenSeguimiento> imagenes =
                 imagenSeguimientoRepository
                         .findBySeguimiento_IdSeguimiento(id);

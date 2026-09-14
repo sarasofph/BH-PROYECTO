@@ -916,6 +916,85 @@
 
 
             <!-- =========================
+     CONTACTO
+========================= -->
+
+<section class="section-card">
+
+    <h2 class="section-title">
+
+        <span class="title-icon">
+            <i class="fa-solid fa-user"></i>
+        </span>
+
+        Información de contacto
+
+    </h2>
+
+
+    <div class="contact-box">
+
+        <div class="contact-item">
+
+            <span class="contact-label">
+                Nombre
+            </span>
+
+            <strong class="contact-value"
+                    th:text="${personaContacto.primerNombre
+                              + (personaContacto.segundoNombre != null
+                                 and !personaContacto.segundoNombre.isEmpty()
+                                 ? ' ' + personaContacto.segundoNombre
+                                 : '')
+                              + ' '
+                              + personaContacto.primerApellido
+                              + (personaContacto.segundoApellido != null
+                                 and !personaContacto.segundoApellido.isEmpty()
+                                 ? ' ' + personaContacto.segundoApellido
+                                 : '')}">
+                Nombre de la persona
+            </strong>
+
+        </div>
+
+
+        <div class="contact-item">
+
+            <span class="contact-label">
+                Correo electrónico
+            </span>
+
+            <a class="contact-link"
+               th:href="'mailto:' + ${personaContacto.email}"
+               th:text="${personaContacto.email}">
+                correo@ejemplo.com
+            </a>
+
+        </div>
+
+
+        <div class="contact-item"
+             th:if="${personaContacto.numeroTel != null
+                     and !personaContacto.numeroTel.isEmpty()}">
+
+            <span class="contact-label">
+                Teléfono
+            </span>
+
+            <a class="contact-link"
+               th:href="'tel:' + ${personaContacto.numeroTel}"
+               th:text="${personaContacto.numeroTel}">
+                300 000 0000
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+            <!-- =========================
                  VERIFICACIÓN
             ========================= -->
 
