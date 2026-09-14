@@ -8,10 +8,10 @@
 
     <title>Mapa de Bogotá | BackHome</title>
 
-    <!-- Leaflet -->
+    <!-- Leaflet (servido desde el propio proyecto, no desde un CDN externo,
+         para evitar fallos de red como ERR_INCOMPLETE_CHUNKED_ENCODING) -->
     <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossorigin=""/>
+          th:href="@{/vendor/leaflet/leaflet.css}">
 
     <!-- CSS de BackHome -->
     <link rel="stylesheet"
@@ -80,37 +80,42 @@
     </section>
 
 
-    <!-- MAPA -->
+    <!-- MAPA + INFORMACIÓN, uno al lado del otro -->
 
-    <section class="mapa-wrapper">
+    <section class="mapa-layout">
 
-        <div id="mapa"></div>
+        <div class="mapa-wrapper">
 
-    </section>
+            <div id="mapa"></div>
+
+        </div>
 
 
-    <!-- INFORMACIÓN DE LA LOCALIDAD -->
+        <!-- INFORMACIÓN DE LA LOCALIDAD -->
 
-    <section class="informacion-localidad">
+        <aside class="informacion-localidad" id="panel-informacion">
 
-        <h2 id="titulo-localidad">
-            Selecciona una localidad
-        </h2>
+            <h2 id="titulo-localidad">
+                Selecciona una localidad
+            </h2>
 
-        <p id="descripcion-localidad">
-            Haz clic sobre una localidad o sobre un marcador
-            para consultar información.
-        </p>
+            <p id="descripcion-localidad">
+                Haz clic sobre una localidad o sobre un punto del
+                mapa para ver su información.
+            </p>
+
+            <div id="lista-seguimientos-panel"></div>
+
+        </aside>
 
     </section>
 
 </main>
 
 
-<!-- Leaflet -->
+<!-- Leaflet (servido desde el propio proyecto) -->
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        crossorigin=""></script>
+<script th:src="@{/vendor/leaflet/leaflet.js}"></script>
 
 
 <!-- ============================================================
@@ -125,8 +130,7 @@
             titulo: seguimiento.titulo,
             tipo: seguimiento.tipoSeguimiento,
             estado: seguimiento.estadoSeguimiento,
-            localidadId: seguimiento.lugar?.localidad?.idLocalidad,
-            localidadNombre: seguimiento.lugar?.localidad?.nombre
+            localidadNombre: seguimiento.localidadNombre
         }));
 
     console.log("Seguimientos cargados:", seguimientos);
@@ -148,7 +152,11 @@
 
         maxZoom: 16,
 
-        worldCopyJump: false
+        worldCopyJump: false,
+
+        // Dibuja los polígonos/puntos en canvas en vez de SVG:
+        // más fluido al arrastrar/hacer zoom con muchas capas.
+        preferCanvas: true
 
     });
 
@@ -180,7 +188,15 @@
                 '&copy; <a href="https://www.openstreetmap.org/copyright">' +
                 'OpenStreetMap</a> contributors',
             subdomains: 'abc',
-            maxZoom: 19
+
+            // Igual al maxZoom del mapa: no se pide más detalle
+            // del que realmente se va a mostrar (menos tiles,
+            // menos peso, calles menos "cargadas" visualmente).
+            maxZoom: 16,
+
+            // Menos peticiones simultáneas mientras se hace zoom.
+            updateWhenZooming: false,
+            keepBuffer: 2
         }
     ).addTo(mapa);
 
@@ -458,9 +474,6 @@
         const color =
             obtenerColorSeguimiento(seguimiento);
 
-        const esActivo =
-            seguimiento.estado === 'activo';
-
 
         return L.divIcon({
 
@@ -468,16 +481,8 @@
 
             html:
 
-                '<div class="marcador-punto' +
-                (esActivo ? ' marcador-punto--activo' : '') +
-                '" style="background-color:' + color + ';">' +
-
-                (
-                    esActivo
-                        ? '<span class="marcador-pulso" ' +
-                          'style="background-color:' + color + ';"></span>'
-                        : ''
-                ) +
+                '<div class="marcador-punto" ' +
+                'style="background-color:' + color + ';">' +
 
                 '<span class="marcador-icono">🐾</span>' +
 
@@ -500,7 +505,54 @@
      * ============================================================
      */
 
-    function mostrarSeguimiento(seguimiento) {
+    /*
+     * ============================================================
+     * MOSTRAR SEGUIMIENTO(S) EN EL PANEL
+     * ============================================================
+     *
+     * IMPORTANTE: ajusta RUTA_DETALLE_SEGUIMIENTO a la ruta real
+     * de tu aplicación para ver el detalle de un seguimiento
+     * (por ejemplo "/seguimientos" o "/publicaciones").
+     */
+
+    const RUTA_DETALLE_SEGUIMIENTO = '/seguimientos';
+
+
+    function construirTarjetaSeguimiento(seguimiento) {
+
+        const color =
+            obtenerColorSeguimiento(seguimiento);
+
+        return (
+
+            '<div class="seguimiento-tarjeta">' +
+
+                '<div class="seguimiento-tarjeta-titulo">' +
+                    '<span class="seguimiento-insignia" ' +
+                    'style="background-color:' + color + '"></span>' +
+                    (seguimiento.titulo || 'Sin título') +
+                '</div>' +
+
+                '<div class="seguimiento-tarjeta-meta">' +
+                    obtenerTextoTipo(seguimiento.tipo) +
+                    ' &middot; ' +
+                    obtenerTextoEstado(seguimiento.estado) +
+                '</div>' +
+
+                '<a class="seguimiento-tarjeta-boton" ' +
+                'href="' + RUTA_DETALLE_SEGUIMIENTO + '/' +
+                seguimiento.id + '">' +
+                    'Ver seguimiento →' +
+                '</a>' +
+
+            '</div>'
+
+        );
+
+    }
+
+
+    function mostrarListaSeguimientos(nombreLocalidad, listaSeguimientos) {
 
         const titulo =
             document.getElementById('titulo-localidad');
@@ -508,38 +560,50 @@
         const descripcion =
             document.getElementById('descripcion-localidad');
 
-        const color =
-            obtenerColorSeguimiento(seguimiento);
+        const listaPanel =
+            document.getElementById('lista-seguimientos-panel');
 
 
-        titulo.textContent =
-            seguimiento.titulo;
+        titulo.textContent = nombreLocalidad;
 
 
-        descripcion.innerHTML =
+        if (listaSeguimientos.length === 0) {
 
-            '<span class="seguimiento-insignia" ' +
-            'style="background-color:' + color + '"></span>' +
+            descripcion.textContent =
+                'No hay seguimientos verificados en esta localidad.';
 
-            '<strong>Tipo:</strong> ' +
+            listaPanel.innerHTML = '';
 
-            obtenerTextoTipo(
-                seguimiento.tipo
-            ) +
+            return;
 
-            '<br>' +
+        }
 
-            '<strong>Estado:</strong> ' +
 
-            obtenerTextoEstado(
-                seguimiento.estado
-            ) +
+        descripcion.textContent =
 
-            '<br>' +
+            listaSeguimientos.length +
 
-            '<strong>Localidad:</strong> ' +
+            (
+                listaSeguimientos.length === 1
+                    ? ' seguimiento verificado en esta localidad:'
+                    : ' seguimientos verificados en esta localidad:'
+            );
 
-            seguimiento.localidadNombre;
+
+        listaPanel.innerHTML =
+            listaSeguimientos
+                .map(construirTarjetaSeguimiento)
+                .join('');
+
+    }
+
+
+    function mostrarSeguimiento(seguimiento) {
+
+        mostrarListaSeguimientos(
+            seguimiento.localidadNombre,
+            [seguimiento]
+        );
 
     }
 
@@ -556,6 +620,113 @@
      * los desplazamos ligeramente para que puedan verse
      * individualmente.
      */
+
+    /*
+     * ============================================================
+     * UBICAR PUNTOS DE SEGUIMIENTOS DENTRO DE SU LOCALIDAD
+     * ============================================================
+     *
+     * El centro del rectángulo que envuelve una localidad
+     * (getBounds().getCenter()) casi nunca coincide con su
+     * centro real: en localidades alargadas o con formas muy
+     * irregulares (como la mayoría en Bogotá), ese punto puede
+     * caer fuera del polígono. Por eso los puntos se salían de
+     * su localidad.
+     *
+     * En su lugar, se calcula el centroide real del anillo más
+     * grande del polígono, y antes de dibujar cada punto se
+     * verifica que quede efectivamente dentro. Si no, se reduce
+     * la distancia al centro hasta que sí quede dentro.
+     */
+
+    function calcularCentroideAnillo(anillo) {
+
+        let areaAcumulada = 0;
+        let cx = 0;
+        let cy = 0;
+
+        for (let i = 0; i < anillo.length - 1; i++) {
+
+            const [x0, y0] = anillo[i];
+            const [x1, y1] = anillo[i + 1];
+
+            const factor = (x0 * y1) - (x1 * y0);
+
+            areaAcumulada += factor;
+            cx += (x0 + x1) * factor;
+            cy += (y0 + y1) * factor;
+
+        }
+
+        if (areaAcumulada === 0) {
+            return null;
+        }
+
+        const area = areaAcumulada / 2;
+
+        return {
+            lng: cx / (6 * area),
+            lat: cy / (6 * area)
+        };
+
+    }
+
+    function obtenerAnilloPrincipal(geometry) {
+
+        if (!geometry || geometry.type !== 'MultiPolygon') {
+            return null;
+        }
+
+        let mejorAnillo = null;
+        let mejorArea = -Infinity;
+
+        geometry.coordinates.forEach(poligono => {
+
+            const anillo = poligono[0];
+            let area = 0;
+
+            for (let i = 0; i < anillo.length - 1; i++) {
+                const [x0, y0] = anillo[i];
+                const [x1, y1] = anillo[i + 1];
+                area += (x0 * y1) - (x1 * y0);
+            }
+
+            area = Math.abs(area / 2);
+
+            if (area > mejorArea) {
+                mejorArea = area;
+                mejorAnillo = anillo;
+            }
+
+        });
+
+        return mejorAnillo;
+
+    }
+
+    function puntoDentroDelAnillo(lat, lng, anillo) {
+
+        let dentro = false;
+
+        for (let i = 0, j = anillo.length - 1; i < anillo.length; j = i++) {
+
+            const [xi, yi] = anillo[i];
+            const [xj, yj] = anillo[j];
+
+            const cruza =
+                ((yi > lat) !== (yj > lat)) &&
+                (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+
+            if (cruza) {
+                dentro = !dentro;
+            }
+
+        }
+
+        return dentro;
+
+    }
+
 
     function crearMarcadoresSeguimientos() {
 
@@ -612,12 +783,32 @@
 
 
             /*
-             * Centro geográfico aproximado
-             * de la localidad.
+             * Centro real de la localidad (no el del rectángulo
+             * que la envuelve, ver calcularCentroideAnillo).
              */
 
-            const centro =
-                layer.getBounds().getCenter();
+            const anilloPrincipal =
+                obtenerAnilloPrincipal(feature.geometry);
+
+            let centro =
+                anilloPrincipal
+                    ? calcularCentroideAnillo(anilloPrincipal)
+                    : null;
+
+            if (
+                !centro ||
+                !puntoDentroDelAnillo(centro.lat, centro.lng, anilloPrincipal)
+            ) {
+
+                // Respaldo por si el cálculo falla
+                const centroRectangulo = layer.getBounds().getCenter();
+
+                centro = {
+                    lat: centroRectangulo.lat,
+                    lng: centroRectangulo.lng
+                };
+
+            }
 
 
             /*
@@ -633,36 +824,46 @@
 
 
                     /*
-                     * Si hay varios marcadores,
-                     * los distribuimos alrededor
-                     * del centro.
+                     * Si hay varios marcadores, los distribuimos
+                     * alrededor del centro, probando radios cada
+                     * vez más chicos hasta que el punto quede
+                     * dentro de la localidad.
                      */
 
-                    let lat =
-                        centro.lat;
-
-                    let lng =
-                        centro.lng;
-
+                    let lat = centro.lat;
+                    let lng = centro.lng;
 
                     if (cantidad > 1) {
 
                         const angulo =
-                            (2 * Math.PI * indice)
-                            / cantidad;
+                            (2 * Math.PI * indice) / cantidad;
 
+                        const radios = [0.003, 0.0018, 0.001, 0];
 
-                        const radio = 0.004;
+                        for (const radio of radios) {
 
+                            const latCandidato =
+                                centro.lat + (Math.sin(angulo) * radio);
 
-                        lat +=
-                            Math.sin(angulo)
-                            * radio;
+                            const lngCandidato =
+                                centro.lng + (Math.cos(angulo) * radio);
 
+                            const puntoValido =
+                                !anilloPrincipal ||
+                                radio === 0 ||
+                                puntoDentroDelAnillo(
+                                    latCandidato,
+                                    lngCandidato,
+                                    anilloPrincipal
+                                );
 
-                        lng +=
-                            Math.cos(angulo)
-                            * radio;
+                            if (puntoValido) {
+                                lat = latCandidato;
+                                lng = lngCandidato;
+                                break;
+                            }
+
+                        }
 
                     }
 
@@ -822,12 +1023,6 @@
             click: function() {
 
 
-                document.getElementById(
-                    'titulo-localidad'
-                ).textContent =
-                    nombre;
-
-
                 /*
                  * Buscar seguimientos de esta localidad
                  * (comparando por nombre, ver
@@ -848,78 +1043,34 @@
 
 
                 /*
-                 * Mostrar información.
+                 * Mostrar en el panel: título, cantidad y una
+                 * tarjeta por cada seguimiento (con su botón
+                 * para ir al detalle).
                  */
 
-                if (
-                    seguimientosLocalidad.length === 0
-                ) {
-
-                    document.getElementById(
-                        'descripcion-localidad'
-                    ).textContent =
-                        'No hay seguimientos verificados ' +
-                        'en esta localidad.';
-
-                } else {
-
-                    document.getElementById(
-                        'descripcion-localidad'
-                    ).textContent =
-
-                        seguimientosLocalidad.length +
-
-                        (
-                            seguimientosLocalidad.length === 1
-                                ? ' seguimiento verificado.'
-                                : ' seguimientos verificados.'
-                        );
-
-                }
+                mostrarListaSeguimientos(
+                    nombre,
+                    seguimientosLocalidad
+                );
 
 
                 /*
-                 * Popup de la localidad
+                 * Popup breve sobre la localidad en el mapa.
                  */
 
-                let contenidoPopup =
-
-                    '<div class="popup-localidad">' +
-
-                    '<strong>' +
-
-                    nombre +
-
-                    '</strong>' +
-
-                    '<br><br>';
-
-
-                if (
+                const resumenPopup =
                     seguimientosLocalidad.length === 0
-                ) {
-
-                    contenidoPopup +=
-                        'No hay seguimientos verificados.';
-
-                } else {
-
-                    contenidoPopup +=
-
-                        '<strong>' +
-
-                        seguimientosLocalidad.length +
-
-                        '</strong> seguimiento(s) verificado(s).';
-
-                }
-
-
-                contenidoPopup += '</div>';
-
+                        ? 'No hay seguimientos verificados.'
+                        : '<strong>' + seguimientosLocalidad.length +
+                          '</strong> seguimiento(s) verificado(s). ' +
+                          'Mira el panel de la derecha.';
 
                 layer.bindPopup(
-                    contenidoPopup
+                    '<div class="popup-localidad">' +
+                    '<strong>' + nombre + '</strong>' +
+                    '<br><br>' +
+                    resumenPopup +
+                    '</div>'
                 ).openPopup();
 
             }
