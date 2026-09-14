@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -8,8 +9,6 @@
 
     <title>Mapa de Bogotá | BackHome</title>
 
-    <!-- Leaflet (servido desde el propio proyecto, no desde un CDN externo,
-         para evitar fallos de red como ERR_INCOMPLETE_CHUNKED_ENCODING) -->
     <link rel="stylesheet"
           th:href="@{/vendor/leaflet/leaflet.css}">
 
@@ -20,25 +19,99 @@
 
 <body>
 
-<header class="mapa-header">
+<header class="site-header">
 
-    <div class="logo">
-        <a th:href="@{/}">
-            <span>Back</span><strong>Home</strong>
+    <div class="header-container">
+
+        <!-- LOGO -->
+        <a th:href="@{/}" class="header-brand-group">
+
+            <img
+                th:src="@{/images/logo-backhome.png}"
+                alt="BackHome"
+                class="header-logo-img"
+            >
+
+            <span class="header-brand-title">
+                BackHome
+            </span>
+
         </a>
-    </div>
 
-    <div class="mapa-titulo">
-        <h1>Mapa de Bogotá</h1>
-        <p>Explora las localidades y reportes de BackHome</p>
-    </div>
 
-    <a th:href="@{/}" class="volver">
-        Volver
-    </a>
+        <!-- NAVEGACIÓN -->
+        <nav class="header-nav-menu">
+
+            <a th:href="@{/}"
+               class="nav-link">
+                Inicio
+            </a>
+
+
+            <a th:href="@{/seguimientos}"
+               class="nav-link">
+                Seguimientos
+            </a>
+
+            <a th:href="@{/mapa}"
+               class="nav-link active">
+                Mapa
+            </a>
+
+            <a th:href="@{/cliente/soporte}"
+               class="nav-link">
+                Soporte
+            </a>
+
+        </nav>
+
+
+        <!-- ACCIONES DE CUENTA -->
+        <div class="header-account-actions">
+
+            <!-- USUARIO NO AUTENTICADO -->
+            <div class="guest-actions"
+                 sec:authorize="!isAuthenticated()">
+
+                <a th:href="@{/login}"
+                   class="auth-link-login">
+                    Iniciar sesión
+                </a>
+
+                <a th:href="@{/registro}"
+                   class="auth-btn-register">
+                    Registrarse
+                </a>
+
+            </div>
+
+
+            <!-- USUARIO AUTENTICADO -->
+            <div class="user-actions"
+                 sec:authorize="isAuthenticated()">
+
+                <a th:href="@{/cliente/perfil}"
+                   class="auth-link-login">
+                    Mi cuenta
+                </a>
+
+                <form th:action="@{/logout}"
+                      method="post">
+
+                    <button type="submit"
+                            class="logout-button">
+                        Cerrar sesión
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </header>
-
 
 <main class="mapa-contenedor">
 
