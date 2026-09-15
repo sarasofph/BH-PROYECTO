@@ -11,18 +11,29 @@
 :root {
     --vino: #741f3d;
     --vino-dark: #4e1429;
+    --vino-soft: #8b174d;
 
     --rosa: #e8a9bc;
+    --rosa-dark: #d987a3;
     --rosa-soft: #f8e8ee;
     --rosa-light: #fdf5f8;
 
     --texto: #30272b;
     --texto-soft: #75666c;
+    --texto-light: #9a8c92;
 
     --blanco: #ffffff;
+
     --borde: #eadde2;
+    --borde-soft: #f1e6ea;
+
+    --rojo: #c62828;
+    --verde: #2e8b57;
+    --morado: #7b2cbf;
+    --gris: #555555;
 
     --sombra: 0 12px 35px rgba(74, 28, 45, 0.10);
+    --sombra-suave: 0 7px 20px rgba(74, 28, 45, 0.07);
 }
 
 
@@ -53,7 +64,7 @@ body {
 
 
 /* =========================================================
-   HEADER BACKHOME
+   HEADER
    ========================================================= */
 
 .site-header {
@@ -200,7 +211,9 @@ body {
 }
 
 
-/* Iniciar sesión */
+/* =========================================================
+   LOGIN
+   ========================================================= */
 
 .auth-link-login {
     color: var(--vino);
@@ -220,7 +233,9 @@ body {
 }
 
 
-/* Registrarse */
+/* =========================================================
+   REGISTRO
+   ========================================================= */
 
 .auth-btn-register {
     display: inline-flex;
@@ -261,7 +276,9 @@ body {
 }
 
 
-/* Cerrar sesión */
+/* =========================================================
+   CERRAR SESIÓN
+   ========================================================= */
 
 .logout-button {
     min-height: 38px;
@@ -296,7 +313,7 @@ body {
 
 
 /* =========================================================
-   CONTENIDO PRINCIPAL
+   CONTENEDOR PRINCIPAL
    ========================================================= */
 
 .mapa-contenedor {
@@ -309,20 +326,26 @@ body {
 
 
 /* =========================================================
-   ENCABEZADO DE LA PÁGINA
+   INTRODUCCIÓN
    ========================================================= */
 
 .mapa-introduccion {
-    max-width: 760px;
+    max-width: 820px;
 
     margin: 0 auto 35px;
 
     text-align: center;
 }
 
-.mapa-introduccion::before {
-    content: "MAPA DE BOGOTÁ";
+.introduccion-texto {
+    display: flex;
 
+    flex-direction: column;
+
+    align-items: center;
+}
+
+.seccion-etiqueta {
     display: inline-block;
 
     margin-bottom: 13px;
@@ -341,7 +364,7 @@ body {
     letter-spacing: 1px;
 }
 
-.mapa-introduccion h2 {
+.mapa-introduccion h1 {
     margin-bottom: 12px;
 
     color: var(--vino-dark);
@@ -371,6 +394,29 @@ body {
    ========================================================= */
 
 .leyenda-mapa {
+    margin-top: 24px;
+
+    padding: 13px 17px;
+
+    background: rgba(255, 255, 255, 0.75);
+
+    border: 1px solid var(--borde);
+
+    border-radius: 15px;
+}
+
+.leyenda-titulo {
+    margin-bottom: 9px;
+
+    color: var(--texto-light);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.leyenda-items {
     display: flex;
 
     justify-content: center;
@@ -378,8 +424,6 @@ body {
     flex-wrap: wrap;
 
     gap: 9px;
-
-    margin-top: 22px;
 }
 
 .leyenda-item {
@@ -407,23 +451,126 @@ body {
     width: 9px;
     height: 9px;
 
+    flex-shrink: 0;
+
     border-radius: 50%;
 }
 
 .leyenda-color.perdido {
-    background: #c62828;
+    background: var(--rojo);
 }
 
 .leyenda-color.encontrado {
-    background: #2e8b57;
+    background: var(--verde);
 }
 
 .leyenda-color.reunido {
-    background: #7b2cbf;
+    background: var(--morado);
 }
 
 .leyenda-color.cerrado {
-    background: #555555;
+    background: var(--gris);
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS GENERALES
+   ========================================================= */
+
+.estadisticas-generales {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+.estadistica-card {
+    min-height: 92px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 16px 18px;
+
+    background: rgba(255, 255, 255, 0.90);
+
+    border: 1px solid var(--borde);
+
+    border-radius: 17px;
+
+    box-shadow: var(--sombra-suave);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.estadistica-card:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--rosa);
+
+    box-shadow:
+        0 10px 25px rgba(74, 28, 45, 0.09);
+}
+
+.estadistica-icono {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background: var(--rosa-soft);
+
+    font-size: 19px;
+}
+
+.estadistica-contenido {
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+.estadistica-contenido span {
+    margin-bottom: 3px;
+
+    color: var(--texto-soft);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.estadistica-contenido strong {
+    color: var(--vino-dark);
+
+    font-size: 23px;
+
+    line-height: 1.1;
+}
+
+.perdido-icono {
+    background: #fbe9e9;
+}
+
+.encontrado-icono {
+    background: #e7f4ed;
 }
 
 
@@ -434,7 +581,8 @@ body {
 .mapa-layout {
     display: grid;
 
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns:
+        minmax(0, 1fr) 365px;
 
     gap: 22px;
 
@@ -443,7 +591,7 @@ body {
 
 
 /* =========================================================
-   CONTENEDOR DEL MAPA
+   CONTENEDOR MAPA
    ========================================================= */
 
 .mapa-wrapper {
@@ -554,7 +702,7 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 
 
 /* =========================================================
-   LOCALIDADES
+   NOMBRES DE LOCALIDAD
    ========================================================= */
 
 .nombre-localidad {
@@ -589,7 +737,7 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 
     height: 650px;
 
-    padding: 27px 24px 24px 28px;
+    padding: 28px 22px 26px 27px;
 
     overflow-y: auto;
 
@@ -627,6 +775,10 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
     width: 5px;
 }
 
+.informacion-localidad::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 .informacion-localidad::-webkit-scrollbar-thumb {
     background: var(--rosa);
 
@@ -634,9 +786,48 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 }
 
 
-/* Título */
+/* =========================================================
+   ESTADO INICIAL DEL PANEL
+   ========================================================= */
 
-.informacion-localidad h2 {
+.panel-vacio {
+    padding: 16px 4px 25px;
+
+    text-align: center;
+}
+
+.panel-vacio-icono {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    border-radius: 16px;
+
+    background: var(--rosa-soft);
+
+    font-size: 24px;
+}
+
+.panel-etiqueta {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--texto-light);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.panel-vacio h2 {
     margin-bottom: 9px;
 
     color: var(--vino-dark);
@@ -648,10 +839,7 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
     line-height: 1.4;
 }
 
-
-/* Texto */
-
-.informacion-localidad > p {
+.panel-vacio p {
     color: var(--texto-soft);
 
     font-size: 12px;
@@ -661,21 +849,314 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 
 
 /* =========================================================
-   TARJETAS
+   DETALLE DE LOCALIDAD
    ========================================================= */
 
-#lista-seguimientos-panel {
+.localidad-detalle {
+    padding: 3px 2px 17px;
+
+    border-bottom: 1px solid var(--borde-soft);
+}
+
+.localidad-detalle-etiqueta {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--texto-light);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+}
+
+.localidad-detalle h2 {
+    margin-bottom: 5px;
+
+    color: var(--vino-dark);
+
+    font-family: "Playwrite NZ Basic", cursive;
+
+    font-size: 23px;
+
+    line-height: 1.3;
+}
+
+.localidad-detalle p {
+    color: var(--texto-soft);
+
+    font-size: 10px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS DE LOCALIDAD
+   ========================================================= */
+
+.localidad-estadisticas {
     display: flex;
 
     flex-direction: column;
 
-    gap: 11px;
+    gap: 12px;
 
-    margin-top: 18px;
+    padding: 17px 0 18px;
 }
 
-.seguimiento-tarjeta {
+
+/* =========================================================
+   POBLACIÓN
+   ========================================================= */
+
+.localidad-poblacion {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px;
+
+    background: var(--rosa-light);
+
+    border: 1px solid var(--borde);
+
+    border-radius: 13px;
+}
+
+.dato-icono {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    background: white;
+
+    font-size: 17px;
+
+    box-shadow:
+        0 3px 9px rgba(74, 28, 45, 0.06);
+}
+
+.localidad-poblacion > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.localidad-poblacion span {
+    color: var(--texto-soft);
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.localidad-poblacion strong {
+    margin-top: 2px;
+
+    color: var(--vino-dark);
+
+    font-size: 17px;
+
+    line-height: 1.2;
+}
+
+.localidad-poblacion small {
+    margin-top: 1px;
+
+    color: var(--texto-light);
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   GRID DE ESTADÍSTICAS
+   ========================================================= */
+
+.estadisticas-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.mini-estadistica {
+    min-width: 0;
+
+    padding: 11px 7px;
+
+    text-align: center;
+
+    background: white;
+
+    border: 1px solid var(--borde);
+
+    border-radius: 12px;
+}
+
+.mini-icono {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 13px;
+}
+
+.mini-estadistica strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: var(--vino-dark);
+
+    font-size: 17px;
+
+    line-height: 1.1;
+}
+
+.mini-estadistica small {
+    display: block;
+
+    color: var(--texto-soft);
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.mini-perdido {
+    background: #fffafa;
+
+    border-color: #f1dcdc;
+}
+
+.mini-encontrado {
+    background: #f9fdfb;
+
+    border-color: #dcece3;
+}
+
+
+/* =========================================================
+   TASA
+   ========================================================= */
+
+.tasa-localidad {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
     padding: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--vino-dark),
+            var(--vino)
+        );
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 18px rgba(116, 31, 61, 0.14);
+}
+
+.tasa-info {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.tasa-info span {
+    margin-bottom: 3px;
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.tasa-info small {
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 8px;
+
+    line-height: 1.4;
+}
+
+.tasa-localidad > strong {
+    color: white;
+
+    font-size: 24px;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SEGUIMIENTOS DE LOCALIDAD
+   ========================================================= */
+
+.seguimientos-localidad {
+    padding-top: 5px;
+}
+
+.seguimientos-localidad-header {
+    margin-bottom: 11px;
+}
+
+.seguimientos-localidad-header h3 {
+    margin-bottom: 3px;
+
+    color: var(--texto);
+
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.seguimientos-localidad-header p {
+    color: var(--texto-light);
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.seguimientos-lista {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   TARJETA DE SEGUIMIENTO
+   ========================================================= */
+
+.seguimiento-tarjeta {
+    padding: 13px;
 
     background: var(--rosa-light);
 
@@ -698,14 +1179,44 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
         0 7px 18px rgba(74, 28, 45, 0.08);
 }
 
-.seguimiento-tarjeta-titulo {
+
+/* Cabecera */
+
+.seguimiento-tarjeta-cabecera {
     display: flex;
 
-    align-items: flex-start;
+    align-items: center;
 
-    gap: 8px;
+    gap: 7px;
 
     margin-bottom: 7px;
+}
+
+.seguimiento-insignia {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+.seguimiento-tipo {
+    color: var(--texto-soft);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+}
+
+
+/* Título */
+
+.seguimiento-tarjeta-titulo {
+    margin-bottom: 8px;
 
     color: var(--texto);
 
@@ -715,52 +1226,266 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
     line-height: 1.45;
 }
 
-.seguimiento-insignia {
-    width: 9px;
-    height: 9px;
 
-    flex-shrink: 0;
+/* Estado */
 
-    margin-top: 4px;
+.seguimiento-tarjeta-estado {
+    display: flex;
 
-    border-radius: 50%;
-}
+    align-items: center;
 
-.seguimiento-tarjeta-meta {
+    gap: 5px;
+
     margin-bottom: 11px;
 
     color: var(--texto-soft);
 
-    font-size: 10px;
+    font-size: 9px;
 }
 
+.estado-punto {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+}
+
+
+/* Botón */
+
 .seguimiento-tarjeta-boton {
-    display: inline-flex;
+    display: flex;
 
     align-items: center;
+    justify-content: space-between;
 
-    padding: 6px 12px;
+    padding: 7px 10px;
 
-    border-radius: 20px;
+    border-radius: 9px;
 
-    background: var(--vino);
+    background: white;
 
-    color: white;
+    border: 1px solid var(--borde);
+
+    color: var(--vino);
 
     text-decoration: none;
 
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 9px;
+    font-weight: 800;
 
     transition:
         background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.seguimiento-tarjeta-boton span {
+    font-size: 12px;
+
+    transition:
         transform 0.2s ease;
 }
 
 .seguimiento-tarjeta-boton:hover {
-    background: var(--vino-dark);
+    background: var(--vino);
 
-    transform: translateX(2px);
+    border-color: var(--vino);
+
+    color: white;
+}
+
+.seguimiento-tarjeta-boton:hover span {
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   SIN SEGUIMIENTOS
+   ========================================================= */
+
+.sin-seguimientos {
+    padding: 20px 13px;
+
+    text-align: center;
+
+    background: var(--rosa-light);
+
+    border: 1px dashed var(--borde);
+
+    border-radius: 13px;
+}
+
+.sin-seguimientos-icono {
+    margin-bottom: 7px;
+
+    font-size: 20px;
+
+    opacity: 0.65;
+}
+
+.sin-seguimientos p {
+    color: var(--texto-soft);
+
+    font-size: 9px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+
+.ranking-localidades {
+    margin-top: 27px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid var(--borde);
+}
+
+.ranking-header {
+    margin-bottom: 14px;
+}
+
+.ranking-etiqueta {
+    display: inline-block;
+
+    margin-bottom: 5px;
+
+    color: var(--vino);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.ranking-header h3 {
+    margin-bottom: 4px;
+
+    color: var(--texto);
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.ranking-header p {
+    color: var(--texto-soft);
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+/* Lista */
+
+.ranking-lista {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.ranking-item {
+    display: grid;
+
+    grid-template-columns:
+        27px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px;
+
+    background: var(--rosa-light);
+
+    border: 1px solid var(--borde-soft);
+
+    border-radius: 11px;
+}
+
+
+/* Posición */
+
+.ranking-posicion {
+    width: 25px;
+    height: 25px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--vino);
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+/* Información */
+
+.ranking-info {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.ranking-info strong {
+    overflow: hidden;
+
+    color: var(--texto);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.ranking-info span {
+    color: var(--texto-light);
+
+    font-size: 8px;
+}
+
+
+/* Tasa */
+
+.ranking-tasa {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+}
+
+.ranking-tasa strong {
+    color: var(--vino);
+
+    font-size: 12px;
+
+    line-height: 1.1;
+}
+
+.ranking-tasa small {
+    color: var(--texto-light);
+
+    font-size: 7px;
 }
 
 
@@ -837,17 +1562,46 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
     background: white !important;
 }
 
-.popup-localidad {
-    min-width: 150px;
 
-    text-align: center;
+/* Popup localidad */
+
+.popup-localidad {
+    min-width: 190px;
+
+    text-align: left;
 }
 
-.popup-localidad strong {
+.popup-localidad-etiqueta {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--texto-light);
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.popup-localidad h3 {
+    margin-bottom: 10px;
+
     color: var(--vino);
 
     font-size: 15px;
 }
+
+.popup-localidad > div {
+    color: var(--texto-soft);
+
+    font-size: 10px;
+
+    line-height: 1.7;
+}
+
+
+/* Popup seguimiento */
 
 .popup-seguimiento {
     min-width: 190px;
@@ -890,7 +1644,7 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 
     text-align: center !important;
 
-    color: #2e8b57 !important;
+    color: var(--verde) !important;
 
     font-size: 10px !important;
 
@@ -916,7 +1670,7 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
 
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE - TABLET GRANDE
    ========================================================= */
 
 @media (max-width: 1150px) {
@@ -926,14 +1680,24 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
     }
 
     .nav-link {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .mapa-layout {
-        grid-template-columns: minmax(0, 1fr) 300px;
+        grid-template-columns:
+            minmax(0, 1fr) 330px;
     }
+
+    .estadisticas-generales {
+        gap: 10px;
+    }
+
 }
 
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
 
 @media (max-width: 950px) {
 
@@ -959,21 +1723,35 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
         margin-left: auto;
     }
 
+
+    .estadisticas-generales {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
     .mapa-layout {
         grid-template-columns: 1fr;
     }
+
 
     .mapa-wrapper {
         height: 600px;
     }
 
+
     .informacion-localidad {
         height: auto;
 
-        max-height: 430px;
+        max-height: 650px;
     }
+
 }
 
+
+/* =========================================================
+   RESPONSIVE - MÓVIL
+   ========================================================= */
 
 @media (max-width: 650px) {
 
@@ -1003,23 +1781,38 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
         justify-content: center;
     }
 
+
     .mapa-contenedor {
         width: 94%;
 
         padding-top: 40px;
     }
 
+
     .mapa-introduccion {
         margin-bottom: 25px;
     }
 
-    .mapa-introduccion h2 {
+
+    .mapa-introduccion h1 {
         font-size: 26px;
     }
+
 
     .mapa-introduccion p {
         font-size: 13px;
     }
+
+
+    .estadisticas-generales {
+        grid-template-columns: 1fr;
+    }
+
+
+    .estadistica-card {
+        min-height: 78px;
+    }
+
 
     .mapa-wrapper {
         height: 480px;
@@ -1027,11 +1820,24 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
         border-radius: 18px;
     }
 
+
     .informacion-localidad {
         border-radius: 18px;
+
+        padding-right: 18px;
     }
+
+
+    .leyenda-mapa {
+        padding: 11px;
+    }
+
 }
 
+
+/* =========================================================
+   RESPONSIVE - MÓVIL PEQUEÑO
+   ========================================================= */
 
 @media (max-width: 450px) {
 
@@ -1048,17 +1854,46 @@ body.leaflet-dragging #mapa .leaflet-tile-pane {
         width: 100%;
     }
 
+
     .mapa-wrapper {
         height: 420px;
     }
 
-    .leyenda-mapa {
-        gap: 7px;
+
+    .leyenda-items {
+        gap: 6px;
     }
+
 
     .leyenda-item {
         padding: 6px 9px;
 
         font-size: 10px;
     }
+
+
+    .estadisticas-grid {
+        gap: 5px;
+    }
+
+
+    .mini-estadistica {
+        padding: 9px 5px;
+    }
+
+
+    .mini-estadistica strong {
+        font-size: 15px;
+    }
+
+
+    .tasa-localidad {
+        padding: 12px;
+    }
+
+
+    .tasa-localidad > strong {
+        font-size: 21px;
+    }
+
 }

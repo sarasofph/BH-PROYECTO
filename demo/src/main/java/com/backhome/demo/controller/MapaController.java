@@ -1,15 +1,21 @@
 package com.backhome.demo.controller;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.backhome.demo.dto.EstadisticaLocalidad;
 import com.backhome.demo.model.EstadoModeracion;
 import com.backhome.demo.model.Localidad;
 import com.backhome.demo.model.Seguimiento;
+import com.backhome.demo.model.TipoSeguimiento;
 import com.backhome.demo.repository.LocalidadRepository;
 import com.backhome.demo.repository.SeguimientoRepository;
 
@@ -33,11 +39,18 @@ public class MapaController {
     @GetMapping("/mapa")
     public String mostrarMapa(Model model) {
 
-        // Localidades de Bogotá
+        // =========================================================
+        // 1. OBTENER LOCALIDADES
+        // =========================================================
+
         List<Localidad> localidades =
                 localidadRepository.findAllByOrderByNombreAsc();
 
-        // Solo seguimientos verificados por el administrador
+
+        // =========================================================
+        // 2. OBTENER SOLO SEGUIMIENTOS VERIFICADOS
+        // =========================================================
+
         List<Seguimiento> seguimientos =
                 seguimientoRepository.buscarSeguimientosPublicos(
                         EstadoModeracion.verificado,
@@ -48,34 +61,135 @@ public class MapaController {
                         null
                 );
 
-        /*
-         * IMPORTANTE: no se pasan las entidades Seguimiento
-         * directamente al modelo para el mapa.
-         *
-         * Thymeleaf usa su PROPIO ObjectMapper (independiente
-         * del que configura Spring Boot) para convertir a JSON
-         * dentro de th:inline="javascript", y ese ObjectMapper
-         * no soporta java.time.LocalDateTime por defecto. Eso
-         * rompía la página a medio generar (InvalidDefinitionException
-         * en el campo fechaPublicacion), lo que en el navegador
-         * se veía como un ERR_INCOMPLETE_CHUNKED_ENCODING.
-         *
-         * Se arma una lista liviana (record) con solo los
-         * campos que el mapa necesita y la fecha ya convertida
-         * a texto, evitando ese problema por completo.
-         */
+
+        // =========================================================
+        // 3. CONVERTIR SEGUIMIENTOS PARA EL MAPA
+        // =========================================================
+        // No enviamos directamente las entidades JPA al JavaScript.
+        // Usamos el DTO que ya tenías para evitar problemas de
+        // serialización.
+
         List<SeguimientoMapaDTO> seguimientosMapa =
                 seguimientos.stream()
                         .map(this::convertirParaMapa)
                         .toList();
 
-        model.addAttribute("localidades", localidades);
-        model.addAttribute("seguimientos", seguimientosMapa);
+
+        // =========================================================
+        // 4. CREAR ESTADÍSTICAS PARA TODAS LAS LOCALIDADES
+        // =========================================================
+
+        Map<Integer, EstadisticaLocalidad> estadisticas =
+                new LinkedHashMap<>();
+
+        for (Localidad localidad : localidades) {
+
+            EstadisticaLocalidad estadistica =
+                    new EstadisticaLocalidad(
+                            localidad.getIdLocalidad(),
+                            localidad.getNombre(),
+                            localidad.getPoblacion()
+                    );
+
+            estadisticas.put(
+                    localidad.getIdLocalidad(),
+                    estadistica
+            );
+        }
+
+
+        // =========================================================
+        // 5. CONTAR REPORTES POR LOCALIDAD
+        // =========================================================
+
+        for (Seguimiento seguimiento : seguimientos) {
+
+            // Si el seguimiento no tiene lugar o localidad,
+            // no podemos asociarlo a una localidad.
+            if (seguimiento.getLugar() == null
+                    || seguimiento.getLugar().getLocalidad() == null) {
+
+                continue;
+            }
+
+            Integer idLocalidad =
+                    seguimiento.getLugar()
+                            .getLocalidad()
+                            .getIdLocalidad();
+
+            EstadisticaLocalidad estadistica =
+                    estadisticas.get(idLocalidad);
+
+            if (estadistica == null) {
+                continue;
+            }
+
+
+            // Contar según el tipo de seguimiento
+
+            if (seguimiento.getTipoSeguimiento()
+                    == TipoSeguimiento.perdido) {
+
+                estadistica.agregarPerdido();
+
+            } else if (seguimiento.getTipoSeguimiento()
+                    == TipoSeguimiento.encontrado) {
+
+                estadistica.agregarEncontrado();
+            }
+        }
+
+
+        // =========================================================
+        // 6. CREAR RANKING POR TASA DE REPORTES
+        // =========================================================
+
+        List<EstadisticaLocalidad> ranking =
+                estadisticas.values()
+                        .stream()
+                        .sorted(
+                                Comparator.comparing(
+                                        EstadisticaLocalidad::getTasaReportes
+                                ).reversed()
+                        )
+                        .collect(Collectors.toList());
+
+
+        // =========================================================
+        // 7. ENVIAR INFORMACIÓN A THYMELEAF
+        // =========================================================
+
+        model.addAttribute(
+                "localidades",
+                localidades
+        );
+
+        model.addAttribute(
+                "seguimientos",
+                seguimientosMapa
+        );
+
+        model.addAttribute(
+                "estadisticasLocalidades",
+                estadisticas.values()
+        );
+
+        model.addAttribute(
+                "rankingLocalidades",
+                ranking
+        );
+
 
         return "mapa";
     }
 
-    private SeguimientoMapaDTO convertirParaMapa(Seguimiento seguimiento) {
+
+    // =============================================================
+    // CONVERTIR SEGUIMIENTO A DTO PARA EL MAPA
+    // =============================================================
+
+    private SeguimientoMapaDTO convertirParaMapa(
+            Seguimiento seguimiento) {
 
         String localidadNombre = null;
 
@@ -83,35 +197,44 @@ public class MapaController {
                 && seguimiento.getLugar().getLocalidad() != null) {
 
             localidadNombre =
-                    seguimiento.getLugar().getLocalidad().getNombre();
+                    seguimiento.getLugar()
+                            .getLocalidad()
+                            .getNombre();
         }
+
 
         String fecha = null;
 
         if (seguimiento.getFechaPublicacion() != null) {
-            fecha = seguimiento.getFechaPublicacion().format(FORMATO_FECHA);
+
+            fecha =
+                    seguimiento.getFechaPublicacion()
+                            .format(FORMATO_FECHA);
         }
+
 
         return new SeguimientoMapaDTO(
                 seguimiento.getIdSeguimiento(),
                 seguimiento.getTitulo(),
+
                 seguimiento.getTipoSeguimiento() != null
                         ? seguimiento.getTipoSeguimiento().name()
                         : null,
+
                 seguimiento.getEstadoSeguimiento() != null
                         ? seguimiento.getEstadoSeguimiento().name()
                         : null,
+
                 localidadNombre,
                 fecha
         );
     }
 
-    /**
-     * Datos mínimos que necesita el mapa para dibujar cada
-     * seguimiento. Al ser un record simple (sin relaciones JPA
-     * ni tipos java.time), Thymeleaf lo convierte a JSON sin
-     * problemas dentro de th:inline="javascript".
-     */
+
+    // =============================================================
+    // DTO UTILIZADO POR EL MAPA
+    // =============================================================
+
     public record SeguimientoMapaDTO(
             Integer idSeguimiento,
             String titulo,
@@ -119,5 +242,6 @@ public class MapaController {
             String estadoSeguimiento,
             String localidadNombre,
             String fechaPublicacion
-    ) {}
+    ) {
+    }
 }

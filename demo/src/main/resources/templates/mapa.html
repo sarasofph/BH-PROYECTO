@@ -4,33 +4,45 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Mapa de Bogotá | BackHome</title>
 
+    <!-- Leaflet -->
     <link rel="stylesheet"
           th:href="@{/vendor/leaflet/leaflet.css}">
 
-    <!-- CSS de BackHome -->
+    <!-- CSS BackHome -->
     <link rel="stylesheet"
           th:href="@{/css/mapa.css}">
+
 </head>
 
+
 <body>
+
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
 
 <header class="site-header">
 
     <div class="header-container">
 
+
         <!-- LOGO -->
-        <a th:href="@{/}" class="header-brand-group">
+
+        <a th:href="@{/}"
+           class="header-brand-group">
 
             <img
                 th:src="@{/images/logo-backhome.png}"
                 alt="BackHome"
-                class="header-logo-img"
-            >
+                class="header-logo-img">
 
             <span class="header-brand-title">
                 BackHome
@@ -40,67 +52,92 @@
 
 
         <!-- NAVEGACIÓN -->
+
         <nav class="header-nav-menu">
 
             <a th:href="@{/}"
                class="nav-link">
+
                 Inicio
+
             </a>
 
 
             <a th:href="@{/seguimientos}"
                class="nav-link">
+
                 Seguimientos
+
             </a>
+
 
             <a th:href="@{/mapa}"
                class="nav-link active">
+
                 Mapa
+
             </a>
+
 
             <a th:href="@{/cliente/soporte}"
                class="nav-link">
+
                 Soporte
+
             </a>
 
         </nav>
 
 
         <!-- ACCIONES DE CUENTA -->
+
         <div class="header-account-actions">
 
+
             <!-- USUARIO NO AUTENTICADO -->
+
             <div class="guest-actions"
                  sec:authorize="!isAuthenticated()">
 
                 <a th:href="@{/login}"
                    class="auth-link-login">
+
                     Iniciar sesión
+
                 </a>
+
 
                 <a th:href="@{/registro}"
                    class="auth-btn-register">
+
                     Registrarse
+
                 </a>
 
             </div>
 
 
             <!-- USUARIO AUTENTICADO -->
+
             <div class="user-actions"
                  sec:authorize="isAuthenticated()">
 
                 <a th:href="@{/cliente/perfil}"
                    class="auth-link-login">
+
                     Mi cuenta
+
                 </a>
+
 
                 <form th:action="@{/logout}"
                       method="post">
 
                     <button type="submit"
                             class="logout-button">
+
                         Cerrar sesión
+
                     </button>
 
                 </form>
@@ -113,39 +150,94 @@
 
 </header>
 
+
+
+<!-- ============================================================
+     CONTENIDO PRINCIPAL
+     ============================================================ -->
+
 <main class="mapa-contenedor">
+
+
+    <!-- ========================================================
+         INTRODUCCIÓN
+         ======================================================== -->
 
     <section class="mapa-introduccion">
 
-        <h2>Localidades y seguimientos</h2>
+        <div class="introduccion-texto">
 
-        <p>
-            Explora las localidades de Bogotá y consulta los reportes
-            verificados de mascotas perdidas o encontradas.
-        </p>
+            <span class="seccion-etiqueta">
+                MAPA DE BOGOTÁ
+            </span>
+
+            <h1>
+                Localidades y seguimientos
+            </h1>
+
+            <p>
+                Explora las localidades de Bogotá y consulta los
+                reportes verificados de mascotas perdidas o
+                encontradas.
+            </p>
+
+        </div>
+
 
         <!-- LEYENDA -->
 
         <div class="leyenda-mapa">
 
-            <div class="leyenda-item">
-                <span class="leyenda-color perdido"></span>
-                <span>Perdido</span>
+            <div class="leyenda-titulo">
+                ESTADO DE LOS REPORTES
             </div>
 
-            <div class="leyenda-item">
-                <span class="leyenda-color encontrado"></span>
-                <span>Encontrado</span>
-            </div>
 
-            <div class="leyenda-item">
-                <span class="leyenda-color reunido"></span>
-                <span>Reunido</span>
-            </div>
+            <div class="leyenda-items">
 
-            <div class="leyenda-item">
-                <span class="leyenda-color cerrado"></span>
-                <span>Cerrado</span>
+                <div class="leyenda-item">
+
+                    <span class="leyenda-color perdido"></span>
+
+                    <span>
+                        Perdido
+                    </span>
+
+                </div>
+
+
+                <div class="leyenda-item">
+
+                    <span class="leyenda-color encontrado"></span>
+
+                    <span>
+                        Encontrado
+                    </span>
+
+                </div>
+
+
+                <div class="leyenda-item">
+
+                    <span class="leyenda-color reunido"></span>
+
+                    <span>
+                        Reunido
+                    </span>
+
+                </div>
+
+
+                <div class="leyenda-item">
+
+                    <span class="leyenda-color cerrado"></span>
+
+                    <span>
+                        Cerrado
+                    </span>
+
+                </div>
+
             </div>
 
         </div>
@@ -153,9 +245,125 @@
     </section>
 
 
-    <!-- MAPA + INFORMACIÓN, uno al lado del otro -->
+
+    <!-- ========================================================
+         ESTADÍSTICAS GENERALES
+         ======================================================== -->
+
+    <section class="estadisticas-generales">
+
+
+        <!-- REPORTES -->
+
+        <div class="estadistica-card">
+
+            <div class="estadistica-icono">
+                🐾
+            </div>
+
+            <div class="estadistica-contenido">
+
+                <span>
+                    Reportes verificados
+                </span>
+
+                <strong th:text="${seguimientos.size()}">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERDIDOS -->
+
+        <div class="estadistica-card">
+
+            <div class="estadistica-icono perdido-icono">
+                🔴
+            </div>
+
+            <div class="estadistica-contenido">
+
+                <span>
+                    Mascotas perdidas
+                </span>
+
+                <strong
+                    th:text="${#lists.size(seguimientos.?[tipoSeguimiento == 'perdido'])}">
+
+                    0
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- ENCONTRADOS -->
+
+        <div class="estadistica-card">
+
+            <div class="estadistica-icono encontrado-icono">
+                🟢
+            </div>
+
+            <div class="estadistica-contenido">
+
+                <span>
+                    Mascotas encontradas
+                </span>
+
+                <strong
+                    th:text="${#lists.size(seguimientos.?[tipoSeguimiento == 'encontrado'])}">
+
+                    0
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOCALIDADES -->
+
+        <div class="estadistica-card">
+
+            <div class="estadistica-icono">
+                📍
+            </div>
+
+            <div class="estadistica-contenido">
+
+                <span>
+                    Localidades
+                </span>
+
+                <strong th:text="${localidades.size()}">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ========================================================
+         MAPA + PANEL
+         ======================================================== -->
 
     <section class="mapa-layout">
+
+
+        <!-- ====================================================
+             MAPA
+             ==================================================== -->
 
         <div class="mapa-wrapper">
 
@@ -164,51 +372,288 @@
         </div>
 
 
-        <!-- INFORMACIÓN DE LA LOCALIDAD -->
 
-        <aside class="informacion-localidad" id="panel-informacion">
+        <!-- ====================================================
+             PANEL DERECHO
+             ==================================================== -->
 
-            <h2 id="titulo-localidad">
-                Selecciona una localidad
-            </h2>
+        <aside class="informacion-localidad"
+               id="panel-informacion">
 
-            <p id="descripcion-localidad">
-                Haz clic sobre una localidad o sobre un punto del
-                mapa para ver su información.
-            </p>
+
+            <!-- ESTADO INICIAL -->
+
+            <div class="panel-vacio"
+                 id="panel-vacio">
+
+                <div class="panel-vacio-icono">
+                    🐾
+                </div>
+
+                <span class="panel-etiqueta">
+                    EXPLORA EL MAPA
+                </span>
+
+                <h2 id="titulo-localidad">
+                    Selecciona una localidad
+                </h2>
+
+                <p id="descripcion-localidad">
+
+                    Haz clic sobre una localidad o sobre un
+                    punto del mapa para consultar su información.
+
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 CONTENEDOR DINÁMICO
+                 ================================================= -->
 
             <div id="lista-seguimientos-panel"></div>
+
+
+
+            <!-- =================================================
+                 RANKING
+                 ================================================= -->
+
+            <div class="ranking-localidades">
+
+
+                <div class="ranking-header">
+
+                    <span class="ranking-etiqueta">
+                        ESTADÍSTICAS
+                    </span>
+
+                    <h3>
+                        Tasa de reportes
+                    </h3>
+
+                    <p>
+                        Reportes verificados por cada
+                        10.000 habitantes.
+                    </p>
+
+                </div>
+
+
+                <div class="ranking-lista">
+
+
+                    <div
+                        class="ranking-item"
+                        th:each="estadistica, iter :
+                        ${rankingLocalidades}"
+                        th:if="${estadistica.totalReportes > 0}">
+
+
+                        <!-- POSICIÓN -->
+
+                        <div class="ranking-posicion"
+                             th:text="${iter.index + 1}">
+
+                            1
+
+                        </div>
+
+
+                        <!-- INFORMACIÓN -->
+
+                        <div class="ranking-info">
+
+                            <strong
+                                th:text="${estadistica.nombreLocalidad}">
+
+                                Localidad
+
+                            </strong>
+
+                            <span>
+
+                                <span
+                                    th:text="${estadistica.totalReportes}">
+
+                                    0
+
+                                </span>
+
+                                reportes
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- TASA -->
+
+                        <div class="ranking-tasa">
+
+                            <strong
+                                th:text="${estadistica.tasaReportes}">
+
+                                0.00
+
+                            </strong>
+
+                            <small>
+                                / 10.000
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
 
         </aside>
 
     </section>
 
+
 </main>
 
 
-<!-- Leaflet (servido desde el propio proyecto) -->
+
+<!-- ============================================================
+     LEAFLET
+     ============================================================ -->
 
 <script th:src="@{/vendor/leaflet/leaflet.js}"></script>
 
 
+
 <!-- ============================================================
-     DATOS DE SEGUIMIENTOS DESDE SPRING BOOT
+     DATOS DESDE SPRING BOOT
      ============================================================ -->
 
 <script th:inline="javascript">
 
-    const seguimientos = /*[[${seguimientos}]]*/ []
+    const seguimientos =
+        /*[[${seguimientos}]]*/ []
+
         .map((seguimiento) => ({
-            id: seguimiento.idSeguimiento,
-            titulo: seguimiento.titulo,
-            tipo: seguimiento.tipoSeguimiento,
-            estado: seguimiento.estadoSeguimiento,
-            localidadNombre: seguimiento.localidadNombre
+
+            id:
+                seguimiento.idSeguimiento,
+
+            titulo:
+                seguimiento.titulo,
+
+            tipo:
+                seguimiento.tipoSeguimiento,
+
+            estado:
+                seguimiento.estadoSeguimiento,
+
+            localidadNombre:
+                seguimiento.localidadNombre
+
         }));
 
-    console.log("Seguimientos cargados:", seguimientos);
+
+    console.log(
+        "Seguimientos cargados:",
+        seguimientos
+    );
+
+
+    const estadisticasLocalidades =
+        /*[[${estadisticasLocalidades}]]*/ [];
+
+
+    console.log(
+        "Estadísticas por localidad:",
+        estadisticasLocalidades
+    );
+
+
+    /*
+     * ==========================================================
+     * CREAR ÍNDICE DE ESTADÍSTICAS
+     * ==========================================================
+     */
+
+    const estadisticasPorLocalidad = {};
+
+
+    estadisticasLocalidades.forEach(
+        (estadistica) => {
+
+            estadisticasPorLocalidad[
+                estadistica.idLocalidad
+            ] = estadistica;
+
+        }
+    );
+
+
+    /*
+     * ==========================================================
+     * COLOR SEGÚN TASA
+     * ==========================================================
+     */
+
+    function obtenerColorPorTasa(
+        tasa,
+        tasaMaxima
+    ) {
+
+        if (!tasa || tasa <= 0) {
+
+            return "#f8e8ee";
+
+        }
+
+
+        if (!tasaMaxima || tasaMaxima <= 0) {
+
+            return "#e8a9bc";
+
+        }
+
+
+        const proporcion =
+            Math.min(
+                tasa / tasaMaxima,
+                1
+            );
+
+
+        if (proporcion < 0.25) {
+
+            return "#f8dfe7";
+
+        }
+
+
+        if (proporcion < 0.50) {
+
+            return "#edbdcd";
+
+        }
+
+
+        if (proporcion < 0.75) {
+
+            return "#d987a3";
+
+        }
+
+
+        return "#741f3d";
+
+    }
 
 </script>
+
 
 
 <script>
@@ -219,89 +664,187 @@
      * ============================================================
      */
 
-    const mapa = L.map('mapa', {
+    const mapa =
+        L.map(
+            'mapa',
+            {
 
-        minZoom: 10,
+                minZoom: 10,
 
-        maxZoom: 16,
+                maxZoom: 16,
 
-        worldCopyJump: false,
+                worldCopyJump: false,
 
-        // Dibuja los polígonos/puntos en canvas en vez de SVG:
-        // más fluido al arrastrar/hacer zoom con muchas capas.
-        preferCanvas: true
+                preferCanvas: true
 
-    });
+            }
+        );
 
 
     /*
-     * Vista inicial
+     * ============================================================
+     * VISTA INICIAL
+     * ============================================================
      */
 
-    mapa.setView([4.65, -74.1], 11);
+    mapa.setView(
+        [4.65, -74.1],
+        11
+    );
 
 
     /*
-     * Mapa base: calles, ríos, parques y manzanas urbanas,
-     * sin etiquetas de texto propias.
-     *
-     * NOTA: tanto CARTO como los basemaps clásicos de Esri
-     * (server.arcgisonline.com) empezaron a exigir una API key
-     * para uso anónimo. Se usa OpenStreetMap estándar, que
-     * sigue siendo gratuito y sin key, y se le aplica un filtro
-     * fuerte en CSS (ver mapa.css, .leaflet-tile-pane) para que
-     * no se vea con los colores genéricos de OSM, sino con la
-     * paleta de BackHome.
+     * ============================================================
+     * MAPA BASE
+     * ============================================================
      */
 
     L.tileLayer(
+
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+
         {
+
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">' +
                 'OpenStreetMap</a> contributors',
+
             subdomains: 'abc',
 
-            // Igual al maxZoom del mapa: no se pide más detalle
-            // del que realmente se va a mostrar (menos tiles,
-            // menos peso, calles menos "cargadas" visualmente).
             maxZoom: 16,
 
-            // Menos peticiones simultáneas mientras se hace zoom.
             updateWhenZooming: false,
+
             keepBuffer: 2
+
         }
+
     ).addTo(mapa);
 
 
+
     /*
-     * Variable donde guardaremos el GeoJSON
+     * ============================================================
+     * GEOJSON
+     * ============================================================
      */
 
     let geojson;
 
 
+
     /*
      * ============================================================
-     * ESTILO NORMAL DE LAS LOCALIDADES
+     * OBTENER TASA MÁXIMA
+     * ============================================================
+     */
+
+    function obtenerTasaMaxima() {
+
+        if (
+            !estadisticasLocalidades ||
+            estadisticasLocalidades.length === 0
+        ) {
+
+            return 0;
+
+        }
+
+
+        return Math.max(
+
+            ...estadisticasLocalidades.map(
+
+                estadistica =>
+
+                    Number(
+                        estadistica.tasaReportes
+                    ) || 0
+
+            )
+
+        );
+
+    }
+
+
+
+    /*
+     * ============================================================
+     * OBTENER ESTADÍSTICA DE LOCALIDAD
+     * ============================================================
+     */
+
+    function obtenerEstadisticaLocalidad(feature) {
+
+        const idLocalidad =
+            obtenerIdLocalidad(feature);
+
+
+        if (idLocalidad == null) {
+
+            return null;
+
+        }
+
+
+        return (
+            estadisticasPorLocalidad[
+                idLocalidad
+            ] || null
+        );
+
+    }
+
+
+
+    /*
+     * ============================================================
+     * ESTILO DE LOCALIDADES
      * ============================================================
      */
 
     function estiloLocalidad(feature) {
 
+        const estadistica =
+            obtenerEstadisticaLocalidad(
+                feature
+            );
+
+
+        const tasa =
+            estadistica
+                ? Number(
+                    estadistica.tasaReportes
+                )
+                : 0;
+
+
+        const tasaMaxima =
+            obtenerTasaMaxima();
+
+
         return {
 
-            color: '#8b174d',
+            color:
+                '#8b174d',
 
-            weight: 2,
+            weight:
+                2,
 
-            fillColor: '#e8a1bc',
+            fillColor:
+                obtenerColorPorTasa(
+                    tasa,
+                    tasaMaxima
+                ),
 
-            fillOpacity: 0.65
+            fillOpacity:
+                0.70
 
         };
 
     }
+
 
 
     /*
@@ -312,23 +855,28 @@
 
     function resaltarLocalidad(e) {
 
-        const capa = e.target;
+        const capa =
+            e.target;
+
 
         capa.setStyle({
 
-            weight: 3,
+            weight:
+                3,
 
-            color: '#641036',
+            color:
+                '#641036',
 
-            fillColor: '#c95d87',
-
-            fillOpacity: 0.85
+            fillOpacity:
+                0.85
 
         });
+
 
         capa.bringToFront();
 
     }
+
 
 
     /*
@@ -339,20 +887,25 @@
 
     function quitarResaltado(e) {
 
-        geojson.resetStyle(e.target);
+        geojson.resetStyle(
+            e.target
+        );
 
     }
 
 
+
     /*
      * ============================================================
-     * OBTENER NOMBRE DE LOCALIDAD
+     * OBTENER NOMBRE
      * ============================================================
      */
 
     function obtenerNombreLocalidad(feature) {
 
-        const propiedades = feature.properties || {};
+        const propiedades =
+            feature.properties || {};
+
 
         return (
 
@@ -377,50 +930,56 @@
     }
 
 
+
     /*
      * ============================================================
-     * OBTENER ID DE LOCALIDAD
+     * OBTENER ID
      * ============================================================
-     *
-     * NOTA: este código ("LocCodigo") es el código OFICIAL de la
-     * localidad dentro del archivo geográfico de Bogotá (01..20).
-     * NO corresponde al id autoincremental de la tabla Localidad
-     * en la base de datos, así que ya no se usa para relacionar
-     * seguimientos. Se deja por si sirve para otro uso futuro.
      */
 
     function obtenerIdLocalidad(feature) {
 
-    const propiedades = feature.properties || {};
+        const propiedades =
+            feature.properties || {};
 
-    return propiedades.LocCodigo || null;
 
-}
+        const codigo =
+            propiedades.LocCodigo;
+
+
+        return codigo != null
+            ? parseInt(
+                codigo,
+                10
+            )
+            : null;
+
+    }
+
 
 
     /*
      * ============================================================
-     * NORMALIZAR NOMBRE DE LOCALIDAD
+     * NORMALIZAR NOMBRE
      * ============================================================
-     *
-     * El GeoJSON trae los nombres en mayúsculas ("ANTONIO NARIÑO")
-     * y la base de datos puede traerlos en otro formato
-     * ("Antonio Nariño"). Para poder relacionar los seguimientos
-     * con su localidad de forma confiable, comparamos siempre por
-     * nombre, ignorando mayúsculas/minúsculas y tildes.
      */
 
     function normalizarNombreLocalidad(texto) {
 
-        return (texto || '')
+        return (
+            texto || ''
+        )
             .toString()
             .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
+            .replace(
+                /[\u0300-\u036f]/g,
+                ''
+            )
             .trim()
             .toUpperCase();
 
     }
-    
+
 
 
     /*
@@ -429,55 +988,54 @@
      * ============================================================
      */
 
-    function obtenerColorSeguimiento(seguimiento) {
+    function obtenerColorSeguimiento(
+        seguimiento
+    ) {
 
-        /*
-         * Primero revisamos si está reunido.
-         */
-
-        if (seguimiento.estado === 'reunido') {
+        if (
+            seguimiento.estado ===
+            'reunido'
+        ) {
 
             return '#7b2cbf';
 
         }
 
 
-        /*
-         * Después si está cerrado.
-         */
-
-        if (seguimiento.estado === 'cerrado') {
+        if (
+            seguimiento.estado ===
+            'cerrado'
+        ) {
 
             return '#555555';
 
         }
 
 
-        /*
-         * Si está activo, usamos el tipo.
-         */
-
-        if (seguimiento.tipo === 'perdido') {
+        if (
+            seguimiento.tipo ===
+            'perdido'
+        ) {
 
             return '#c62828';
 
         }
 
 
-        if (seguimiento.tipo === 'encontrado') {
+        if (
+            seguimiento.tipo ===
+            'encontrado'
+        ) {
 
             return '#2e8b57';
 
         }
 
 
-        /*
-         * Color por defecto
-         */
-
         return '#8b174d';
 
     }
+
 
 
     /*
@@ -494,15 +1052,18 @@
 
         }
 
+
         if (tipo === 'encontrado') {
 
             return 'Encontrado';
 
         }
 
+
         return tipo;
 
     }
+
 
 
     /*
@@ -519,11 +1080,13 @@
 
         }
 
+
         if (estado === 'reunido') {
 
             return 'Reunido';
 
         }
+
 
         if (estado === 'cerrado') {
 
@@ -531,91 +1094,148 @@
 
         }
 
+
         return estado;
 
     }
 
 
+
     /*
      * ============================================================
-     * CREAR ICONO DEL SEGUIMIENTO
+     * ICONO DEL SEGUIMIENTO
      * ============================================================
      */
 
-    function crearIconoSeguimiento(seguimiento) {
+    function crearIconoSeguimiento(
+        seguimiento
+    ) {
 
         const color =
-            obtenerColorSeguimiento(seguimiento);
+            obtenerColorSeguimiento(
+                seguimiento
+            );
 
 
         return L.divIcon({
 
-            className: 'marcador-seguimiento',
+            className:
+                'marcador-seguimiento',
 
             html:
 
                 '<div class="marcador-punto" ' +
-                'style="background-color:' + color + ';">' +
+                'style="background-color:' +
+                color +
+                ';">' +
 
-                '<span class="marcador-icono">🐾</span>' +
+                '<span class="marcador-icono">' +
+                '🐾' +
+                '</span>' +
 
                 '</div>',
 
-            iconSize: [32, 32],
+            iconSize:
+                [32, 32],
 
-            iconAnchor: [16, 16],
+            iconAnchor:
+                [16, 16],
 
-            popupAnchor: [0, -18]
+            popupAnchor:
+                [0, -18]
 
         });
 
     }
 
 
-    /*
-     * ============================================================
-     * MOSTRAR SEGUIMIENTO EN EL PANEL
-     * ============================================================
-     */
 
     /*
      * ============================================================
-     * MOSTRAR SEGUIMIENTO(S) EN EL PANEL
+     * RUTA DEL DETALLE
      * ============================================================
-     *
-     * IMPORTANTE: ajusta RUTA_DETALLE_SEGUIMIENTO a la ruta real
-     * de tu aplicación para ver el detalle de un seguimiento
-     * (por ejemplo "/seguimientos" o "/publicaciones").
      */
 
-    const RUTA_DETALLE_SEGUIMIENTO = '/seguimientos';
+    const RUTA_DETALLE_SEGUIMIENTO =
+        '/seguimientos';
 
 
-    function construirTarjetaSeguimiento(seguimiento) {
+
+    /*
+     * ============================================================
+     * TARJETA DE SEGUIMIENTO
+     * ============================================================
+     */
+
+    function construirTarjetaSeguimiento(
+        seguimiento
+    ) {
 
         const color =
-            obtenerColorSeguimiento(seguimiento);
+            obtenerColorSeguimiento(
+                seguimiento
+            );
+
 
         return (
 
             '<div class="seguimiento-tarjeta">' +
 
-                '<div class="seguimiento-tarjeta-titulo">' +
+                '<div class="seguimiento-tarjeta-cabecera">' +
+
                     '<span class="seguimiento-insignia" ' +
-                    'style="background-color:' + color + '"></span>' +
-                    (seguimiento.titulo || 'Sin título') +
+
+                    'style="background-color:' +
+                    color +
+                    '"></span>' +
+
+                    '<span class="seguimiento-tipo">' +
+
+                        obtenerTextoTipo(
+                            seguimiento.tipo
+                        ) +
+
+                    '</span>' +
+
                 '</div>' +
 
-                '<div class="seguimiento-tarjeta-meta">' +
-                    obtenerTextoTipo(seguimiento.tipo) +
-                    ' &middot; ' +
-                    obtenerTextoEstado(seguimiento.estado) +
+
+                '<h4 class="seguimiento-tarjeta-titulo">' +
+
+                    (
+                        seguimiento.titulo ||
+                        'Sin título'
+                    ) +
+
+                '</h4>' +
+
+
+                '<div class="seguimiento-tarjeta-estado">' +
+
+                    '<span class="estado-punto" ' +
+                    'style="background-color:' +
+                    color +
+                    '"></span>' +
+
+                    obtenerTextoEstado(
+                        seguimiento.estado
+                    ) +
+
                 '</div>' +
+
 
                 '<a class="seguimiento-tarjeta-boton" ' +
-                'href="' + RUTA_DETALLE_SEGUIMIENTO + '/' +
-                seguimiento.id + '">' +
-                    'Ver seguimiento →' +
+
+                'href="' +
+                RUTA_DETALLE_SEGUIMIENTO +
+                '/' +
+                seguimiento.id +
+                '">' +
+
+                    'Ver seguimiento' +
+
+                    '<span>→</span>' +
+
                 '</a>' +
 
             '</div>'
@@ -625,181 +1245,630 @@
     }
 
 
-    function mostrarListaSeguimientos(nombreLocalidad, listaSeguimientos) {
 
-        const titulo =
-            document.getElementById('titulo-localidad');
+    /*
+     * ============================================================
+     * MOSTRAR LISTA Y ESTADÍSTICAS
+     * ============================================================
+     */
 
-        const descripcion =
-            document.getElementById('descripcion-localidad');
+    function mostrarListaSeguimientos(
+        nombreLocalidad
+    ) {
 
-        const listaPanel =
-            document.getElementById('lista-seguimientos-panel');
+        const panel =
+            document.getElementById(
+                'lista-seguimientos-panel'
+            );
 
 
-        titulo.textContent = nombreLocalidad;
+        const panelVacio =
+            document.getElementById(
+                'panel-vacio'
+            );
 
 
-        if (listaSeguimientos.length === 0) {
+        const localidadNormalizada =
+            normalizarNombreLocalidad(
+                nombreLocalidad
+            );
 
-            descripcion.textContent =
-                'No hay seguimientos verificados en esta localidad.';
 
-            listaPanel.innerHTML = '';
+        /*
+         * Buscar seguimientos
+         */
 
-            return;
+        const seguimientosLocalidad =
+            seguimientos.filter(
+
+                seguimiento =>
+
+                    normalizarNombreLocalidad(
+                        seguimiento.localidadNombre
+                    ) ===
+                    localidadNormalizada
+
+            );
+
+
+        /*
+         * Buscar estadísticas
+         */
+
+        const estadistica =
+            estadisticasLocalidades.find(
+
+                item =>
+
+                    normalizarNombreLocalidad(
+                        item.nombreLocalidad
+                    ) ===
+                    localidadNormalizada
+
+            );
+
+
+        /*
+         * Ocultar estado inicial
+         */
+
+        if (panelVacio) {
+
+            panelVacio.style.display =
+                'none';
 
         }
 
 
-        descripcion.textContent =
+        let contenido = '';
 
-            listaSeguimientos.length +
 
-            (
-                listaSeguimientos.length === 1
-                    ? ' seguimiento verificado en esta localidad:'
-                    : ' seguimientos verificados en esta localidad:'
+        /*
+         * ========================================================
+         * CABECERA DE LOCALIDAD
+         * ========================================================
+         */
+
+        contenido +=
+
+            '<div class="localidad-detalle">' +
+
+                '<span class="localidad-detalle-etiqueta">' +
+                    'LOCALIDAD' +
+                '</span>' +
+
+                '<h2>' +
+                    nombreLocalidad +
+                '</h2>' +
+
+                '<p>' +
+                    'Información de reportes verificados.' +
+                '</p>' +
+
+            '</div>';
+
+
+
+        /*
+         * ========================================================
+         * ESTADÍSTICAS
+         * ========================================================
+         */
+
+        if (estadistica) {
+
+            const poblacion =
+                Number(
+                    estadistica.poblacion || 0
+                );
+
+
+            contenido +=
+
+                '<div class="localidad-estadisticas">' +
+
+
+                    /*
+                     * POBLACIÓN
+                     */
+
+                    '<div class="localidad-poblacion">' +
+
+                        '<div class="dato-icono">' +
+                            '👥' +
+                        '</div>' +
+
+                        '<div>' +
+
+                            '<span>' +
+                                'Población' +
+                            '</span>' +
+
+                            '<strong>' +
+
+                                poblacion.toLocaleString(
+                                    'es-CO'
+                                ) +
+
+                            '</strong>' +
+
+                            '<small>' +
+                                'habitantes' +
+                            '</small>' +
+
+                        '</div>' +
+
+                    '</div>' +
+
+
+
+                    /*
+                     * TRES DATOS
+                     */
+
+                    '<div class="estadisticas-grid">' +
+
+
+                        /*
+                         * TOTAL
+                         */
+
+                        '<div class="mini-estadistica">' +
+
+                            '<span class="mini-icono">' +
+                                '🐾' +
+                            '</span>' +
+
+                            '<strong>' +
+                                estadistica.totalReportes +
+                            '</strong>' +
+
+                            '<small>' +
+                                'Reportes' +
+                            '</small>' +
+
+                        '</div>' +
+
+
+                        /*
+                         * PERDIDOS
+                         */
+
+                        '<div class="mini-estadistica mini-perdido">' +
+
+                            '<span class="mini-icono">' +
+                                '🔴' +
+                            '</span>' +
+
+                            '<strong>' +
+                                estadistica.reportesPerdidos +
+                            '</strong>' +
+
+                            '<small>' +
+                                'Perdidos' +
+                            '</small>' +
+
+                        '</div>' +
+
+
+                        /*
+                         * ENCONTRADOS
+                         */
+
+                        '<div class="mini-estadistica mini-encontrado">' +
+
+                            '<span class="mini-icono">' +
+                                '🟢' +
+                            '</span>' +
+
+                            '<strong>' +
+                                estadistica.reportesEncontrados +
+                            '</strong>' +
+
+                            '<small>' +
+                                'Encontrados' +
+                            '</small>' +
+
+                        '</div>' +
+
+                    '</div>' +
+
+
+
+                    /*
+                     * TASA
+                     */
+
+                    '<div class="tasa-localidad">' +
+
+                        '<div class="tasa-info">' +
+
+                            '<span>' +
+                                'Tasa de reportes' +
+                            '</span>' +
+
+                            '<small>' +
+                                'Por cada 10.000 habitantes' +
+                            '</small>' +
+
+                        '</div>' +
+
+                        '<strong>' +
+
+                            Number(
+                                estadistica.tasaReportes || 0
+                            ).toFixed(2) +
+
+                        '</strong>' +
+
+                    '</div>' +
+
+
+                '</div>';
+
+        }
+
+
+
+        /*
+         * ========================================================
+         * SEGUIMIENTOS
+         * ========================================================
+         */
+
+        contenido +=
+
+            '<div class="seguimientos-localidad">' +
+
+
+                '<div class="seguimientos-localidad-header">' +
+
+                    '<span class="localidad-detalle-etiqueta">' +
+                        'REPORTES' +
+                    '</span>' +
+
+                    '<h3>' +
+                        'Seguimientos recientes' +
+                    '</h3>' +
+
+                    '<p>' +
+
+                        (
+                            seguimientosLocalidad.length === 1
+
+                                ? '1 reporte verificado'
+
+                                :
+
+                                seguimientosLocalidad.length +
+                                ' reportes verificados'
+
+                        ) +
+
+                    '</p>' +
+
+                '</div>';
+
+
+
+        if (
+            seguimientosLocalidad.length === 0
+        ) {
+
+            contenido +=
+
+                '<div class="sin-seguimientos">' +
+
+                    '<div class="sin-seguimientos-icono">' +
+                        '🐾' +
+                    '</div>' +
+
+                    '<p>' +
+
+                        'No hay seguimientos verificados ' +
+                        'en esta localidad.'
+
+                    '</p>' +
+
+                '</div>';
+
+        } else {
+
+            contenido +=
+                '<div class="seguimientos-lista">';
+
+
+            seguimientosLocalidad.forEach(
+                (seguimiento) => {
+
+                    contenido +=
+                        construirTarjetaSeguimiento(
+                            seguimiento
+                        );
+
+                }
             );
 
 
-        listaPanel.innerHTML =
-            listaSeguimientos
-                .map(construirTarjetaSeguimiento)
-                .join('');
+            contenido +=
+                '</div>';
+
+        }
+
+
+        contenido +=
+            '</div>';
+
+
+        /*
+         * Insertar todo
+         */
+
+        panel.innerHTML =
+            contenido;
 
     }
 
 
-    function mostrarSeguimiento(seguimiento) {
+
+    /*
+     * ============================================================
+     * MOSTRAR UN SEGUIMIENTO
+     * ============================================================
+     */
+
+    function mostrarSeguimiento(
+        seguimiento
+    ) {
 
         mostrarListaSeguimientos(
-            seguimiento.localidadNombre,
-            [seguimiento]
+
+            seguimiento.localidadNombre
+
         );
 
     }
+
+
+
+    /*
+     * ============================================================
+     * CENTROIDE
+     * ============================================================
+     */
+
+    function calcularCentroideAnillo(
+        anillo
+    ) {
+
+        let areaAcumulada = 0;
+
+        let cx = 0;
+
+        let cy = 0;
+
+
+        for (
+            let i = 0;
+            i < anillo.length - 1;
+            i++
+        ) {
+
+            const [x0, y0] =
+                anillo[i];
+
+            const [x1, y1] =
+                anillo[i + 1];
+
+
+            const factor =
+                (x0 * y1) -
+                (x1 * y0);
+
+
+            areaAcumulada +=
+                factor;
+
+
+            cx +=
+                (x0 + x1) *
+                factor;
+
+
+            cy +=
+                (y0 + y1) *
+                factor;
+
+        }
+
+
+        if (
+            areaAcumulada === 0
+        ) {
+
+            return null;
+
+        }
+
+
+        const area =
+            areaAcumulada / 2;
+
+
+        return {
+
+            lng:
+                cx /
+                (6 * area),
+
+            lat:
+                cy /
+                (6 * area)
+
+        };
+
+    }
+
+
+
+    /*
+     * ============================================================
+     * ANILLO PRINCIPAL
+     * ============================================================
+     */
+
+    function obtenerAnilloPrincipal(
+        geometry
+    ) {
+
+        if (
+            !geometry ||
+            geometry.type !==
+            'MultiPolygon'
+        ) {
+
+            return null;
+
+        }
+
+
+        let mejorAnillo =
+            null;
+
+
+        let mejorArea =
+            -Infinity;
+
+
+        geometry.coordinates.forEach(
+            poligono => {
+
+                const anillo =
+                    poligono[0];
+
+
+                let area = 0;
+
+
+                for (
+                    let i = 0;
+                    i < anillo.length - 1;
+                    i++
+                ) {
+
+                    const [x0, y0] =
+                        anillo[i];
+
+                    const [x1, y1] =
+                        anillo[i + 1];
+
+
+                    area +=
+                        (x0 * y1) -
+                        (x1 * y0);
+
+                }
+
+
+                area =
+                    Math.abs(
+                        area / 2
+                    );
+
+
+                if (
+                    area > mejorArea
+                ) {
+
+                    mejorArea =
+                        area;
+
+                    mejorAnillo =
+                        anillo;
+
+                }
+
+            }
+        );
+
+
+        return mejorAnillo;
+
+    }
+
+
+
+    /*
+     * ============================================================
+     * PUNTO DENTRO DEL ANILLO
+     * ============================================================
+     */
+
+    function puntoDentroDelAnillo(
+        lat,
+        lng,
+        anillo
+    ) {
+
+        let dentro =
+            false;
+
+
+        for (
+            let i = 0,
+            j = anillo.length - 1;
+
+            i < anillo.length;
+
+            j = i++
+        ) {
+
+            const [xi, yi] =
+                anillo[i];
+
+            const [xj, yj] =
+                anillo[j];
+
+
+            const cruza =
+
+                (
+                    (yi > lat) !==
+                    (yj > lat)
+                )
+
+                &&
+
+                (
+                    lng <
+                    (xj - xi) *
+                    (lat - yi) /
+                    (yj - yi) +
+                    xi
+                );
+
+
+            if (cruza) {
+
+                dentro =
+                    !dentro;
+
+            }
+
+        }
+
+
+        return dentro;
+
+    }
+
 
 
     /*
      * ============================================================
      * CREAR MARCADORES
      * ============================================================
-     *
-     * Como todavía no tenemos latitud y longitud en Lugar,
-     * utilizamos el centro de cada localidad.
-     *
-     * Si existen varios seguimientos en una misma localidad,
-     * los desplazamos ligeramente para que puedan verse
-     * individualmente.
      */
-
-    /*
-     * ============================================================
-     * UBICAR PUNTOS DE SEGUIMIENTOS DENTRO DE SU LOCALIDAD
-     * ============================================================
-     *
-     * El centro del rectángulo que envuelve una localidad
-     * (getBounds().getCenter()) casi nunca coincide con su
-     * centro real: en localidades alargadas o con formas muy
-     * irregulares (como la mayoría en Bogotá), ese punto puede
-     * caer fuera del polígono. Por eso los puntos se salían de
-     * su localidad.
-     *
-     * En su lugar, se calcula el centroide real del anillo más
-     * grande del polígono, y antes de dibujar cada punto se
-     * verifica que quede efectivamente dentro. Si no, se reduce
-     * la distancia al centro hasta que sí quede dentro.
-     */
-
-    function calcularCentroideAnillo(anillo) {
-
-        let areaAcumulada = 0;
-        let cx = 0;
-        let cy = 0;
-
-        for (let i = 0; i < anillo.length - 1; i++) {
-
-            const [x0, y0] = anillo[i];
-            const [x1, y1] = anillo[i + 1];
-
-            const factor = (x0 * y1) - (x1 * y0);
-
-            areaAcumulada += factor;
-            cx += (x0 + x1) * factor;
-            cy += (y0 + y1) * factor;
-
-        }
-
-        if (areaAcumulada === 0) {
-            return null;
-        }
-
-        const area = areaAcumulada / 2;
-
-        return {
-            lng: cx / (6 * area),
-            lat: cy / (6 * area)
-        };
-
-    }
-
-    function obtenerAnilloPrincipal(geometry) {
-
-        if (!geometry || geometry.type !== 'MultiPolygon') {
-            return null;
-        }
-
-        let mejorAnillo = null;
-        let mejorArea = -Infinity;
-
-        geometry.coordinates.forEach(poligono => {
-
-            const anillo = poligono[0];
-            let area = 0;
-
-            for (let i = 0; i < anillo.length - 1; i++) {
-                const [x0, y0] = anillo[i];
-                const [x1, y1] = anillo[i + 1];
-                area += (x0 * y1) - (x1 * y0);
-            }
-
-            area = Math.abs(area / 2);
-
-            if (area > mejorArea) {
-                mejorArea = area;
-                mejorAnillo = anillo;
-            }
-
-        });
-
-        return mejorAnillo;
-
-    }
-
-    function puntoDentroDelAnillo(lat, lng, anillo) {
-
-        let dentro = false;
-
-        for (let i = 0, j = anillo.length - 1; i < anillo.length; j = i++) {
-
-            const [xi, yi] = anillo[i];
-            const [xj, yj] = anillo[j];
-
-            const cruza =
-                ((yi > lat) !== (yj > lat)) &&
-                (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
-
-            if (cruza) {
-                dentro = !dentro;
-            }
-
-        }
-
-        return dentro;
-
-    }
-
 
     function crearMarcadoresSeguimientos() {
 
@@ -810,250 +1879,307 @@
         }
 
 
-        /*
-         * Recorrer cada localidad
-         */
+        geojson.eachLayer(
+            function(layer) {
 
-        geojson.eachLayer(function(layer) {
+                const feature =
+                    layer.feature;
 
-            const feature =
-                layer.feature;
 
+                const nombreLocalidad =
+                    obtenerNombreLocalidad(
+                        feature
+                    );
 
-            const nombreLocalidad =
-                obtenerNombreLocalidad(feature);
 
-            const nombreNormalizado =
-                normalizarNombreLocalidad(nombreLocalidad);
+                const nombreNormalizado =
+                    normalizarNombreLocalidad(
+                        nombreLocalidad
+                    );
 
 
-            /*
-             * Buscar los seguimientos de esta localidad,
-             * comparando por nombre (ver normalizarNombreLocalidad).
-             */
+                const seguimientosLocalidad =
+                    seguimientos.filter(
 
-            const seguimientosLocalidad =
-                seguimientos.filter(
-                    seguimiento =>
-                        normalizarNombreLocalidad(
-                            seguimiento.localidadNombre
-                        ) === nombreNormalizado
-                );
+                        seguimiento =>
 
-
-            /*
-             * Si no hay seguimientos,
-             * no colocamos marcadores.
-             */
-
-            if (
-                seguimientosLocalidad.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            /*
-             * Centro real de la localidad (no el del rectángulo
-             * que la envuelve, ver calcularCentroideAnillo).
-             */
-
-            const anilloPrincipal =
-                obtenerAnilloPrincipal(feature.geometry);
-
-            let centro =
-                anilloPrincipal
-                    ? calcularCentroideAnillo(anilloPrincipal)
-                    : null;
-
-            if (
-                !centro ||
-                !puntoDentroDelAnillo(centro.lat, centro.lng, anilloPrincipal)
-            ) {
-
-                // Respaldo por si el cálculo falla
-                const centroRectangulo = layer.getBounds().getCenter();
-
-                centro = {
-                    lat: centroRectangulo.lat,
-                    lng: centroRectangulo.lng
-                };
-
-            }
-
-
-            /*
-             * Separación entre marcadores.
-             */
-
-            const cantidad =
-                seguimientosLocalidad.length;
-
-
-            seguimientosLocalidad.forEach(
-                function(seguimiento, indice) {
-
-
-                    /*
-                     * Si hay varios marcadores, los distribuimos
-                     * alrededor del centro, probando radios cada
-                     * vez más chicos hasta que el punto quede
-                     * dentro de la localidad.
-                     */
-
-                    let lat = centro.lat;
-                    let lng = centro.lng;
-
-                    if (cantidad > 1) {
-
-                        const angulo =
-                            (2 * Math.PI * indice) / cantidad;
-
-                        const radios = [0.003, 0.0018, 0.001, 0];
-
-                        for (const radio of radios) {
-
-                            const latCandidato =
-                                centro.lat + (Math.sin(angulo) * radio);
-
-                            const lngCandidato =
-                                centro.lng + (Math.cos(angulo) * radio);
-
-                            const puntoValido =
-                                !anilloPrincipal ||
-                                radio === 0 ||
-                                puntoDentroDelAnillo(
-                                    latCandidato,
-                                    lngCandidato,
-                                    anilloPrincipal
-                                );
-
-                            if (puntoValido) {
-                                lat = latCandidato;
-                                lng = lngCandidato;
-                                break;
-                            }
-
-                        }
-
-                    }
-
-
-                    /*
-                     * Crear marcador
-                     */
-
-                    const marcador =
-                        L.marker(
-
-                            [lat, lng],
-
-                            {
-                                icon:
-                                    crearIconoSeguimiento(
-                                        seguimiento
-                                    )
-                            }
-
-                        ).addTo(mapa);
-
-
-                    /*
-                     * Popup
-                     */
-
-                    marcador.bindPopup(
-
-                        '<div class="popup-seguimiento">' +
-
-                        '<div class="popup-pata">🐾</div>' +
-
-                        '<h3>' +
-
-                        seguimiento.titulo +
-
-                        '</h3>' +
-
-                        '<p>' +
-
-                        '<strong>Tipo:</strong> ' +
-
-                        obtenerTextoTipo(
-                            seguimiento.tipo
-                        ) +
-
-                        '</p>' +
-
-                        '<p>' +
-
-                        '<strong>Estado:</strong> ' +
-
-                        obtenerTextoEstado(
-                            seguimiento.estado
-                        ) +
-
-                        '</p>' +
-
-                        '<p>' +
-
-                        '<strong>Localidad:</strong> ' +
-
-                        seguimiento.localidadNombre +
-
-                        '</p>' +
-
-                        '<p class="popup-verificado">' +
-
-                        '✓ Verificado por BackHome' +
-
-                        '</p>' +
-
-                        '</div>'
+                            normalizarNombreLocalidad(
+                                seguimiento.localidadNombre
+                            ) ===
+                            nombreNormalizado
 
                     );
 
 
-                    /*
-                     * Al hacer clic en el marcador,
-                     * actualizamos el panel inferior.
-                     */
+                if (
+                    seguimientosLocalidad.length === 0
+                ) {
 
-                    marcador.on(
-                        'click',
-                        function() {
-
-                            mostrarSeguimiento(
-                                seguimiento
-                            );
-
-                        }
-                    );
+                    return;
 
                 }
 
-            );
 
-        });
+                const anilloPrincipal =
+                    obtenerAnilloPrincipal(
+                        feature.geometry
+                    );
+
+
+                let centro =
+                    anilloPrincipal
+                        ? calcularCentroideAnillo(
+                            anilloPrincipal
+                        )
+                        : null;
+
+
+                if (
+                    !centro ||
+
+                    !puntoDentroDelAnillo(
+                        centro.lat,
+                        centro.lng,
+                        anilloPrincipal
+                    )
+                ) {
+
+                    const centroRectangulo =
+                        layer
+                            .getBounds()
+                            .getCenter();
+
+
+                    centro = {
+
+                        lat:
+                            centroRectangulo.lat,
+
+                        lng:
+                            centroRectangulo.lng
+
+                    };
+
+                }
+
+
+                const cantidad =
+                    seguimientosLocalidad.length;
+
+
+                seguimientosLocalidad.forEach(
+
+                    function(
+                        seguimiento,
+                        indice
+                    ) {
+
+
+                        let lat =
+                            centro.lat;
+
+
+                        let lng =
+                            centro.lng;
+
+
+                        if (
+                            cantidad > 1
+                        ) {
+
+                            const angulo =
+
+                                (
+                                    2 *
+                                    Math.PI *
+                                    indice
+                                ) /
+                                cantidad;
+
+
+                            const radios =
+                                [
+                                    0.003,
+                                    0.0018,
+                                    0.001,
+                                    0
+                                ];
+
+
+                            for (
+                                const radio
+                                of radios
+                            ) {
+
+                                const latCandidato =
+
+                                    centro.lat +
+
+                                    (
+                                        Math.sin(
+                                            angulo
+                                        ) *
+                                        radio
+                                    );
+
+
+                                const lngCandidato =
+
+                                    centro.lng +
+
+                                    (
+                                        Math.cos(
+                                            angulo
+                                        ) *
+                                        radio
+                                    );
+
+
+                                const puntoValido =
+
+                                    !anilloPrincipal ||
+
+                                    radio === 0 ||
+
+                                    puntoDentroDelAnillo(
+                                        latCandidato,
+                                        lngCandidato,
+                                        anilloPrincipal
+                                    );
+
+
+                                if (
+                                    puntoValido
+                                ) {
+
+                                    lat =
+                                        latCandidato;
+
+                                    lng =
+                                        lngCandidato;
+
+                                    break;
+
+                                }
+
+                            }
+
+                        }
+
+
+                        const marcador =
+                            L.marker(
+
+                                [
+                                    lat,
+                                    lng
+                                ],
+
+                                {
+
+                                    icon:
+                                        crearIconoSeguimiento(
+                                            seguimiento
+                                        )
+
+                                }
+
+                            ).addTo(mapa);
+
+
+                        marcador.bindPopup(
+
+                            '<div class="popup-seguimiento">' +
+
+                                '<div class="popup-pata">' +
+                                    '🐾' +
+                                '</div>' +
+
+                                '<h3>' +
+
+                                    seguimiento.titulo +
+
+                                '</h3>' +
+
+                                '<p>' +
+
+                                    '<strong>Tipo:</strong> ' +
+
+                                    obtenerTextoTipo(
+                                        seguimiento.tipo
+                                    ) +
+
+                                '</p>' +
+
+                                '<p>' +
+
+                                    '<strong>Estado:</strong> ' +
+
+                                    obtenerTextoEstado(
+                                        seguimiento.estado
+                                    ) +
+
+                                '</p>' +
+
+                                '<p>' +
+
+                                    '<strong>Localidad:</strong> ' +
+
+                                    seguimiento.localidadNombre +
+
+                                '</p>' +
+
+                                '<p class="popup-verificado">' +
+
+                                    '✓ Verificado por BackHome' +
+
+                                '</p>' +
+
+                            '</div>'
+
+                        );
+
+
+                        marcador.on(
+                            'click',
+                            function() {
+
+                                mostrarSeguimiento(
+                                    seguimiento
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
 
     }
 
 
+
     /*
      * ============================================================
-     * EVENTOS DE LAS LOCALIDADES
+     * EVENTOS DE LOCALIDAD
      * ============================================================
      */
 
-    function eventosLocalidad(feature, layer) {
+    function eventosLocalidad(
+        feature,
+        layer
+    ) {
 
         const nombre =
-            obtenerNombreLocalidad(feature);
+            obtenerNombreLocalidad(
+                feature
+            );
 
 
         /*
-         * Tooltip permanente
+         * Tooltip
          */
 
         layer.bindTooltip(
@@ -1062,14 +2188,17 @@
 
             {
 
-                permanent: true,
+                permanent:
+                    true,
 
-                direction: 'center',
+                direction:
+                    'center',
 
                 className:
                     'nombre-localidad',
 
-                opacity: 0.9
+                opacity:
+                    0.9
 
             }
 
@@ -1077,7 +2206,7 @@
 
 
         /*
-         * Eventos del mouse
+         * Eventos
          */
 
         layer.on({
@@ -1090,78 +2219,163 @@
 
 
             /*
-             * Click en localidad
+             * CLICK
              */
 
-            click: function() {
+            click:
+                function() {
 
 
-                /*
-                 * Buscar seguimientos de esta localidad
-                 * (comparando por nombre, ver
-                 * normalizarNombreLocalidad).
-                 */
+                    /*
+                     * Mostrar panel
+                     */
 
-                const nombreNormalizado =
-                    normalizarNombreLocalidad(nombre);
-
-
-                const seguimientosLocalidad =
-                    seguimientos.filter(
-                        seguimiento =>
-                            normalizarNombreLocalidad(
-                                seguimiento.localidadNombre
-                            ) === nombreNormalizado
+                    mostrarListaSeguimientos(
+                        nombre
                     );
 
 
-                /*
-                 * Mostrar en el panel: título, cantidad y una
-                 * tarjeta por cada seguimiento (con su botón
-                 * para ir al detalle).
-                 */
+                    /*
+                     * Obtener estadísticas
+                     */
 
-                mostrarListaSeguimientos(
-                    nombre,
-                    seguimientosLocalidad
-                );
+                    const estadistica =
+                        obtenerEstadisticaLocalidad(
+                            feature
+                        );
 
 
-                /*
-                 * Popup breve sobre la localidad en el mapa.
-                 */
+                    let resumenPopup =
+                        '';
 
-                const resumenPopup =
-                    seguimientosLocalidad.length === 0
-                        ? 'No hay seguimientos verificados.'
-                        : '<strong>' + seguimientosLocalidad.length +
-                          '</strong> seguimiento(s) verificado(s). ' +
-                          'Mira el panel de la derecha.';
 
-                layer.bindPopup(
-                    '<div class="popup-localidad">' +
-                    '<strong>' + nombre + '</strong>' +
-                    '<br><br>' +
-                    resumenPopup +
-                    '</div>'
-                ).openPopup();
+                    if (
+                        estadistica
+                    ) {
 
-            }
+                        const poblacion =
+                            Number(
+                                estadistica.poblacion ||
+                                0
+                            );
+
+
+                        resumenPopup =
+
+                            '<strong>' +
+
+                            estadistica.nombreLocalidad +
+
+                            '</strong>' +
+
+                            '<br><br>' +
+
+
+                            '<strong>' +
+
+                            estadistica.totalReportes +
+
+                            '</strong>' +
+
+                            ' reportes verificados.' +
+
+                            '<br>' +
+
+
+                            'Perdidos: ' +
+
+                            estadistica.reportesPerdidos +
+
+                            '<br>' +
+
+
+                            'Encontrados: ' +
+
+                            estadistica.reportesEncontrados +
+
+                            '<br><br>' +
+
+
+                            'Población: ' +
+
+                            poblacion.toLocaleString(
+                                'es-CO'
+                            ) +
+
+                            '<br>' +
+
+
+                            '<strong>' +
+
+                            Number(
+                                estadistica.tasaReportes ||
+                                0
+                            ).toFixed(2) +
+
+                            '</strong>' +
+
+                            ' reportes por cada ' +
+                            '10.000 habitantes.';
+
+                    } else {
+
+                        resumenPopup =
+
+                            'No hay información ' +
+                            'estadística disponible.';
+
+                    }
+
+
+                    /*
+                     * Popup
+                     */
+
+                    layer.bindPopup(
+
+                        '<div class="popup-localidad">' +
+
+                            '<span class="popup-localidad-etiqueta">' +
+                                'LOCALIDAD' +
+                            '</span>' +
+
+                            '<h3>' +
+
+                                nombre +
+
+                            '</h3>' +
+
+                            '<div>' +
+
+                                resumenPopup +
+
+                            '</div>' +
+
+                        '</div>'
+
+                    ).openPopup();
+
+                }
 
         });
 
     }
 
 
+
     /*
      * ============================================================
-     * CONVERSIÓN DE ESRI JSON A GEOJSON
+     * CONVERSIÓN ESRI JSON → GEOJSON
      * ============================================================
      */
 
-    function calcularAreaConSigno(anillo) {
+    function calcularAreaConSigno(
+        anillo
+    ) {
 
-        let suma = 0;
+        let suma =
+            0;
+
 
         for (
             let i = 0;
@@ -1177,27 +2391,39 @@
 
 
             suma +=
+
                 (x1 * y2) -
                 (x2 * y1);
 
         }
+
 
         return suma / 2;
 
     }
 
 
-    function esriAGeoJSON(esriData) {
+
+    function esriAGeoJSON(
+        esriData
+    ) {
 
         const features =
-            (esriData.features || [])
-                .map(feature => {
+
+            (
+                esriData.features ||
+                []
+            )
+
+            .map(
+                feature => {
 
                     const anillos =
                         feature.geometry.rings;
 
 
-                    const poligonos = [];
+                    const poligonos =
+                        [];
 
 
                     let poligonoActual =
@@ -1240,14 +2466,16 @@
 
                     return {
 
-                        type: 'Feature',
+                        type:
+                            'Feature',
 
                         properties:
                             feature.attributes,
 
                         geometry: {
 
-                            type: 'MultiPolygon',
+                            type:
+                                'MultiPolygon',
 
                             coordinates:
                                 poligonos
@@ -1256,7 +2484,8 @@
 
                     };
 
-                });
+                }
+            );
 
 
         return {
@@ -1272,156 +2501,205 @@
     }
 
 
+
     /*
      * ============================================================
-     * CARGAR GEOJSON
+     * CARGAR LOCALIDADES
      * ============================================================
      */
 
-    fetch('/geojson/localidades.json')
+    fetch(
+        '/geojson/localidades.json'
+    )
 
-        .then(response => {
+        .then(
+            response => {
 
-            if (!response.ok) {
+                if (
+                    !response.ok
+                ) {
 
-                throw new Error(
-                    'No se pudo cargar el archivo GeoJSON.'
-                );
-
-            }
-
-            return response.json();
-
-        })
-
-
-        .then(data => {
-
-
-            /*
-             * Convertir Esri JSON
-             * a GeoJSON.
-             */
-
-            const datosGeoJSON =
-                esriAGeoJSON(data);
-
-
-            /*
-             * Crear localidades.
-             */
-
-            geojson =
-                L.geoJSON(
-
-                    datosGeoJSON,
-
-                    {
-
-                        style:
-                            estiloLocalidad,
-
-                        onEachFeature:
-                            eventosLocalidad
-
-                    }
-
-                ).addTo(mapa);
-
-
-            /*
-             * Ajustar mapa a Bogotá.
-             */
-
-            mapa.fitBounds(
-
-                geojson.getBounds(),
-
-                {
-
-                    padding:
-                        [20, 20]
+                    throw new Error(
+                        'No se pudo cargar el archivo GeoJSON.'
+                    );
 
                 }
 
-            );
 
-
-            /*
-             * Limitar movimiento.
-             */
-
-            mapa.setMaxBounds(
-
-                geojson
-                    .getBounds()
-                    .pad(0.10)
-
-            );
-
-
-            /*
-             * Crear los marcadores
-             * después de tener las localidades.
-             */
-
-            crearMarcadoresSeguimientos();
-
-
-            /*
-             * Diagnóstico: si algún seguimiento no encontró
-             * localidad (por ejemplo, por un nombre mal escrito
-             * o distinto entre la base de datos y el GeoJSON),
-             * se avisa aquí para poder corregirlo fácilmente.
-             */
-
-            const nombresGeoJSON = new Set(
-                geojson.getLayers().map(
-                    layer => normalizarNombreLocalidad(
-                        obtenerNombreLocalidad(layer.feature)
-                    )
-                )
-            );
-
-            const seguimientosSinLocalidad = seguimientos.filter(
-                seguimiento => !nombresGeoJSON.has(
-                    normalizarNombreLocalidad(seguimiento.localidadNombre)
-                )
-            );
-
-            if (seguimientosSinLocalidad.length > 0) {
-
-                console.warn(
-                    'Estos seguimientos no calzaron con ninguna ' +
-                    'localidad del mapa (revisa el nombre en la BD):',
-                    seguimientosSinLocalidad.map(
-                        s => ({ id: s.id, localidadNombre: s.localidadNombre })
-                    )
-                );
+                return response.json();
 
             }
-
-        })
-
-
-        .catch(error => {
-
-            console.error(
-                'Error cargando el mapa:',
-                error
-            );
+        )
 
 
-            document.getElementById(
-                'descripcion-localidad'
-            ).textContent =
+        .then(
+            data => {
 
-                'No se pudo cargar el mapa de localidades. ' +
-                'Intenta recargar la página.';
 
-        });
+                /*
+                 * Convertir
+                 */
+
+                const datosGeoJSON =
+                    esriAGeoJSON(
+                        data
+                    );
+
+
+                /*
+                 * Crear localidades
+                 */
+
+                geojson =
+                    L.geoJSON(
+
+                        datosGeoJSON,
+
+                        {
+
+                            style:
+                                estiloLocalidad,
+
+                            onEachFeature:
+                                eventosLocalidad
+
+                        }
+
+                    ).addTo(mapa);
+
+
+                /*
+                 * Ajustar vista
+                 */
+
+                mapa.fitBounds(
+
+                    geojson.getBounds(),
+
+                    {
+
+                        padding:
+                            [20, 20]
+
+                    }
+
+                );
+
+
+                /*
+                 * Limitar movimiento
+                 */
+
+                mapa.setMaxBounds(
+
+                    geojson
+                        .getBounds()
+                        .pad(0.10)
+
+                );
+
+
+                /*
+                 * Marcadores
+                 */
+
+                crearMarcadoresSeguimientos();
+
+
+                /*
+                 * Diagnóstico
+                 */
+
+                const nombresGeoJSON =
+                    new Set(
+
+                        geojson
+                            .getLayers()
+                            .map(
+
+                                layer =>
+
+                                    normalizarNombreLocalidad(
+
+                                        obtenerNombreLocalidad(
+                                            layer.feature
+                                        )
+
+                                    )
+
+                            )
+
+                    );
+
+
+                const seguimientosSinLocalidad =
+                    seguimientos.filter(
+
+                        seguimiento =>
+
+                            !nombresGeoJSON.has(
+
+                                normalizarNombreLocalidad(
+                                    seguimiento.localidadNombre
+                                )
+
+                            )
+
+                    );
+
+
+                if (
+                    seguimientosSinLocalidad.length > 0
+                ) {
+
+                    console.warn(
+
+                        'Estos seguimientos no calzaron ' +
+                        'con ninguna localidad del mapa:',
+
+                        seguimientosSinLocalidad.map(
+
+                            s => ({
+
+                                id:
+                                    s.id,
+
+                                localidadNombre:
+                                    s.localidadNombre
+
+                            })
+
+                        )
+
+                    );
+
+                }
+
+            }
+        )
+
+
+        .catch(
+            error => {
+
+                console.error(
+                    'Error cargando el mapa:',
+                    error
+                );
+
+
+                document.getElementById(
+                    'descripcion-localidad'
+                ).textContent =
+
+                    'No se pudo cargar el mapa de localidades. ' +
+                    'Intenta recargar la página.';
+
+            }
+        );
 
 </script>
+
 
 </body>
 

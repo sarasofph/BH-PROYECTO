@@ -164,6 +164,15 @@
     <build>
 
         <plugins>
+
+        <!-- Análisis automático de posibles bugs -->
+<plugin>
+    <groupId>com.github.spotbugs</groupId>
+    <artifactId>spotbugs-maven-plugin</artifactId>
+    <version>4.9.8.2</version>
+</plugin>
+
+
             <!-- Cobertura de Código JaCoCo -->
             <plugin>
                 <groupId>org.jacoco</groupId>
